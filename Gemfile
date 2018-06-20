@@ -9,4 +9,5 @@ group :test do
   gem 'govuk-lint'
   gem 'rack-test'
   gem 'rspec'
+  gem 'webmock'
 end
