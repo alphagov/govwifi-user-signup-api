@@ -71,22 +71,27 @@ RSpec.describe User do
       expect(first_user_from_db[:username]).not_to eq(last_user_from_db[:username])
     end
   end
-end
 
-# CREATE TABLE `userdetails` (
-#   `username` varchar(10) NOT NULL DEFAULT '',
-#   `contact` varchar(100) DEFAULT NULL,
-#   `sponsor` varchar(100) DEFAULT NULL,
-#   `password` varchar(64) DEFAULT NULL,
-#   `email` varchar(100) DEFAULT NULL,
-#   `mobile` varchar(20) DEFAULT NULL,
-#   `notifications_opt_out` tinyint(1) NOT NULL DEFAULT '0',
-#   `survey_opt_out` tinyint(1) NOT NULL DEFAULT '0',
-#   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-#   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-#   `last_login` datetime DEFAULT NULL,
-#   PRIMARY KEY (`username`),
-#   KEY `userdetails_created_at` (`created_at`),
-#   KEY `userdetails_contact` (`contact`),
-#   KEY `userdetails_last_login` (`last_login`)
-# ) 
+  context 'existing users' do
+    before do
+      srand(2)
+      ('a'..'z').to_a.sample(6).join
+      srand(2)
+      User.new.generate(email: 'foo@bar.gov.uk')
+    end
+
+    let!(:user) do
+      User.new.generate(email: 'foo@bar.gov.uk')
+    end
+
+    let(:user_from_db) { User.select(:username, :password).first.values }
+
+    it 'does not create a new user' do
+      expect(User.count).to eq(1)
+    end
+
+    it 'returns the username and password of the user' do
+      expect(user).to eq(user_from_db)
+    end
+  end
+end
