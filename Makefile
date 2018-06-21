@@ -21,6 +21,7 @@ lint:
 
 test:
 	$(MAKE) serve
+	./mysql/bin/wait_for_mysql
 	docker-compose run --rm app rspec
 	$(MAKE) stop
 
