@@ -3,7 +3,12 @@ class User < Sequel::Model(:userdetails)
   WORD_LIST = File.readlines(ENV['WORD_LIST_FILE']).map(&:strip)
 
   def generate(email:)
-    user = User.create(username: random_username, password: password_from_word_list)
+    user = User.create(
+      username: random_username,
+      password: password_from_word_list,
+      email: email,
+      sponsor: email
+    )
     { username: user.username, password: user.password }
   end
 

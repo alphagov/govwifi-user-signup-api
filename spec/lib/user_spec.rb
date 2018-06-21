@@ -15,13 +15,15 @@ RSpec.describe User do
       end
 
       let(:word_list) { %w[These Are Words] }
+      let(:email) { 'foo@bar.gov.uk' }
 
       let!(:user) do
         srand(2)
-        User.new.generate(email: 'foo@bar.gov.uk')
+        User.new.generate(email: email)
       end
 
-      let(:user_from_db) { User.select(:username, :password).first.values }
+      let(:username_password_from_db) { User.select(:username, :password).first.values }
+      let(:user_from_db) { User.first }
       let(:split_password) { user[:password].split(/(?=[A-Z])/) }
 
       it 'creates a user and returns it' do
@@ -34,7 +36,12 @@ RSpec.describe User do
       end
 
       it 'stores the user in the database' do
-        expect(user_from_db).to eq(user)
+        expect(username_password_from_db).to eq(user)
+      end
+
+      it 'stores the email as both the email and sponsor for the user' do
+        expect(user_from_db.email).to eq(email)
+        expect(user_from_db.sponsor).to eq(email)
       end
     end
   end
