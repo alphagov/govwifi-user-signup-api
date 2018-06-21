@@ -3,9 +3,27 @@ class User < Sequel::Model(:userdetails)
   WORD_LIST = File.readlines(ENV['WORD_LIST_FILE']).map(&:strip)
 
   def generate(email:)
-    username = ('a'..'z').to_a.sample(6).join
-    password = WORD_LIST.sample(3).map(&:capitalize).join
-    User.create(username: username, password: password)
-    { username: username, password: password }
+    user = User.create(username: random_username, password: password_from_word_list)
+    { username: user.username, password: user.password }
+  end
+
+private
+
+  def random_username
+    username = generate_username
+
+    while User.find(username: username)
+      username = generate_username
+    end
+
+    username
+  end
+
+  def generate_username
+    ('a'..'z').to_a.sample(6).join
+  end
+
+  def password_from_word_list
+    WORD_LIST.sample(3).map(&:capitalize).join
   end
 end

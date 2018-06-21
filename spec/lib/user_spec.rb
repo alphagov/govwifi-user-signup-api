@@ -22,7 +22,6 @@ RSpec.describe User do
       end
 
       let(:user_from_db) { User.select(:username, :password).first.values }
-
       let(:split_password) { user[:password].split(/(?=[A-Z])/) }
 
       it 'creates a user and returns it' do
@@ -37,6 +36,32 @@ RSpec.describe User do
       it 'stores the user in the database' do
         expect(user_from_db).to eq(user)
       end
+    end
+  end
+
+  context 'avoiding duplicate usernames' do
+    before do
+      srand(2)
+      ('a'..'z').to_a.sample(6).join
+      srand(2)
+      User.new.generate(email: 'foo@bar.gov.uk')
+    end
+
+    let!(:user) do
+      srand(2)
+      User.new.generate(email: 'foo1@bar.gov.uk')
+    end
+
+    let(:first_user_from_db) { User.select(:username, :password).first.values }
+    let(:last_user_from_db) { User.select(:username, :password).last.values }
+
+    it 'creates a user and returns it' do
+      expect(user[:username]).not_to be_empty
+      expect(user[:password]).not_to be_empty
+    end
+
+    it 'does not duplicate the username' do
+      expect(first_user_from_db[:username]).not_to eq(last_user_from_db[:username])
     end
   end
 end
