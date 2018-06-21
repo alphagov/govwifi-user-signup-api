@@ -49,8 +49,6 @@ RSpec.describe User do
   context 'avoiding duplicate usernames' do
     before do
       srand(2)
-      ('a'..'z').to_a.sample(6).join
-      srand(2)
       User.new.generate(email: 'foo@bar.gov.uk')
     end
 
@@ -74,8 +72,6 @@ RSpec.describe User do
 
   context 'existing users' do
     before do
-      srand(2)
-      ('a'..'z').to_a.sample(6).join
       srand(2)
       User.new.generate(email: 'foo@bar.gov.uk')
     end
