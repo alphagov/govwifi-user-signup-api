@@ -17,3 +17,4 @@ services:
       DB_USER: root
       DB_HOSTNAME: db
       RACK_ENV: development
+      AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
