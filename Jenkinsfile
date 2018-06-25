@@ -91,6 +91,15 @@ def deploy(deploy_environment) {
       sh('git fetch')
       sh('git checkout stable')
 
+      withAWS(credentials: 'jenkins-read-wordlist-credentials') {
+        s3Download(
+          file: 'tmp/wordlist',
+          bucket: 'govwifi-wordlist',
+          path: 'wordlist-short',
+          force: true
+        )
+      }
+
       docker.withRegistry(env.AWS_ECS_API_REGISTRY) {
         sh("eval \$(aws ecr get-login --no-include-email)")
         def appImage = docker.build(
