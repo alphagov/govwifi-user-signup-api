@@ -17,13 +17,11 @@ RSpec.describe App do
       # Notification format taken from
       # https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-notifications-examples.html
       {
-        commonHeaders: {
-          from: [
-            from_address
-          ],
-          to: [
-            'signup@govwifi.service.gov.uk'
-          ]
+        mail: {
+          commonHeaders: {
+            from: [from_address],
+            to: ['signup@govwifi.service.gov.uk']
+          }
         }
       }
     end

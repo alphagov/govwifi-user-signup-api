@@ -24,7 +24,7 @@ class App < Sinatra::Base
 private
 
   def handle_signup_request(ses_notification)
-    from_address = ses_notification['commonHeaders']['from'][0]
+    from_address = ses_notification['mail']['commonHeaders']['from'][0]
     signup_user(email: from_address) if authorised_email_domain?(from_address)
   end
 
