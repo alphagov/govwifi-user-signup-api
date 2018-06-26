@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'net/http'
+require 'notifications/client'
 
 require './lib/user.rb'
 
@@ -16,15 +17,26 @@ class App < Sinatra::Base
     payload = JSON.parse request.body.read
 
     Net::HTTP.get(URI(payload['SubscribeURL'])) if payload['Type'] == 'SubscriptionConfirmation'
-    signup_user(JSON.parse(payload['Message'])) if payload['Type'] == 'Notification'
+    handle_signup_request(JSON.parse(payload['Message'])) if payload['Type'] == 'Notification'
     ''
   end
 
 private
 
-  def signup_user(ses_notification)
+  def handle_signup_request(ses_notification)
     from_address = ses_notification['commonHeaders']['from'][0]
-    User.new.generate(email: from_address) if authorised_email_domain?(from_address)
+    signup_user(email: from_address) if authorised_email_domain?(from_address)
+  end
+
+  def signup_user(email:)
+    login_details = User.new.generate(email: email)
+    client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
+
+    client.send_email(
+      email_address: email,
+      template_id: ENV.fetch('NOTIFY_USER_SIGNUP_EMAIL_TEMPLATE_ID'),
+      personalisation: login_details
+    )
   end
 
   def authorised_email_domain?(from_address)
