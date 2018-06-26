@@ -1,6 +1,8 @@
 require 'sinatra/base'
 require 'net/http'
 
+require './lib/user.rb'
+
 class App < Sinatra::Base
   configure :production, :staging, :development do
     enable :logging
