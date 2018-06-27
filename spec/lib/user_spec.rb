@@ -39,8 +39,8 @@ RSpec.describe User do
         expect(username_password_from_db).to eq(user)
       end
 
-      it 'stores the email as both the email and sponsor for the user' do
-        expect(user_from_db.email).to eq(email)
+      it 'stores the email as both the contact and sponsor for the user' do
+        expect(user_from_db.contact).to eq(email)
         expect(user_from_db.sponsor).to eq(email)
       end
     end

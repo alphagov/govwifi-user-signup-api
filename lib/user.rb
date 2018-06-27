@@ -3,7 +3,7 @@ class User < Sequel::Model(:userdetails)
   WORD_LIST = File.readlines(ENV['WORD_LIST_FILE']).map(&:strip)
 
   def generate(email:)
-    existing_user = User.find(email: email)
+    existing_user = User.find(contact: email)
     return login_details(existing_user) if existing_user
 
     user = create_user(email)
@@ -34,7 +34,7 @@ private
     User.create(
       username: random_username,
       password: password_from_word_list,
-      email: email,
+      contact: email,
       sponsor: email
     )
   end
