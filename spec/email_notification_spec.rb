@@ -27,7 +27,7 @@ RSpec.describe App do
     end
 
     before do
-      allow_any_instance_of(UserSignup).to receive(:execute)
+      allow_any_instance_of(EmailSignup).to receive(:execute)
     end
 
     def post_notification
@@ -43,7 +43,7 @@ RSpec.describe App do
     end
 
     it 'calls UserSignup#execute' do
-      expect_any_instance_of(UserSignup).to \
+      expect_any_instance_of(EmailSignup).to \
         receive(:execute).with(contact: from_address)
       post_notification
     end

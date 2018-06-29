@@ -1,4 +1,4 @@
-RSpec.describe UserSignup do
+RSpec.describe EmailSignup do
   let(:user_model) { double(User) }
   subject { described_class.new(user_model: user_model) }
 

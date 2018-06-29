@@ -1,7 +1,7 @@
 require 'mail'
 require 'notifications/client'
 
-class UserSignup
+class EmailSignup
   def initialize(user_model:)
     @user_model = user_model
   end

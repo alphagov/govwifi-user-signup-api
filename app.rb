@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'net/http'
 
-require './lib/user_signup.rb'
+require './lib/email_signup.rb'
 require './lib/user.rb'
 
 class App < Sinatra::Base
@@ -25,6 +25,7 @@ private
 
   def handle_signup_request(ses_notification)
     from_address = ses_notification['mail']['commonHeaders']['from'][0]
-    UserSignup.new(user_model: User.new).execute(contact: from_address)
+    logger.info("Handling signup request from #{from_address}")
+    EmailSignup.new(user_model: User.new).execute(contact: from_address)
   end
 end
