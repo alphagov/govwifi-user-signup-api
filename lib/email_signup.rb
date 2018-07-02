@@ -11,7 +11,7 @@ class EmailSignup
 
     return unless authorised_email_domain?(email_address)
 
-    login_details = user_model.generate(email: email_address)
+    login_details = user_model.generate(contact: email_address)
     send_signup_instructions(email_address, login_details)
   end
 
