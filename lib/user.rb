@@ -2,11 +2,11 @@ class User < Sequel::Model(:userdetails)
   User.unrestrict_primary_key
   WORD_LIST = File.readlines(ENV['WORD_LIST_FILE']).map(&:strip)
 
-  def generate(email:)
-    existing_user = User.find(contact: email)
+  def generate(contact:)
+    existing_user = User.find(contact: contact)
     return login_details(existing_user) if existing_user
 
-    user = create_user(email)
+    user = create_user(contact)
     login_details(user)
   end
 
@@ -30,12 +30,12 @@ private
     WORD_LIST.sample(3).map(&:capitalize).join
   end
 
-  def create_user(email)
+  def create_user(contact)
     User.create(
       username: random_username,
       password: password_from_word_list,
-      contact: email,
-      sponsor: email
+      contact: contact,
+      sponsor: contact
     )
   end
 

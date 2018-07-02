@@ -19,7 +19,7 @@ RSpec.describe User do
 
       let!(:user) do
         srand(2)
-        User.new.generate(email: email)
+        User.new.generate(contact: email)
       end
 
       let(:username_password_from_db) { User.select(:username, :password).first.values }
@@ -49,12 +49,12 @@ RSpec.describe User do
   context 'avoiding duplicate usernames' do
     before do
       srand(2)
-      User.new.generate(email: 'foo@bar.gov.uk')
+      User.new.generate(contact: 'foo@bar.gov.uk')
     end
 
     let!(:user) do
       srand(2)
-      User.new.generate(email: 'foo1@bar.gov.uk')
+      User.new.generate(contact: 'foo1@bar.gov.uk')
     end
 
     let(:first_user_from_db) { User.select(:username, :password).first.values }
@@ -73,11 +73,11 @@ RSpec.describe User do
   context 'existing users' do
     before do
       srand(2)
-      User.new.generate(email: 'foo@bar.gov.uk')
+      User.new.generate(contact: 'foo@bar.gov.uk')
     end
 
     let!(:user) do
-      User.new.generate(email: 'foo@bar.gov.uk')
+      User.new.generate(contact: 'foo@bar.gov.uk')
     end
 
     let(:user_from_db) { User.select(:username, :password).first.values }

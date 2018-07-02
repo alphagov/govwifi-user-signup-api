@@ -1,5 +1,5 @@
 RSpec.describe EmailSignup do
-  let(:user_model) { double(User) }
+  let(:user_model) { instance_double(User) }
   subject { described_class.new(user_model: user_model) }
 
   describe 'Using an authorised email domain' do
@@ -25,7 +25,7 @@ RSpec.describe EmailSignup do
       ENV['NOTIFY_USER_SIGNUP_EMAIL_TEMPLATE_ID'] = notify_template_id
 
       expect(user_model).to receive(:generate) \
-        .with(email: created_contact) \
+        .with(contact: created_contact) \
         .and_return(username: username, password: password)
     end
 
