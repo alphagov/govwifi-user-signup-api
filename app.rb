@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'net/http'
 
 require './lib/email_signup.rb'
+require './lib/sms_signup.rb'
 require './lib/user.rb'
 
 class App < Sinatra::Base
@@ -18,6 +19,11 @@ class App < Sinatra::Base
 
     Net::HTTP.get(URI(payload['SubscribeURL'])) if payload['Type'] == 'SubscriptionConfirmation'
     handle_signup_request(JSON.parse(payload['Message'])) if payload['Type'] == 'Notification'
+    ''
+  end
+
+  post '/user-signup/sms-notification' do
+    SmsSignup.new(user_model: User.new).execute(contact: params[:source])
     ''
   end
 
