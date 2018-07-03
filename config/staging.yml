@@ -1,0 +1,10 @@
+notify_sms_template_ids:
+  credentials: 24d47eb3-8b02-4eba-aa04-81ffaf4bb1b4
+  help_menu: 512deae1-7ec4-4888-8f2d-7be79e5eb379
+  generic_help: 60985003-1682-45a6-8d8d-e121cadbc234
+  device_help:
+    android: ee81124c-2a92-4b63-a7be-258aedb26ed8
+    blackberry: 57b362d0-9753-4fd9-ada0-bfd643db8eee
+    mac: ec8f83bb-5371-40bf-b777-307a52926fe1
+    iphone: 1dc8b2b5-b2e6-4bce-9aae-ee1e9c7cb650
+    windows: 3b8f158b-22c8-4226-b84b-3ea5085a46d5
