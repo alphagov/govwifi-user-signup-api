@@ -4,6 +4,7 @@ require 'net/http'
 require './lib/email_signup.rb'
 require './lib/sms_signup.rb'
 require './lib/user.rb'
+require './lib/sms_template_finder.rb'
 
 class App < Sinatra::Base
   configure :production, :staging, :development do
