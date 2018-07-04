@@ -17,7 +17,7 @@ RSpec.describe App do
 
       it 'calls SmsResponse#execute' do
         expect_any_instance_of(SmsResponse).to \
-          receive(:execute).with(contact: from_phone_number)
+          receive(:execute).with(contact: from_phone_number, sms_content: 'Go')
         post_sms_notification
       end
     end
@@ -26,8 +26,32 @@ RSpec.describe App do
       let(:from_phone_number) { '07700900001' }
       it 'calls SmsResponse#execute' do
         expect_any_instance_of(SmsResponse).to \
-          receive(:execute).with(contact: from_phone_number)
+          receive(:execute).with(contact: from_phone_number, sms_content: 'Go')
         post_sms_notification
+      end
+    end
+
+    describe 'environment specific template finder' do
+      before do
+        allow_any_instance_of(SmsResponse).to receive(:execute)
+      end
+
+      context 'production' do
+        it 'uses the rack environment variable' do
+          ENV['RACK_ENV'] = 'production'
+
+          expect(SmsTemplateFinder).to receive(:new).with(environment: 'production')
+          post_sms_notification
+        end
+      end
+
+      context 'staging' do
+        it 'uses the rack environment variable' do
+          ENV['RACK_ENV'] = 'staging'
+
+          expect(SmsTemplateFinder).to receive(:new).with(environment: 'staging')
+          post_sms_notification
+        end
       end
     end
   end

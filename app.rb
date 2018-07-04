@@ -24,7 +24,15 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/sms-notification' do
-    SmsResponse.new(user_model: User.new).execute(contact: params[:source])
+    template_finder = SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
+
+    SmsResponse.new(
+      user_model: User.new,
+      template_finder: template_finder
+    ).execute(
+      contact: params[:source],
+      sms_content: params[:message]
+    )
     ''
   end
 

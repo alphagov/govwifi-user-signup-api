@@ -1,10 +1,10 @@
 RSpec.describe SmsResponse do
   let(:user_model) { instance_double(User) }
-  subject { described_class.new(user_model: user_model) }
+  let(:template_finder) { double(execute: notify_template_id) }
+  subject { described_class.new(user_model: user_model, template_finder: template_finder) }
 
   before do
     expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
-    ENV['NOTIFY_USER_SIGNUP_SMS_TEMPLATE_ID'] = notify_template_id
   end
 
   let(:username) { 'hello' }
@@ -28,15 +28,27 @@ RSpec.describe SmsResponse do
   end
 
   it 'Creates a user with the phone number with a +44 already' do
-    subject.execute(contact: '+447700900003')
+    subject.execute(contact: '+447700900003', sms_content: '')
   end
 
   it 'Creates a user prepended by +44' do
-    subject.execute(contact: '07700900003')
+    subject.execute(contact: '07700900003', sms_content: '')
   end
 
   it 'Creates a user prepended by +' do
-    subject.execute(contact: '447700900003')
+    subject.execute(contact: '447700900003', sms_content: '')
+  end
+
+  context 'Calls the template finder with the message content' do
+    it 'with a message of Go' do
+      subject.execute(contact: '447700900003', sms_content: 'Go')
+      expect(template_finder).to have_received(:execute).with(message_content: 'Go')
+    end
+
+    it 'with a message of Help' do
+      subject.execute(contact: '447700900003', sms_content: 'Help')
+      expect(template_finder).to have_received(:execute).with(message_content: 'Help')
+    end
   end
 
   context 'For one set of credentials' do
@@ -45,7 +57,7 @@ RSpec.describe SmsResponse do
     let(:phone_number) { '+447700900005' }
 
     it 'Sends details to Notify' do
-      subject.execute(contact: phone_number)
+      subject.execute(contact: phone_number, sms_content: '')
       expect(notify_sms_stub).to have_been_requested.times(1)
     end
   end
@@ -57,7 +69,7 @@ RSpec.describe SmsResponse do
     let(:notify_template_id) { '00000000-3333-3333-3333-000000000000' }
 
     it 'Sends details to Notify' do
-      subject.execute(contact: phone_number)
+      subject.execute(contact: phone_number, sms_content: '')
       expect(notify_sms_stub).to have_been_requested.times(1)
     end
   end
