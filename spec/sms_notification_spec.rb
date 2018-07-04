@@ -7,7 +7,7 @@ RSpec.describe App do
     end
 
     it 'returns no sensitive information to sms provider' do
-      allow_any_instance_of(SmsSignup).to receive(:execute).and_return 'Sensitive info'
+      allow_any_instance_of(SmsResponse).to receive(:execute).and_return 'Sensitive info'
       post_sms_notification
       expect(last_response.body).to eq('')
     end
@@ -15,19 +15,43 @@ RSpec.describe App do
     describe 'from a phone number' do
       let(:from_phone_number) { '07700900000' }
 
-      it 'calls SmsSignup#execute' do
-        expect_any_instance_of(SmsSignup).to \
-          receive(:execute).with(contact: from_phone_number)
+      it 'calls SmsResponse#execute' do
+        expect_any_instance_of(SmsResponse).to \
+          receive(:execute).with(contact: from_phone_number, sms_content: 'Go')
         post_sms_notification
       end
     end
 
     describe 'from a different phone number' do
       let(:from_phone_number) { '07700900001' }
-      it 'calls SmsSignup#execute' do
-        expect_any_instance_of(SmsSignup).to \
-          receive(:execute).with(contact: from_phone_number)
+      it 'calls SmsResponse#execute' do
+        expect_any_instance_of(SmsResponse).to \
+          receive(:execute).with(contact: from_phone_number, sms_content: 'Go')
         post_sms_notification
+      end
+    end
+
+    describe 'environment specific template finder' do
+      before do
+        allow_any_instance_of(SmsResponse).to receive(:execute)
+      end
+
+      context 'production' do
+        it 'uses the rack environment variable' do
+          ENV['RACK_ENV'] = 'production'
+
+          expect(SmsTemplateFinder).to receive(:new).with(environment: 'production')
+          post_sms_notification
+        end
+      end
+
+      context 'staging' do
+        it 'uses the rack environment variable' do
+          ENV['RACK_ENV'] = 'staging'
+
+          expect(SmsTemplateFinder).to receive(:new).with(environment: 'staging')
+          post_sms_notification
+        end
       end
     end
   end

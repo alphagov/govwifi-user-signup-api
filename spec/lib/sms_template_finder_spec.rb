@@ -1,8 +1,9 @@
 describe SmsTemplateFinder do
   let(:environment) { 'production' }
+  subject { described_class.new(environment: environment) }
 
   def template_for_message(message_content)
-    subject.execute(message_content: message_content, env: environment)
+    subject.execute(message_content: message_content)
   end
 
   context 'Given no message content' do
