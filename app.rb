@@ -2,7 +2,7 @@ require 'sinatra/base'
 require 'net/http'
 
 require './lib/email_signup.rb'
-require './lib/sms_signup.rb'
+require './lib/sms_response.rb'
 require './lib/user.rb'
 require './lib/sms_template_finder.rb'
 
@@ -24,7 +24,7 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/sms-notification' do
-    SmsSignup.new(user_model: User.new).execute(contact: params[:source])
+    SmsResponse.new(user_model: User.new).execute(contact: params[:source])
     ''
   end
 

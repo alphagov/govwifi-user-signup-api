@@ -1,4 +1,4 @@
-class SmsSignup
+class SmsResponse
   def initialize(user_model:)
     @user_model = user_model
   end

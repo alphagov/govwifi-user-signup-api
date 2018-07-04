@@ -1,4 +1,4 @@
-RSpec.describe SmsSignup do
+RSpec.describe SmsResponse do
   let(:user_model) { instance_double(User) }
   subject { described_class.new(user_model: user_model) }
 
