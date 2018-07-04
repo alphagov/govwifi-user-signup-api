@@ -24,6 +24,8 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/sms-notification' do
+    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} with message #{params[:message]}")
+
     template_finder = SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
 
     SmsResponse.new(
