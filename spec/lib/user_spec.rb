@@ -46,6 +46,17 @@ RSpec.describe User do
     end
   end
 
+  context 'generate with a sponsor value specified' do
+    let(:user_from_db) { User.first }
+
+    it 'stores the sponsor in the sponsor field' do
+      User.new.generate(contact: 'adrian@example.com', sponsor: 'emile@example.com')
+
+      expect(user_from_db.contact).to eq('adrian@example.com')
+      expect(user_from_db.sponsor).to eq('emile@example.com')
+    end
+  end
+
   context 'avoiding duplicate usernames' do
     before do
       srand(2)
