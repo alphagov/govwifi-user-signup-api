@@ -1,3 +1,5 @@
+require_relative 'phone_number'
+
 class SmsResponse
   def initialize(user_model:, template_finder:)
     @user_model = user_model
@@ -5,7 +7,7 @@ class SmsResponse
   end
 
   def execute(contact:, sms_content:)
-    phone_number = normalised_phone_number(contact)
+    phone_number = PhoneNumber.internationalise_phone_number(contact)
     login_details = user_model.generate(contact: phone_number)
     notify_params = { login: login_details[:username], pass: login_details[:password] }
     send_signup_instructions(phone_number, notify_params, sms_content)
@@ -23,11 +25,5 @@ private
       template_id: template_finder.execute(message_content: sms_content),
       personalisation: login_details
     )
-  end
-
-  def normalised_phone_number(phone_number)
-    phone_number = '44' + phone_number[1..-1] if phone_number[0..1] == '07'
-    phone_number = '+' + phone_number unless phone_number[0] == '+'
-    phone_number
   end
 end
