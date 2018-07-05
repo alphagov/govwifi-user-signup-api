@@ -1,4 +1,5 @@
 require_relative 'phone_number'
+require_relative 'email_address'
 
 class SponsorUsers
   def initialize(user_model:)
@@ -6,9 +7,9 @@ class SponsorUsers
   end
 
   def execute(sponsees, sponsor)
-    validate_sponsees(sponsees)
-
     sponsor_address = Mail::Address.new(sponsor).address
+
+    return unless EmailAddress.authorised_email_domain?(sponsor_address)
 
     valid_sponsees = validate_sponsees(sponsees)
     invite_sponsees(sponsor, sponsor_address, valid_sponsees)

@@ -16,12 +16,12 @@ describe SponsorUsers do
   end
 
   context 'Sponsoring a single email address' do
-    let(:sponsor) { 'Chris <chris@example.com>' }
+    let(:sponsor) { 'Chris <chris@gov.uk>' }
     let(:sponsees) { ['adrian@example.com'] }
 
     it 'Calls user_model#generate with the sponsees email' do
       expect(user_model).to have_received(:generate) \
-        .with(contact: 'adrian@example.com', sponsor: 'chris@example.com')
+        .with(contact: 'adrian@example.com', sponsor: 'chris@gov.uk')
     end
 
     it 'Sends an email to the sponsee_address with the login details' do
@@ -30,7 +30,7 @@ describe SponsorUsers do
 
     it 'Sends a single user confirmation email to the sponsor' do
       body = {
-        email_address: 'chris@example.com',
+        email_address: 'chris@gov.uk',
         template_id: '30ab6bc5-20bf-45af-b78d-34cacc0027cd',
         personalisation: {
           contact: sponsees.first
@@ -41,12 +41,12 @@ describe SponsorUsers do
   end
 
   context 'Sponsoring a single phone number' do
-    let(:sponsor) { 'Craig <craig@example.com>' }
+    let(:sponsor) { 'Craig <craig@gov.uk>' }
     let(:sponsees) { ['+447700900003'] }
 
     it 'Calls user_model#generate with the sponsees phone number' do
       expect(user_model).to have_received(:generate) \
-        .with(contact: '+447700900003', sponsor: 'craig@example.com')
+        .with(contact: '+447700900003', sponsor: 'craig@gov.uk')
     end
 
     it 'Sends an sms to the sponsee_address confirming the signup' do
@@ -55,27 +55,27 @@ describe SponsorUsers do
   end
 
   context 'Sponsoring the same phone number twice' do
-    let(:sponsor) { 'Craig <craig@example.com>' }
+    let(:sponsor) { 'Craig <craig@gov.uk>' }
     let(:sponsees) { ['+447700900003', '+447700900003'] }
 
     it 'Calls user_model#generate once' do
       expect(user_model).to have_received(:generate) \
-        .with(contact: '+447700900003', sponsor: 'craig@example.com').once
+        .with(contact: '+447700900003', sponsor: 'craig@gov.uk').once
     end
   end
 
   context 'Sponsoring an email address and a phone number' do
-    let(:sponsor) { 'Chloe <chloe@example.com>' }
+    let(:sponsor) { 'Chloe <chloe@gov.uk>' }
     let(:sponsees) { ['Steve <steve@example.com>', '07700900004'] }
 
     it 'Calls user_model#generate for the email address' do
       expect(user_model).to have_received(:generate) \
-        .with(contact: 'steve@example.com', sponsor: 'chloe@example.com')
+        .with(contact: 'steve@example.com', sponsor: 'chloe@gov.uk')
     end
 
     it 'Calls the user_model#generate for the phone number' do
       expect(user_model).to have_received(:generate) \
-        .with(contact: '+447700900004', sponsor: 'chloe@example.com')
+        .with(contact: '+447700900004', sponsor: 'chloe@gov.uk')
     end
 
     it 'Sends an email to the sponsee_address with the login details' do
@@ -106,7 +106,7 @@ describe SponsorUsers do
 
     def a_plural_sponsor_confirmation_request
       body = {
-        email_address: 'chloe@example.com',
+        email_address: 'chloe@gov.uk',
         template_id: plural_sponsor_confirmation_template_id,
         personalisation: {
           number_of_accounts: 2,
@@ -118,7 +118,7 @@ describe SponsorUsers do
   end
 
   context 'Sponsoring invalid contact details' do
-    let(:sponsor) { 'Cassandra <cassandra@example.com>' }
+    let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
     let(:sponsees) { ['Peter', 'Paul', '07invalid700900004', 'Adrian <adrian@example.com> Invalid'] }
 
     it 'Does not call user_model#generate' do
@@ -128,11 +128,20 @@ describe SponsorUsers do
 
     it 'Sends a sponsorship failed email to the sponsor' do
       body = {
-        email_address: 'cassandra@example.com',
+        email_address: 'cassandra@gov.uk',
         template_id: 'efc83658-dcb5-4401-af42-e26b1945c1a9',
         personalisation: {}
       }
       expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
+    end
+  end
+
+  context 'Sponsoring from a non-gov email address' do
+    let(:sponsor) { 'adrian <adrian@fake.uk>' }
+    let(:sponsees) { ['adrian@notgov.uk'] }
+
+    it 'Does not call user_model#generate' do
+      expect(user_model).not_to have_received(:generate)
     end
   end
 
