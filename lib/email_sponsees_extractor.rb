@@ -1,13 +1,19 @@
 require 'nokogiri'
 
 class EmailSponseesExtractor
-  def execute(email)
-    mail = Mail.read_from_string(email)
+  def initialize(email_fetcher:)
+    @email_fetcher = email_fetcher
+  end
+
+  def execute
+    mail = Mail.read_from_string(email_fetcher.fetch)
 
     contacts_from_mail(mail).map(&:strip).reject(&:empty?)
   end
 
 private
+
+  attr_reader :email_fetcher
 
   def contacts_from_mail(mail)
     if !mail.multipart?

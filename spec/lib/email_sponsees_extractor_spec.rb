@@ -1,6 +1,9 @@
 describe EmailSponseesExtractor do
   let(:email) { Mail.new }
-  let(:sponsees) { subject.execute(email.to_s) }
+  let(:email_fetcher) { double(fetch: email.to_s) }
+  let(:sponsees) { subject.execute }
+
+  subject { described_class.new(email_fetcher: email_fetcher) }
 
   it 'Grabs a single email address' do
     email.body = 'adrian@example.com'
@@ -50,27 +53,28 @@ describe EmailSponseesExtractor do
 
   context 'Regression tests' do
     it 'Multipart message' do
-      sponsees = test_case 'email-sponsor-multipart'
+      test_case 'email-sponsor-multipart'
       expect(sponsees.first).to eq('07123456789')
     end
 
     it 'Multiple levels of multipart messages' do
-      sponsees = test_case 'email-sponsor-multilevel-multipart'
+      test_case 'email-sponsor-multilevel-multipart'
       expect(sponsees.first).to eq('example.user2@example.co.uk')
     end
 
     it 'Base64 encoded message' do
-      sponsees = test_case('email-sponsor-base64')
+      test_case('email-sponsor-base64')
       expect(sponsees).to eq(['example.user2@example.co.uk', '07123456789'])
     end
 
     it 'Base64 encoded HTML message' do
-      sponsees = test_case 'email-sponsor-base64-htmlonly'
+      test_case 'email-sponsor-base64-htmlonly'
       expect(sponsees).to eq(['example.user2@example.co.uk', '07123456789'])
     end
 
     def test_case(regression_test_name)
-      subject.execute(File.read("spec/fixtures/#{regression_test_name}.txt"))
+      test_raw_email = File.read("spec/fixtures/#{regression_test_name}.txt")
+      allow(email_fetcher).to receive(:fetch).and_return(test_raw_email)
     end
   end
 
