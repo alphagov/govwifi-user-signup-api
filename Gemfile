@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 ruby File.read('.ruby-version').chomp
 
+gem 'aws-sdk-s3', '~> 1'
 gem 'mail', '~> 2.7'
 gem 'mysql2'
 gem 'nokogiri', '~> 1.8'
