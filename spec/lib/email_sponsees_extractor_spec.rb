@@ -63,7 +63,7 @@ describe EmailSponseesExtractor do
     end
 
     it 'Base64 encoded message' do
-      test_case('email-sponsor-base64')
+      test_case'email-sponsor-base64'
       expect(sponsees).to eq(['example.user2@example.co.uk', '07123456789'])
     end
 

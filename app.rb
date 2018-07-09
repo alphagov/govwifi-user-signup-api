@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'net/http'
 
 require './lib/email_signup.rb'
+require './lib/gateway/s3_object_fetcher.rb'
 require './lib/sms_response.rb'
 require './lib/sponsor_users.rb'
 require './lib/user.rb'
@@ -21,7 +22,7 @@ class App < Sinatra::Base
     payload = JSON.parse request.body.read
 
     Net::HTTP.get(URI(payload['SubscribeURL'])) if payload['Type'] == 'SubscriptionConfirmation'
-    handle_signup_request(JSON.parse(payload['Message'])) if payload['Type'] == 'Notification'
+    handle_notification(payload) if payload['Type'] == 'Notification'
     ''
   end
 
@@ -42,9 +43,35 @@ class App < Sinatra::Base
 
 private
 
+  def handle_notification(payload)
+    ses_notification = JSON.parse(payload['Message'])
+    if sponsor_request?(ses_notification)
+      handle_sponsor_request(ses_notification)
+    else
+      handle_signup_request(ses_notification)
+    end
+  end
+
+  def sponsor_request?(ses_notification)
+    recipient_name(ses_notification) == "sponsor"
+  end
+
+  def recipient_name(ses_notification)
+    Mail::Address.new(ses_notification['mail']['commonHeaders']['to'][0]).local
+  end
+
   def handle_signup_request(ses_notification)
     from_address = ses_notification['mail']['commonHeaders']['from'][0]
     logger.info("Handling signup request from #{from_address}")
     EmailSignup.new(user_model: User.new).execute(contact: from_address)
+  end
+
+  def handle_sponsor_request(ses_notification)
+    from_address = ses_notification['mail']['commonHeaders']['from'][0]
+    logger.info("Handling sponsor request from #{from_address}")
+    action = ses_notification['receipt']['action']
+    email_fetcher = S3ObjectFetcher.new(bucket: action['bucketName'], key: action['objectKey'])
+    sponsee_extractor = EmailSponseesExtractor.new(email_fetcher: email_fetcher)
+    SponsorUsers.new(user_model: User.new).execute(sponsee_extractor.execute, from_address)
   end
 end
