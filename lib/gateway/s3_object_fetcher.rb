@@ -7,7 +7,7 @@ class S3ObjectFetcher
   end
 
   def fetch
-    s3 = Aws::S3::Resource.new(region: 'us-west-2')
+    s3 = Aws::S3::Resource.new(region: 'eu-west-1')
     object = s3.bucket(bucket).object(key)
     object.get.body.read
   end

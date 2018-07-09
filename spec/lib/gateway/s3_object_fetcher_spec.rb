@@ -17,7 +17,7 @@ describe S3ObjectFetcher do
       'Token': 'SECURITY_TOKEN_STRING'
     }.to_json)
 
-    stub_request(:get, "https://s3.us-west-2.amazonaws.com/#{bucket}/#{key}") \
+    stub_request(:get, "https://s3.eu-west-1.amazonaws.com/#{bucket}/#{key}") \
       .to_return(body: object_content)
   end
 
