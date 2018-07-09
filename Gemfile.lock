@@ -19,9 +19,12 @@ GEM
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     mini_mime (1.0.0)
+    mini_portile2 (2.3.0)
     multipart-post (2.0.0)
     mustermann (1.0.2)
     mysql2 (0.5.1)
+    nokogiri (1.8.4)
+      mini_portile2 (~> 2.3.0)
     notifications-ruby-client (2.6.0)
       jwt (>= 1.5, < 3)
     parallel (1.12.1)
@@ -94,6 +97,7 @@ DEPENDENCIES
   govuk-lint
   mail (~> 2.7)
   mysql2
+  nokogiri (~> 1.8)
   notifications-ruby-client (~> 2.6.0)
   puma
   rack-test

@@ -6,6 +6,7 @@ require './lib/sms_response.rb'
 require './lib/sponsor_users.rb'
 require './lib/user.rb'
 require './lib/sms_template_finder.rb'
+require './lib/email_sponsees_extractor.rb'
 
 class App < Sinatra::Base
   configure :production, :staging, :development do

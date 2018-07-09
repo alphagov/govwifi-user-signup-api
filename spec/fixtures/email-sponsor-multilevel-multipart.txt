@@ -1,0 +1,276 @@
+Return-Path: <Test.User1@example.gov.uk>
+Received: from mail1.mailserver.example.com (mail1.mailserver.example.com [1.1.1.1])
+ by inbound-smtp.eu-west-1.amazonaws.com with SMTP id 6iocf14nls4bn3p9n21vv1t2aurd71g00dgv3jo1
+ for sponsor@wifi.service.gov.uk;
+ Thu, 26 Jan 2017 10:23:21 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: none (spfCheck: 1.1.1.1 is neither permitted nor denied by domain of example.gov.uk) client-ip=1.1.1.1; envelope-from=Test.User1@example.gov.uk; helo=mail1.mailserver.example.com;
+Authentication-Results: amazonses.com;
+ spf=none (spfCheck: 1.1.1.1 is neither permitted nor denied by domain of example.gov.uk) client-ip=1.1.1.1; envelope-from=Test.User1@example.gov.uk; helo=mail1.mailserver.example.com;
+X-SES-RECEIPT: AEFBQUFBQUFBQUFFRXJscDI3R1JDdnJzKjTw2bR5UU00cVljNjZwSGpFeHhUczJOK3RQV0VtZExZR2o4d3NMd1Q4ck1jQklBV2thWGtoZWFOYTVtOVc0QTFDM2szOHRJcHIwdVJqUXNEa0tld0pzdnluVGE0NzNvbGZZeE5jQ2kwZ1NEODQxL2gzS2tvZW8wVDJqK0ltZGduRzY2WXI1c00xOGNyNkZFT0F2MVlhV2tRNHRMUjdhYW9rTUJsQ1pRcGtWTkxNakRFdWZ6WWpSQmsyR0diOXJKYkc2TGFNQVlLeVUvdzh4Qit2ZFlFVjFseVFZRDkwelU1SHlScjlPWHdGMVpqcnNiVDEweEpzYXBKNzh1ZGNTajRQaVlCWHZESjVIRStEK0N0TWVqd0xMNDhBbXlmRHc9PQ==
+X-SES-DKIM-SIGNATURE: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=ihchhvubuqswkxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1485426194;
+	h=X-SES-RECEIPT:From:To:Subject:Date:Message-ID:Content-Type:MIME-Version;
+	bh=tIxRAUjE5ujsxBBAAwrIyPxIYyUp7YBkYTqSDgOBlNw=;
+	b=SvHvDogR+YXar07wfsboZKfyiRDHVj+QwpKfJoQL8bDECSVCtr4ZshLZf9ra+6DN
+	Kkj+UV3FoTxk9LEcMvOy/E7xI8d3x0K9IgIllzABJbm2ZdkK6vrJmNKHAd0GskScApS
+	5uMW40IYX2rXLSSjzGcoQAVigOrjU+1e1uNrIYow=
+Return-Path: <Test.User1@example.gov.uk>
+Received: from [1.1.1.2] by server-4.mailserver.example.com id A0/8C-25093-91EC9885; Thu, 26 Jan 2017 10:23:21 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCKsWRWlGSWpSXmKPExsVyOEbDQFfiXGe
+  EwYdlahb/Ljxlc2D0aNx2mT2AMYo1My8pvyKBNaPzm3TB6YCKm2eOMTUwnvDuYuTgYBMwljhy
+  JbqLkZNDRMBe4tnzx+wgtrAAh8S+g/OYIOJ6EvvuzQOLswioSpxvPskKYvMKREicObaEBcRmF
+  JCV+NK4mhnEZhYQl7j1CV3Yr4SAiMTDi6fZIGxRiZeP/7FC2PISZ57vBopzAdVPZJQ4sn4y1F
+  BBiZMzn7BMYOSdhWTWLGR1s5DUQRQVSWy6d4IdwtaRWLD7ExuErS2xbOFrZhj7zIHHTJjiuhL
+  TJxyBiitKzF7+ihFi2WpGiStH/wEN5QAbuvS7PEzNlO6H7AsYeVcxqhenFpWlFuma6CUVZaZn
+  lOQmZuboGhqY6eWmFhcnpqfmJCYV6yXn525iBMYQAxDsYOy+7H+IUZKDSUmU96Z2Z4QQX1J+S
+  mVGYnFGfFFpTmrxIUYZDg4lCd7Cs0A5waLU9NSKtMwcYDTDpCU4eJREeDefAUrzFhck5hZnpk
+  OkTjHqcjxYd+YlkxBLXn5eqpQ4bzTIDAGQoozSPLgRsMRyiVFWSpiXEegoIZ6C1KLczBJU+Ve
+  M4hyMSsK8O0FW8WTmlcBtegV0BBPQEReY20GOKElESEk1MKqvNJq85r1WxEZhwWZ2Ca/yxUKa
+  5+2iZDfFSglsWBpmpuM3626R7YYCm4739j57Tu8yvf/XNYD7wP3UXUdPBMUuCl6VW/ftkuLLz
+  /oR+6c9yBVcmc60leHxs+bvv+O/WtfuXHzoTfehv6ElHMe2qrjwLDL4dCL70GmrgOaMpRbCxs
+  U15S2JU5RYijMSDbWYi4oTAVWrxEUnAwAA
+X-Env-Sender: Test.User1@example.gov.uk
+X-Msg-Ref: server-9.mailserver.example.com!1485426199!83501600!1
+X-Originating-IP: [1.1.1.3]
+X-StarScan-Received:
+X-StarScan-Version: 9.1.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 11693 invoked from network); 26 Jan 2017 10:23:20 -0000
+Received: from gateway-201.example.gov.uk (HELO mailgate.example.gov.uk) (1.1.1.3)
+  by server-9.mailserver.example.com with DHE-RSA-AES128-SHA encrypted SMTP; 26 Jan 2017 10:23:20 -0000
+From: Test User1 <Test.User1@example.gov.uk>
+To: "sponsor@wifi.service.gov.uk" <sponsor@wifi.service.gov.uk>
+Subject:
+Thread-Index: AdJ3vjOcTgKJcME4RK6uMgGIAs/Rhg==
+Date: Thu, 26 Jan 2017 10:23:14 +0000
+Message-ID: <F6A8AF78123A5C4FBFE47F19KG62C8E6633BD1C0@SDCCMM8032.Poise.ExampleOffice.Local>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+x-originating-ip: [1.1.1.4]
+Content-Type: multipart/related; 
+    boundary="_004_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_";
+     type="multipart/alternative"
+MIME-Version: 1.0
+
+--_004_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_
+Content-Type: multipart/alternative; 
+    boundary="_000_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_"
+
+--_000_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+example.user2@example.co.uk
+
+Test User1
+Policy Officer
+
+Test Unit
+IIPG | Example Office | 3rd Floor | Blahtown | 2 Example Street | London | SW1P=
+ 4DF
+
+Tel (2ASD):               +44 (0) 2012 345 678
+
+Email:            Test.User1@example.gov.uk<mailto:Test.User3@exampl=
+e.gov.uk>
+
+
+[cid:image002.jpg@01CE31D2.EB030560]
+
+
+**********************************************************************
+This email and any files transmitted with it are private and intended
+solely for the use of the individual or entity to whom they are addressed.
+If you have received this email in error please return it to the address
+it came from telling them it is not for you and then delete it from your sy=
+stem.
+This email message has been swept for computer viruses.
+
+**********************************************************************
+
+
+--_000_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii">
+<meta name=3D"Generator" content=3D"Microsoft Word 12 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"Microsoft Sans Serif";
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-priority:99;
+	mso-style-link:"Balloon Text Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Arial","sans-serif";
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-priority:99;
+	mso-style-link:"Balloon Text";
+	font-family:"Tahoma","sans-serif";}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"2050" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-GB" link=3D"blue" vlink=3D"purple">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,&quot;sans-serif&quot;">example.user2@example.co.uk<o:p></o=
+:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,&quot;sans-serif&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt;font-family:&quot=
+;Arial&quot;,&quot;sans-serif&quot;;color:black">Test User1<o:p></o:p></spa=
+n></b></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959">Policy Officer</span><span s=
+tyle=3D"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black"><=
+o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,&quot;s=
+ans-serif&quot;;color:black"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:8.0pt;font-family:&quot;=
+Arial&quot;,&quot;sans-serif&quot;;color:black">International Criminality U=
+nit<o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959">IIPG | Example Office | 3rd Flo=
+or | Blahtown | 2 Example Street | London | ASD5 123<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:black"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959">Tel (2ASD):&nbsp;&nbsp;&nbsp;=
+&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;44 (0) 2=
+012 345 678
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:black"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959">Email:&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href=3D"mailto:Test.User3@example.gov.uk"><span style=3D"color:b=
+lue">Test.User1@example.gov.uk</span></a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:#595959"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Microsoft Sans Seri=
+f&quot;,&quot;sans-serif&quot;;color:#1F497D"><img border=3D"0" width=3D"14=
+2" height=3D"32" id=3D"Picture_x0020_1" src=3D"cid:image001.jpg@01D277BE.33=
+939FD0" alt=3D"cid:image002.jpg@01CE31D2.EB030560"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<p>**********************************************************************<b=
+r />This email and any files transmitted with it are private and intended<b=
+r />solely for the use of the individual or entity to whom they are address=
+ed.<br />If you have received this email in error please return it to the a=
+ddress<br />it came from telling them it is not for you and then delete it =
+from your system.<br />This email message has been swept for computer virus=
+es.</p><p>*****************************************************************=
+*****<br /></p><p>*********************************************************=
+*************</p>=0A</body>
+</html>
+
+--_000_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_--
+
+--_004_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_
+Content-Type: image/jpeg; name="image001.jpg"
+Content-Description: image001.jpg
+Content-Disposition: inline; filename="image001.jpg"; size=1947; 
+    creation-date="Thu, 26 Jan 2017 10:23:14 GMT"; 
+    modification-date="Thu, 26 Jan 2017 10:23:14 GMT"
+Content-ID: <image001.jpg@01D277BE.33939FD0>
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgAI4DASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nnu4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1r4ff
+8iHpH/XI/wDoRqLxL4v/ALB1OGzCW4LxhwZ3ZfNJOAibVOW47+1S/D7/AJEPSP8Arkf/AEI1gfEy
+5DNZRW7D7TbkyNkHAB+6Mgg5yAce1a1/4svV/maVv4kvVmLpHj5bbV9VuvskUCXjeas08z+WFVmQ
+scKeBgDgelek+HtY/tzSEvTGqEsyHYSVbBxuUkAkGvH5La6WCDfPCqyfJHGUlyOCxBxJ04H4+3Fe
+ueFLiKfwzYCNgzRwpHJgY+cKMn8ev41kZmzRXG3usz2vxVtLCW/8nT30l5WidwqGTzAAee+Kb4s1
+54tY8LQ6bqSBbjVUiuEhkU74yrcH2zigDtKK5O9+IOlWl5d28Nnql+lk227nsrRpYoGHUMw6kdwM
+4qW88e6Faf2fslnuzqULTWYtITKZgCOFA789PY5xigDp6K46L4kaXOZYINN1mXUIWKzaelkxniGA
+dzDOADng557Vc/4TvQz4ftNYjlnlju5DFb28cLNPJICQUCddwwc+mKAOlorD0PxTY67c3FpHDd2l
+9bANLaXsJilVT0bHdT6gms7xjrGpR32k+HtFmW31HVXfN0y7vs8KDLuAeC3IAzQB1tFcFqvhrXPD
++lzato3ifVru9tEMz22oyrLDchRllxgbSRnBFY+veN5NavvDFtYtrtpZX8LXM76fb5kk+QFVRsHI
+Uk7sdKAPVaK8oPia41Txb4g8+88R6fZ6daEQrFa7Ui/csXeUEfezymTzgV1jeMdP0rTtIt86hql7
+d2iTRRW9vvnlTaP3jqOFz3yRzQB1dFc3B470KbRbzU5J5bdLOTybmCeJlmikPRCnXccjAGc1JpHj
+DT9VvpLF4L3T7xIvOEGoQGFnjkleueCM8eo9KAIvh9/yIekf9cj/AOhGuU8YWbzazdRs7qzOHDBQ
+flKgDr15454yK6v4ff8AIh6R/wBcj/6Ea09W0W21ZFMmUnQfJKo5HsR3GccfyrWv/Fl6v8zSt/El
+6s8eguJEhgiZz5bmZMSZG8o5UYHY/l1r0jwOkq2dyWTZGpjjUZ4yq84/MflXL6FolvqWo3+lwS+X
+dWgMV3crGQwYtkYDDbyMY9Md69J06wh0vT4bOAuY4hgM5yx5yST65rIzOG1zRbHWvi9Ywanp8V5a
+jRnbbNHuQN5vHXjPJqv4n8K6LoviDwjPpGjW1rI2rosj28IU7drdSO2cV6XRQB5j4V8TaX4J0i80
+PXzLaajbXU7hPJdjeB3LK8eB82QQPwqj4N0u807xH4UW8tXgd7TUJxCy/wCoWSVWVD6HB6e5r1sg
+EgkdKWgDj/DyMPiN4xcoQGFlhiOD+7boe9edxWU9va6Pq811qNhYWupalFcXVnHl7fzJPlcgqflO
+ME44yK90ooA838IR2Oo+NW1Gx1fWdaW2s2ia/udggG5gfLGEUseM8cCtPxrb3ena7ofiu1tZbuLT
+TLFeQwruk8iQYLqvcqRnFdqAAMAYFFAHA618RdI1LR7ix8OSSarq93G0MFtBE+VZhjc5IAQDOTn0
+qvbaK+geIfh9peTJ9js7uOR1Bxu8tc/rmvRQiqSQoBPUgdaWgDza8jkOofE35Hw9jEF+U/N/ozdP
+WqWi6hB4T1+y1TWw8Gn6hoVnDDdtGxSJ41+aNiB8pOQea9WoIBGCMigDyfxNdyeKdLOs6Zp93bad
+Y6tBMb62ixPdRIpDTIhXJ2FuM5yAaz7jSdP8YajDDYa74k1828Lu1wkkUKQbio2FjGPmOAdvbbXt
+FIAB0GKAP//Z
+
+--_004_F6A8AF78123A5C4FBFE47F19DC62C8E6633BD1C0SDCCMM8032Poise_--
