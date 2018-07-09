@@ -38,7 +38,7 @@ GEM
     mini_portile2 (2.3.0)
     multipart-post (2.0.0)
     mustermann (1.0.2)
-    mysql2 (0.5.1)
+    mysql2 (0.5.2)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     notifications-ruby-client (2.6.0)
