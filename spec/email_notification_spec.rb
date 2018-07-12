@@ -1,15 +1,6 @@
 RSpec.describe App do
   before { ENV['AUTHORISED_EMAIL_DOMAINS_REGEX'] = '.gov.uk$' }
 
-  describe 'POSTing a SubscriptionConfirmation to /user-signup/email-notification' do
-    it 'makes a GET request to the SubscribeURL' do
-      stub_request(:any, 'www.example.com')
-      post '/user-signup/email-notification', { Type: 'SubscriptionConfirmation', SubscribeURL: 'http://www.example.com' }.to_json
-
-      expect(WebMock).to have_requested(:get, 'www.example.com')
-    end
-  end
-
   describe 'POSTing a Notification to /user-signup/email-notification' do
     let(:bucket_name) { 'stub-bucket-name' }
     let(:object_key) { 'stub-object-key' }
