@@ -68,8 +68,8 @@ private
 
   def handle_sponsor_request(ses_notification)
     from_address = ses_notification['mail']['commonHeaders']['from'][0]
-    logger.info("Handling sponsor request from #{from_address}")
     action = ses_notification['receipt']['action']
+    logger.info("Handling sponsor request from #{from_address} with email #{action['objectKey']}")
     email_fetcher = S3ObjectFetcher.new(bucket: action['bucketName'], key: action['objectKey'])
     sponsee_extractor = EmailSponseesExtractor.new(email_fetcher: email_fetcher)
     SponsorUsers.new(user_model: User.new).execute(sponsee_extractor.execute, from_address)
