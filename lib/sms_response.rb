@@ -1,5 +1,3 @@
-require_relative 'phone_number'
-
 class SmsResponse
   def initialize(user_model:, template_finder:)
     @user_model = user_model
@@ -7,7 +5,7 @@ class SmsResponse
   end
 
   def execute(contact:, sms_content:)
-    phone_number = PhoneNumber.internationalise_phone_number(contact)
+    phone_number = ContactSanitiser.new.execute(contact)
     login_details = user_model.generate(contact: phone_number)
     notify_params = { login: login_details[:username], pass: login_details[:password] }
     send_signup_instructions(phone_number, notify_params, sms_content)

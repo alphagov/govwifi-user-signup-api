@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'net/http'
 
 require './lib/email_signup.rb'
+require './lib/contact_sanitiser.rb'
 require './lib/gateway/s3_object_fetcher.rb'
 require './lib/sms_response.rb'
 require './lib/sponsor_users.rb'
