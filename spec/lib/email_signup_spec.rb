@@ -22,7 +22,7 @@ RSpec.describe EmailSignup do
 
     before do
       ENV['NOTIFY_API_KEY'] = notify_api_key
-      ENV['NOTIFY_USER_SIGNUP_EMAIL_TEMPLATE_ID'] = notify_template_id
+      ENV['RACK_ENV'] = environment
 
       expect(user_model).to receive(:generate) \
         .with(contact: created_contact) \
@@ -31,8 +31,8 @@ RSpec.describe EmailSignup do
 
     context 'given an email address without a name part' do
       let(:created_contact) { 'adrian@gov.uk' }
-
-      let(:notify_template_id) { '00000000-1234-4321-1234-000000000000' }
+      let(:environment) { 'production' }
+      let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
       let(:username) { 'MockUsername' }
       let(:password) { 'MockPassword' }
 
@@ -44,8 +44,8 @@ RSpec.describe EmailSignup do
 
     context 'given an email address with a name part' do
       let(:created_contact) { 'ryan@gov.uk' }
-
-      let(:notify_template_id) { '00000000-6789-9876-6789-000000000000' }
+      let(:environment) { 'staging' }
+      let(:notify_template_id) { '96d1f5ac-2ebe-41a7-878f-9a569e0bb55c' }
       let(:username) { 'MockUsername2' }
       let(:password) { 'MockPassword2' }
 
