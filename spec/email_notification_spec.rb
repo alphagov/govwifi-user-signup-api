@@ -101,5 +101,19 @@ RSpec.describe App do
                                    .with(['a_fantastic_email@example.com'], 'chris@example.com')
       end
     end
+
+    describe 'POSTing a Amazon SES Setup Notification to /user-signup/email-notification' do
+      let(:ses_notification) do
+        {
+          mail: {
+            messageId: 'AMAZON_SES_SETUP_NOTIFICATION'
+          }
+        }
+      end
+
+      it 'ignores the message' do
+        expect { post_notification }.to_not(raise_error)
+      end
+    end
   end
 end

@@ -23,7 +23,7 @@ class App < Sinatra::Base
     payload = JSON.parse request.body.read
 
     Net::HTTP.get(URI(payload['SubscribeURL'])) if payload['Type'] == 'SubscriptionConfirmation'
-    handle_notification(payload) if payload['Type'] == 'Notification'
+    handle_email_notification(payload) if payload['Type'] == 'Notification'
     ''
   end
 
@@ -44,8 +44,10 @@ class App < Sinatra::Base
 
 private
 
-  def handle_notification(payload)
+  def handle_email_notification(payload)
     ses_notification = JSON.parse(payload['Message'])
+    return if ses_notification['mail']['messageId'] == 'AMAZON_SES_SETUP_NOTIFICATION'
+
     if sponsor_request?(ses_notification)
       handle_sponsor_request(ses_notification)
     else
