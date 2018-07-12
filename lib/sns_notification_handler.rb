@@ -6,7 +6,7 @@ class SnsNotificationHandler
   def handle(request)
     payload = JSON.parse request.body.read
 
-    Net::HTTP.get(URI(payload['SubscribeURL'])) if payload['Type'] == 'SubscriptionConfirmation'
+    logger.info(payload) if payload['Type'] == 'SubscriptionConfirmation'
     handle_email_notification(payload) if payload['Type'] == 'Notification'
     ''
   end
