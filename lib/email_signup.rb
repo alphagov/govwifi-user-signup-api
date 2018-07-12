@@ -26,8 +26,12 @@ private
 
     client.send_email(
       email_address: email_address,
-      template_id: ENV.fetch('NOTIFY_USER_SIGNUP_EMAIL_TEMPLATE_ID'),
+      template_id: credentials_template_id,
       personalisation: login_details
     )
+  end
+
+  def credentials_template_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('notify_email_template_ids').fetch('self_signup_credentials')
   end
 end

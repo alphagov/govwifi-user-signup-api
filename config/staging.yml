@@ -10,6 +10,7 @@ notify_sms_template_ids:
     windows: 3b8f158b-22c8-4226-b84b-3ea5085a46d5
 
 notify_email_template_ids:
+  self_signup_credentials: 96d1f5ac-2ebe-41a7-878f-9a569e0bb55c
   sponsored_credentials: 4f6bae31-5add-43a9-b0e3-7db43452676e
   sponsor_confirmation:
     plural: 856a5726-1099-4236-b67c-23b654e9edbf
