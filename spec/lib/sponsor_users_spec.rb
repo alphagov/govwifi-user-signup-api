@@ -17,7 +17,7 @@ describe SponsorUsers do
 
   context 'Sponsoring a single email address' do
     let(:sponsor) { 'Chris <chris@gov.uk>' }
-    let(:sponsees) { ['adrian@example.com'] }
+    let(:sponsees) { ['adrian@example.com<mailto: adrian@example.com>'] }
 
     it 'Calls user_model#generate with the sponsees email' do
       expect(user_model).to have_received(:generate) \
@@ -33,7 +33,7 @@ describe SponsorUsers do
         email_address: 'chris@gov.uk',
         template_id: '30ab6bc5-20bf-45af-b78d-34cacc0027cd',
         personalisation: {
-          contact: sponsees.first
+          contact: 'adrian@example.com'
         }
       }
       expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
@@ -110,7 +110,7 @@ describe SponsorUsers do
         template_id: plural_sponsor_confirmation_template_id,
         personalisation: {
           number_of_accounts: 2,
-          contacts: "Steve <steve@example.com>\r\n07700900004"
+          contacts: "steve@example.com\r\n+447700900004"
         }
       }
       a_request(:post, notify_email_url).with(notify_request(body))
@@ -119,12 +119,11 @@ describe SponsorUsers do
 
   context 'Sponsoring invalid contact details' do
     let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
-    let(:sponsees) { ['Peter', 'Paul', '07invalid700900004', 'Adrian <adrian@example.com> Invalid'] }
+    let(:sponsees) { %w(Peter Paul 07invalid700900004) }
 
     it 'Does not call user_model#generate' do
       expect(user_model).not_to have_received(:generate)
     end
-
 
     it 'Sends a sponsorship failed email to the sponsor' do
       body = {
