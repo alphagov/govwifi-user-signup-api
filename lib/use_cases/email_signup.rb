@@ -1,7 +1,7 @@
 require 'mail'
 require 'notifications/client'
 
-require_relative 'email_address'
+require_relative '../helpers/email_address'
 
 class EmailSignup
   def initialize(user_model:)
