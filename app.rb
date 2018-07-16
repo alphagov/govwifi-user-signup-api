@@ -1,15 +1,8 @@
 require 'sinatra/base'
 require 'net/http'
+require 'require_all'
 
-require './lib/sns_notification_handler.rb'
-require './lib/email_signup.rb'
-require './lib/contact_sanitiser.rb'
-require './lib/gateway/s3_object_fetcher.rb'
-require './lib/sms_response.rb'
-require './lib/sponsor_users.rb'
-require './lib/user.rb'
-require './lib/sms_template_finder.rb'
-require './lib/email_sponsees_extractor.rb'
+require_all 'lib'
 
 class App < Sinatra::Base
   configure :production, :staging, :development do
