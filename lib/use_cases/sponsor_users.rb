@@ -1,4 +1,4 @@
-require_relative 'email_address'
+require_relative '../helpers/email_address'
 
 class SponsorUsers
   def initialize(user_model:)
