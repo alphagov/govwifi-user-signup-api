@@ -14,6 +14,8 @@ gem 'sinatra'
 
 group :test do
   gem 'govuk-lint'
+  gem 'guard'
+  gem 'guard-rspec'
   gem 'rack-test'
   gem 'rspec'
   gem 'webmock'

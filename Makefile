@@ -13,7 +13,7 @@ build:
 
 serve:
 	$(MAKE) build
-	docker-compose up -d
+	docker-compose up
 
 lint:
 	$(MAKE) build
@@ -22,7 +22,7 @@ lint:
 test:
 	$(MAKE) serve
 	./mysql/bin/wait_for_mysql
-	docker-compose run --rm app rspec
+	docker-compose run --rm app guard
 	$(MAKE) stop
 
 stop:
