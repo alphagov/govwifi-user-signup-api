@@ -1,10 +1,7 @@
 require 'sinatra/base'
 require 'net/http'
-require 'require_all'
 
-module Common; end
-
-require_all 'lib'
+require './lib/loader'
 
 class App < Sinatra::Base
   configure :production, :staging, :development do
