@@ -5,7 +5,11 @@ describe StatGateway do
 
   context 'given no signups' do
     it 'returns zero signups for today' do
-      expect(subject.signups).to eq(today: 0, total: 0)
+      expect(subject.signups[:today]).to eq(0)
+    end
+
+    it 'returns zero signups for today' do
+      expect(subject.signups[:total]).to eq(0)
     end
   end
 
@@ -16,8 +20,12 @@ describe StatGateway do
       end
     end
 
-    it 'returns zero signups for today' do
-      expect(subject.signups).to eq(today: 3, total: 3)
+    it 'returns signups for today' do
+      expect(subject.signups[:today]).to eq(3)
+    end
+
+    it 'returns same total number of signups' do
+      expect(subject.signups[:total]).to eq(3)
     end
   end
 
@@ -30,8 +38,12 @@ describe StatGateway do
       end
     end
 
-    it 'returns zero signups 5 signups for today and 6 total' do
-      expect(subject.signups).to eq(today: 5, total: 6)
+    it 'returns zero signups 5 signups for today' do
+      expect(subject.signups[:today]).to eq(5)
+    end
+
+    it 'returns zero signups 6 signups total' do
+      expect(subject.signups[:total]).to eq(6)
     end
   end
 
@@ -43,7 +55,72 @@ describe StatGateway do
     end
 
     it 'returns zero signups for today' do
-      expect(subject.signups).to eq(today: 0, total: 0)
+      expect(subject.signups[:today]).to eq(0)
+    end
+
+    it 'returns zero signups total' do
+      expect(subject.signups[:today]).to eq(0)
+    end
+  end
+
+  context 'given 1 SMS signup today' do
+    before do
+      User.create(username: "non-SMS")
+
+      User.create(
+        username: "SMS",
+        contact: '+0123456789',
+        sponsor: '+0123456789'
+        )
+    end
+
+    it 'counts them against total singups' do
+      expect(subject.signups[:total]).to eq(2)
+    end
+
+    it 'counts them against todays signups' do
+      expect(subject.signups[:today]).to eq(2)
+    end
+
+    it 'counts them against SMS total signups' do
+      expect(subject.signups[:sms_total]).to eq(1)
+    end
+
+    it 'counts them against SMS todays signups' do
+      expect(subject.signups[:sms_today]).to eq(1)
+    end
+  end
+
+  context 'given SMS signups made on different dates' do
+    before do
+      User.create(
+        username: "SMS old",
+        created_at: Date.today - 1,
+        contact: '+1123456789',
+        sponsor: '+1123456789'
+        )
+
+      User.create(
+        username: "SMS today",
+        contact: '+0123456789',
+        sponsor: '+0123456789'
+        )
+    end
+
+    it 'counts them against total singups' do
+      expect(subject.signups[:total]).to eq(2)
+    end
+
+    it 'counts them against todays signups' do
+      expect(subject.signups[:today]).to eq(1)
+    end
+
+    it 'counts them against SMS total signups' do
+      expect(subject.signups[:sms_total]).to eq(2)
+    end
+
+    it 'counts them against SMS todays signups' do
+      expect(subject.signups[:sms_today]).to eq(1)
     end
   end
 end
