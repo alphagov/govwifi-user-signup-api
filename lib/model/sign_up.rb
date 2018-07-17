@@ -12,6 +12,10 @@ class SignUp < Sequel::Model(:userdetails)
       where(contact: Sequel[:sponsor])
     end
 
+    def sponsored
+      exclude(contact: Sequel[:sponsor])
+    end
+
     def with_sms
       where(Sequel.like(:contact, '+%'))
     end
