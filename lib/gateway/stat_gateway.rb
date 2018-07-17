@@ -12,37 +12,31 @@ class StatGateway
 
 private
 
+  def repository
+    SignUp
+  end
+
   def signups_today
-    User
-      .where(Sequel[:created_at] > Date.today)
-      .where(Sequel[:created_at] < Date.today + 1)
+    repository.all.today
   end
 
   def signups_total
-    User.where(Sequel[:created_at] < Date.today + 1)
+    repository.all
   end
 
   def sms_signups_today
-    signups_today
-      .where(Sequel.like(:contact, '+%'))
-      .where(contact: Sequel[:sponsor])
+    signups_today.self_sign.with_sms
   end
 
   def sms_signups_total
-    signups_total
-      .where(Sequel.like(:contact, '+%'))
-      .where(contact: Sequel[:sponsor])
+    signups_total.self_sign.with_sms
   end
 
   def email_signups_today
-    signups_today
-      .where(Sequel.like(:contact, '%@%'))
-      .where(contact: Sequel[:sponsor])
+    signups_today.self_sign.with_email
   end
 
   def email_signups_total
-    signups_total
-      .where(Sequel.like(:contact, '%@%'))
-      .where(contact: Sequel[:sponsor])
+    signups_total.self_sign.with_email
   end
 end

@@ -72,7 +72,7 @@ describe StatGateway do
         )
 
       User.create(
-        username: 'Email 2', 
+        username: 'Email 2',
         contact: 'foo@baz.com',
         sponsor: 'foo@baz.com'
         )
@@ -100,11 +100,11 @@ describe StatGateway do
       expect(subject.signups[:sms_today]).to eq(1)
     end
 
-    it 'calculates SMS total signups' do
+    it 'calculates email total signups' do
       expect(subject.signups[:email_total]).to eq(2)
     end
 
-    it 'calculates SMS todays signups' do
+    it 'calculates email todays signups' do
       expect(subject.signups[:email_today]).to eq(2)
     end
   end
@@ -139,6 +139,39 @@ describe StatGateway do
 
     it 'counts them against SMS todays signups' do
       expect(subject.signups[:sms_today]).to eq(1)
+    end
+  end
+
+  context 'given email signups made on different dates' do
+    before do
+      User.create(
+        username: "Email old",
+        created_at: Date.today - 1,
+        contact: 'foo@bar.com',
+        sponsor: 'foo@bar.com'
+        )
+
+      User.create(
+        username: "Email new",
+        contact: 'foo@baz.com',
+        sponsor: 'foo@baz.com'
+        )
+    end
+
+    it 'counts them against total singups' do
+      expect(subject.signups[:total]).to eq(2)
+    end
+
+    it 'counts them against todays signups' do
+      expect(subject.signups[:today]).to eq(1)
+    end
+
+    it 'counts them against email total signups' do
+      expect(subject.signups[:email_total]).to eq(2)
+    end
+
+    it 'counts them against email todays signups' do
+      expect(subject.signups[:email_today]).to eq(1)
     end
   end
 end
