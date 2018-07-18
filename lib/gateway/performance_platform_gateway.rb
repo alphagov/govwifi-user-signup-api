@@ -9,7 +9,7 @@ private
 
   def post(uri, data)
     request = Net::HTTP::Post.new(uri)
-    request['Authorization'] = 'Bearer foobarbaz'
+    request['Authorization'] = "Bearer #{ENV['PERFORMANCE_BEARER_VOLUMETRICS']}"
     request['Content-Type'] = 'application/json'
     request.body = data.to_json
 
