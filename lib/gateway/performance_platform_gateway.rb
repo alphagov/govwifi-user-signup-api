@@ -1,3 +1,5 @@
+class PerformancePlatformError < StandardError; end
+
 class PerformancePlatformGateway
   def send_stats(data)
     uri = URI("#{ENV['PERFORMANCE_URL']}data/gov-wifi/volumetrics")
@@ -14,7 +16,12 @@ private
     request.body = data.to_json
 
     Net::HTTP.start(uri.hostname, 443, use_ssl: true) do |http|
-      JSON.parse(http.request(request).body)
+      response = http.request(request)
+
+      raise PerformancePlatformError, "#{response.code} - #{response.body}" \
+        unless response.code == '200'
+
+      JSON.parse(response.body)
     end
   end
 end
