@@ -1,5 +1,6 @@
 describe PerformancePlatformGateway do
   let(:endpoint) { 'https://performance-platform/' }
+  let(:data) { [{ foo: :bar }] }
 
   before do
     ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
@@ -15,18 +16,28 @@ describe PerformancePlatformGateway do
     )
     .to_return(
       body: response.to_json,
-      status: 200
+      status: response_code
     )
   end
 
   context 'with valid data sent' do
-    let(:data) { [{ foo: :bar }] }
     let(:response) { { status: 'ok' } }
+    let(:response_code) { 200 }
 
     it 'returns an OK response' do
       result = subject.send_stats(data)
 
       expect(result['status']).to eq('ok')
+    end
+  end
+
+  context 'with invalid data' do
+    let(:response) { 'error message' }
+    let(:response_code) { 403 }
+
+    it 'rasises an error' do
+      expect { subject.send_stats(data) }.to \
+        raise_error(PerformancePlatformError, '403 - "error message"')
     end
   end
 end
