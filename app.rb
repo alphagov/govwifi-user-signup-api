@@ -2,6 +2,8 @@ require 'sinatra/base'
 require 'net/http'
 require 'require_all'
 
+module Common; end
+
 require_all 'lib'
 
 class App < Sinatra::Base
