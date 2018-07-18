@@ -119,6 +119,7 @@ DEPENDENCIES
   notifications-ruby-client (~> 2.6.0)
   puma
   rack-test
+  rake (~> 12.3)
   require_all
   rspec
   sentry-raven
