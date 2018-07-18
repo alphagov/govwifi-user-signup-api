@@ -2,12 +2,15 @@ describe PerformancePlatformGateway do
   let(:endpoint) { 'https://performance-platform/' }
 
   before do
+    ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
+    ENV['PERFORMANCE_URL'] = endpoint
+
     stub_request(:post, "#{endpoint}data")
     .with(
       body: data.to_json,
       headers: {
         'Content-Type' => 'application/json',
-        'Authorization' => 'Bearer foobarbaz'
+        'Authorization' => "Bearer foobarbaz"
       }
     )
     .to_return(
@@ -17,10 +20,10 @@ describe PerformancePlatformGateway do
   end
 
   context 'with valid data sent' do
-    let(:data) { [{'metric1' => 'foobar'}] }
+    let(:data) { [{ foo: :bar }] }
     let(:response) { { status: 'ok' } }
 
-    it 'returns a valid response' do
+    it 'returns an OK response' do
       result = subject.send_stats(data)
 
       expect(result['status']).to eq('ok')
