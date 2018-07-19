@@ -5,10 +5,12 @@ class PerformancePlatform::UseCase::SendPerformanceReport
   end
 
   def execute
-    signups = stats_gateway.signups
-    performance_data = PerformancePlatform::Presenter::Report.new(stats: signups)
+    stats = stats_gateway.fetch_stats
+    performance_data = PerformancePlatform::Presenter::Report
+      .new(stats: stats)
+      .present
 
-    performance_gateway.send_stats(performance_data.present)
+    performance_gateway.send_stats(performance_data)
   end
 
 private

@@ -5,12 +5,15 @@ class PerformancePlatform::Presenter::Report
   end
 
   def present
-    [
-      as_hash(stats[:today], stats[:cumulative], 'all-sign-ups'),
-      as_hash(stats[:sms_today], stats[:sms_cumulative], 'sms-sign-ups'),
-      as_hash(stats[:email_today], stats[:email_cumulative], 'email-sign-ups'),
-      as_hash(stats[:sponsored_today], stats[:sponsored_cumulative], 'sponsored-sign-ups'),
-    ]
+    {
+      metric_name: stats[:metric_name],
+      payload: [
+        as_hash(stats[:today], stats[:cumulative], 'all-sign-ups'),
+        as_hash(stats[:sms_today], stats[:sms_cumulative], 'sms-sign-ups'),
+        as_hash(stats[:email_today], stats[:email_cumulative], 'email-sign-ups'),
+        as_hash(stats[:sponsored_today], stats[:sponsored_cumulative], 'sponsored-sign-ups'),
+      ]
+    }
   end
 
 private
@@ -23,8 +26,8 @@ private
     {
       _id: encode_id(channel),
       _timestamp: timestamp,
-      dataType: 'volumetrics',
-      period: 'day',
+      dataType: stats[:metric_name],
+      period: stats[:period],
       channel: channel,
       count: count,
       cumulative_count: cumulative_count
@@ -36,8 +39,8 @@ private
       [
         timestamp,
         'gov-wifi',
-        'day',
-        'volumetrics',
+        stats[:period],
+        stats[:metric_name],
         channel
       ]
     )

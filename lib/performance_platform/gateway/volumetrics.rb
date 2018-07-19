@@ -1,6 +1,8 @@
-class PerformancePlatform::Gateway::Statistics
-  def signups
+class PerformancePlatform::Gateway::Volumetrics
+  def fetch_stats
     {
+      period: 'day',
+      metric_name: 'volumetrics',
       today: signups_today.count,
       cumulative: signups_cumulative.count,
       sms_today: sms_signups_today.count,
