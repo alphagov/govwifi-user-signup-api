@@ -1,4 +1,4 @@
-class EmailAddress
+class Common::EmailAddress
   def self.authorised_email_domain?(from_address)
     authorised_email_domains_regex.match?(from_address)
   end

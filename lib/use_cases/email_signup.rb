@@ -1,8 +1,6 @@
 require 'mail'
 require 'notifications/client'
 
-require_relative '../helpers/email_address'
-
 class EmailSignup
   def initialize(user_model:)
     @user_model = user_model
@@ -11,7 +9,7 @@ class EmailSignup
   def execute(contact:)
     email_address = Mail::Address.new(contact).address
 
-    return unless EmailAddress.authorised_email_domain?(email_address)
+    return unless Common::EmailAddress.authorised_email_domain?(email_address)
 
     login_details = user_model.generate(contact: email_address)
     send_signup_instructions(email_address, login_details)

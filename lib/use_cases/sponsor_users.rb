@@ -1,5 +1,3 @@
-require_relative '../helpers/email_address'
-
 class SponsorUsers
   def initialize(user_model:)
     @user_model = user_model
@@ -9,7 +7,7 @@ class SponsorUsers
   def execute(unsanitised_sponsees, sponsor)
     sponsor_address = Mail::Address.new(sponsor).address
 
-    return unless EmailAddress.authorised_email_domain?(sponsor_address)
+    return unless Common::EmailAddress.authorised_email_domain?(sponsor_address)
 
     sponsees = sanitise_sponsees(unsanitised_sponsees)
     invite_sponsees(sponsor, sponsor_address, sponsees)
