@@ -33,7 +33,7 @@ describe App do
     end
 
     def created_user
-      User.find(contact: internationalised_phone_number)
+      WifiUser::Repository::User.find(contact: internationalised_phone_number)
     end
   end
 end

@@ -8,7 +8,22 @@ DB = Sequel.connect(
   password: ENV.fetch('DB_PASS')
 )
 
-module Common; end
+module Common;
+  module Gateway; end
+end
+
+module PerformancePlatform
+  module Gateway; end
+  module Presenter; end
+  module Repository; end
+  module UseCase; end
+end
+
+module WifiUser
+  module Gateway; end
+  module Repository; end
+  module UseCase; end
+end
 
 require 'require_all'
 

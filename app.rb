@@ -13,16 +13,16 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/email-notification' do
-    SnsNotificationHandler.new(logger).handle(request)
+    WifiUser::UseCase::SnsNotificationHandler.new(logger).handle(request)
   end
 
   post '/user-signup/sms-notification' do
     logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} with message #{params[:message]}")
 
-    template_finder = SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
+    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
 
-    SmsResponse.new(
-      user_model: User.new,
+    WifiUser::UseCase::SmsResponse.new(
+      user_model: WifiUser::Repository::User.new,
       template_finder: template_finder
     ).execute(
       contact: params[:source],
