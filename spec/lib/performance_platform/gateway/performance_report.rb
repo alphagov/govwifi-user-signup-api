@@ -1,4 +1,4 @@
-describe PerformancePlatformGateway do
+describe PerformancePlatform::Gateway::PerformanceReport do
   let(:endpoint) { 'https://performance-platform/' }
   let(:data) { [{ foo: :bar }] }
 
@@ -37,7 +37,7 @@ describe PerformancePlatformGateway do
 
     it 'rasises an error' do
       expect { subject.send_stats(data) }.to \
-        raise_error(PerformancePlatformError, '403 - "error message"')
+        raise_error(PerformancePlatform::Gateway::HttpError, '403 - "error message"')
     end
   end
 end

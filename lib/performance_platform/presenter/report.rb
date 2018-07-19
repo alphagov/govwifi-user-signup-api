@@ -1,4 +1,4 @@
-class PerformancePlatformPresenter
+class PerformancePlatform::Presenter::Report
   def initialize(stats:)
     @stats = stats
     @timestamp = generate_timestamp

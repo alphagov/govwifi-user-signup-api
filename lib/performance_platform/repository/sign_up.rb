@@ -1,4 +1,4 @@
-class SignUp < Sequel::Model(:userdetails)
+class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
   dataset_module do
     def all
       where(Sequel[:created_at] < Date.today + 1)

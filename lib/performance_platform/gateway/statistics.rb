@@ -1,4 +1,4 @@
-class StatGateway
+class PerformancePlatform::Gateway::Statistics
   def signups
     {
       today: signups_today.count,
@@ -15,7 +15,7 @@ class StatGateway
 private
 
   def repository
-    SignUp
+    PerformancePlatform::Repository::SignUp
   end
 
   def signups_today

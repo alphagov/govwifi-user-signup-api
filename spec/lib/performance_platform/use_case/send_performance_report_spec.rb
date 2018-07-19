@@ -1,6 +1,6 @@
-describe SendPerformanceStats do
-  let(:stats_gateway) { StatGateway.new }
-  let(:performance_gateway) { PerformancePlatformGateway.new }
+describe PerformancePlatform::UseCase::SendPerformanceReport do
+  let(:stats_gateway) { PerformancePlatform::Gateway::Statistics.new }
+  let(:performance_gateway) { PerformancePlatform::Gateway::PerformanceReport.new }
   let(:endpoint) { 'https://performance-platform/' }
   let(:response) { { status: 'ok' } }
   let(:data) {
@@ -45,7 +45,7 @@ describe SendPerformanceStats do
   }
 
   before do
-    allow_any_instance_of(PerformancePlatformPresenter).to \
+    allow_any_instance_of(PerformancePlatform::Presenter::Report).to \
       receive(:generate_timestamp).and_return('2018-07-16T00:00:00+00:00')
 
     expect(stats_gateway).to receive(:signups)

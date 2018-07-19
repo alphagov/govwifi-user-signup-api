@@ -1,4 +1,4 @@
-describe StatGateway do
+describe PerformancePlatform::Gateway::Statistics do
   before do
     DB[:userdetails].truncate
   end

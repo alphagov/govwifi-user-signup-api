@@ -9,6 +9,12 @@ DB = Sequel.connect(
 )
 
 module Common; end
+module PerformancePlatform
+  module Gateway; end
+  module Presenter; end
+  module Repository; end
+  module UseCase; end
+end
 
 require 'require_all'
 

@@ -1,4 +1,4 @@
-class SendPerformanceStats
+class PerformancePlatform::UseCase::SendPerformanceReport
   def initialize(stats_gateway:, performance_gateway:)
     @stats_gateway = stats_gateway
     @performance_gateway = performance_gateway
@@ -6,7 +6,7 @@ class SendPerformanceStats
 
   def execute
     signups = stats_gateway.signups
-    performance_data = PerformancePlatformPresenter.new(stats: signups)
+    performance_data = PerformancePlatform::Presenter::Report.new(stats: signups)
 
     performance_gateway.send_stats(performance_data.present)
   end

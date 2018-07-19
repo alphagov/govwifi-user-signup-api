@@ -1,6 +1,6 @@
 task :publish_daily_statistics do
-  SendPerformanceStats.new(
-    stats_gateway: StatGateway.new,
-    performance_gateway: PerformancePlatformGateway.new
+  PerformancePlatform::UseCase::SendPerformanceReport.new(
+    stats_gateway: PerformancePlatform::Gateway::Statistics.new,
+    performance_gateway: PerformancePlatform::Gateway::PerformanceReport.new
   ).execute
 end
