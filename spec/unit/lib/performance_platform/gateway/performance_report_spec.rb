@@ -5,6 +5,7 @@ describe PerformancePlatform::Gateway::PerformanceReport do
   before do
     ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
     ENV['PERFORMANCE_URL'] = endpoint
+    ENV['PERFORMANCE_DATASET'] = 'gov-wifi'
 
     stub_request(:post, "#{endpoint}data/gov-wifi/volumetrics")
     .with(

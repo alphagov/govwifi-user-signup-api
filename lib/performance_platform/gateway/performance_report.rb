@@ -26,7 +26,11 @@ private
   end
 
   def build_url(data)
-    URI("#{ENV.fetch('PERFORMANCE_URL')}data/gov-wifi/#{data[:metric_name]}")
+    performance_url = ENV.fetch('PERFORMANCE_URL')
+    dataset_name = ENV.fetch('PERFORMANCE_DATASET')
+    metric_name = data[:metric_name]
+
+    URI("#{performance_url}data/#{dataset_name}/#{metric_name}")
   end
 
   def build_bearer_token(data)
