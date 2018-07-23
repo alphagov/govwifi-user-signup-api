@@ -12,6 +12,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
     ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
     ENV['PERFORMANCE_BEARER_COMPLETION_RATE'] = 'googoogoo'
     ENV['PERFORMANCE_URL'] = endpoint
+    ENV['PERFORMANCE_DATASET'] = 'gov-wifi'
 
     stub_request(:post, "#{endpoint}data/gov-wifi/#{metric}")
     .with(
