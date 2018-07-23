@@ -28,8 +28,8 @@ class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
       where(created_at: (Date.today - 14)..(Date.today - 7))
     end
 
-    def with_sessions
-      where(Sequel.lit('last_login IS NOT NULL'))
+    def with_successful_login
+      exclude(last_login: nil)
     end
   end
 end

@@ -31,14 +31,14 @@ private
   end
 
   def sms_logged_in
-    sms_registered.with_sessions
+    sms_registered.with_successful_login
   end
 
   def email_logged_in
-    email_registered.with_sessions
+    email_registered.with_successful_login
   end
 
   def sponsor_logged_in
-    sponsor_registered.with_sessions
+    sponsor_registered.with_successful_login
   end
 end

@@ -1,10 +1,8 @@
-class PerformancePlatform::Presenter::Report
-  def initialize(stats:)
+class PerformancePlatform::Presenter::Volumetrics
+  def present(stats:)
     @stats = stats
     @timestamp = generate_timestamp
-  end
 
-  def present
     {
       metric_name: stats[:metric_name],
       payload: [

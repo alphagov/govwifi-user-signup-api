@@ -77,8 +77,8 @@ describe PerformancePlatform::Gateway::CompletionRate do
     )
   end
 
-  context 'given no signups' do
-    it 'returns stats with zero signups' do
+  context 'given completed signups and logins' do
+    it 'returns stats for completion rate' do
       expect(subject.fetch_stats).to eq(
         metric_name: 'completion-rate',
         period: 'week',
