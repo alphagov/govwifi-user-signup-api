@@ -2,9 +2,9 @@ class PerformancePlatform::Gateway::HttpError < StandardError; end
 
 class PerformancePlatform::Gateway::PerformanceReport
   def send_stats(data)
-    uri = URI("#{ENV['PERFORMANCE_URL']}data/gov-wifi/volumetrics")
+    uri = build_url(data)
 
-    post(uri, data)
+    post(uri, data[:payload])
   end
 
 private
@@ -23,5 +23,9 @@ private
 
       JSON.parse(response.body)
     end
+  end
+
+  def build_url(data)
+    URI("#{ENV['PERFORMANCE_URL']}data/gov-wifi/#{data[:metric_name]}")
   end
 end

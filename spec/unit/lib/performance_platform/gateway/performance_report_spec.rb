@@ -1,6 +1,6 @@
 describe PerformancePlatform::Gateway::PerformanceReport do
   let(:endpoint) { 'https://performance-platform/' }
-  let(:data) { [{ foo: :bar }] }
+  let(:data) { { metric_name: 'volumetrics', payload: [{ foo: :bar }] } }
 
   before do
     ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
@@ -8,7 +8,7 @@ describe PerformancePlatform::Gateway::PerformanceReport do
 
     stub_request(:post, "#{endpoint}data/gov-wifi/volumetrics")
     .with(
-      body: data.to_json,
+      body: data[:payload].to_json,
       headers: {
         'Content-Type' => 'application/json',
         'Authorization' => "Bearer foobarbaz"
