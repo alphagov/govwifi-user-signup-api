@@ -1,4 +1,4 @@
-describe PerformancePlatform::Gateway::Statistics do
+describe PerformancePlatform::Gateway::Volumetrics do
   let(:user_repository) { WifiUser::Repository::User }
 
   before do
@@ -7,11 +7,13 @@ describe PerformancePlatform::Gateway::Statistics do
 
   context 'given no signups' do
     it 'returns stats with zero signups' do
-      expect(subject.signups).to eq(
+      expect(subject.fetch_stats).to eq(
         today: 0,
         cumulative: 0,
         sms_today: 0,
         sms_cumulative: 0,
+        metric_name: 'volumetrics',
+        period: 'day',
         email_today: 0,
         email_cumulative: 0,
         sponsored_cumulative: 0,
@@ -28,11 +30,11 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'returns signups for today' do
-      expect(subject.signups[:today]).to eq(3)
+      expect(subject.fetch_stats[:today]).to eq(3)
     end
 
     it 'returns same cumulative number of signups' do
-      expect(subject.signups[:cumulative]).to eq(3)
+      expect(subject.fetch_stats[:cumulative]).to eq(3)
     end
   end
 
@@ -46,11 +48,11 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'returns zero signups 5 signups for today' do
-      expect(subject.signups[:today]).to eq(5)
+      expect(subject.fetch_stats[:today]).to eq(5)
     end
 
     it 'returns zero signups 6 signups cumulative' do
-      expect(subject.signups[:cumulative]).to eq(6)
+      expect(subject.fetch_stats[:cumulative]).to eq(6)
     end
   end
 
@@ -62,11 +64,11 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'returns zero signups for today' do
-      expect(subject.signups[:today]).to eq(0)
+      expect(subject.fetch_stats[:today]).to eq(0)
     end
 
     it 'returns zero signups cumulative' do
-      expect(subject.signups[:cumulative]).to eq(0)
+      expect(subject.fetch_stats[:cumulative]).to eq(0)
     end
   end
 
@@ -92,27 +94,27 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'counts all of them against cumulative singups' do
-      expect(subject.signups[:cumulative]).to eq(3)
+      expect(subject.fetch_stats[:cumulative]).to eq(3)
     end
 
     it 'counts all of them against todays signups' do
-      expect(subject.signups[:today]).to eq(3)
+      expect(subject.fetch_stats[:today]).to eq(3)
     end
 
     it 'calculates SMS cumulative signups' do
-      expect(subject.signups[:sms_cumulative]).to eq(1)
+      expect(subject.fetch_stats[:sms_cumulative]).to eq(1)
     end
 
     it 'calculates SMS todays signups' do
-      expect(subject.signups[:sms_today]).to eq(1)
+      expect(subject.fetch_stats[:sms_today]).to eq(1)
     end
 
     it 'calculates email cumulative signups' do
-      expect(subject.signups[:email_cumulative]).to eq(2)
+      expect(subject.fetch_stats[:email_cumulative]).to eq(2)
     end
 
     it 'calculates email todays signups' do
-      expect(subject.signups[:email_today]).to eq(2)
+      expect(subject.fetch_stats[:email_today]).to eq(2)
     end
   end
 
@@ -133,19 +135,19 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'counts them against cumulative singups' do
-      expect(subject.signups[:cumulative]).to eq(2)
+      expect(subject.fetch_stats[:cumulative]).to eq(2)
     end
 
     it 'counts them against todays signups' do
-      expect(subject.signups[:today]).to eq(1)
+      expect(subject.fetch_stats[:today]).to eq(1)
     end
 
     it 'counts them against SMS cumulative signups' do
-      expect(subject.signups[:sms_cumulative]).to eq(2)
+      expect(subject.fetch_stats[:sms_cumulative]).to eq(2)
     end
 
     it 'counts them against SMS todays signups' do
-      expect(subject.signups[:sms_today]).to eq(1)
+      expect(subject.fetch_stats[:sms_today]).to eq(1)
     end
   end
 
@@ -166,19 +168,19 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'counts them against cumulative singups' do
-      expect(subject.signups[:cumulative]).to eq(2)
+      expect(subject.fetch_stats[:cumulative]).to eq(2)
     end
 
     it 'counts them against todays signups' do
-      expect(subject.signups[:today]).to eq(1)
+      expect(subject.fetch_stats[:today]).to eq(1)
     end
 
     it 'counts them against email cumulative signups' do
-      expect(subject.signups[:email_cumulative]).to eq(2)
+      expect(subject.fetch_stats[:email_cumulative]).to eq(2)
     end
 
     it 'counts them against email signups today' do
-      expect(subject.signups[:email_today]).to eq(1)
+      expect(subject.fetch_stats[:email_today]).to eq(1)
     end
   end
 
@@ -199,11 +201,11 @@ describe PerformancePlatform::Gateway::Statistics do
     end
 
     it 'counts both of them to cumulative number of sponsored sign ups' do
-      expect(subject.signups[:sponsored_cumulative]).to eq(2)
+      expect(subject.fetch_stats[:sponsored_cumulative]).to eq(2)
     end
 
     it 'counts one of them as sponsored sign up today' do
-      expect(subject.signups[:sponsored_today]).to eq(1)
+      expect(subject.fetch_stats[:sponsored_today]).to eq(1)
     end
   end
 end
