@@ -1,7 +1,7 @@
 task :publish_daily_statistics do
   performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
   volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new
-  volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics
+  volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new
 
   PerformancePlatform::UseCase::SendPerformanceReport.new(
     stats_gateway: volumetrics_gateway,
