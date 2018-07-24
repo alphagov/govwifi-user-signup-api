@@ -4,6 +4,6 @@ class Common::EmailAddress
   end
 
   def self.authorised_email_domains_regex
-    Regexp.new(ENV.fetch('AUTHORISED_EMAIL_DOMAINS_REGEX'))
+    Regexp.new(ENV.fetch('AUTHORISED_EMAIL_DOMAINS_REGEX'), Regexp::IGNORECASE)
   end
 end

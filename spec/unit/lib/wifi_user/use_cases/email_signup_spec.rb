@@ -14,52 +14,82 @@ describe WifiUser::UseCase::EmailSignup do
         }
       }
     end
-    let!(:notify_email_stub) do
-      stub_request(:post, notify_email_url).with(body: notify_email_request)\
-      .to_return(status: 200, body: {}.to_json)
+    let(:notify_email_stub) do
+      stub_request(:post, notify_email_url)
+        .with(body: notify_email_request)
+        .to_return(status: 200, body: {}.to_json)
     end
+
     let(:notify_api_key) { 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000' }
 
     before do
       ENV['NOTIFY_API_KEY'] = notify_api_key
       ENV['RACK_ENV'] = environment
 
-      expect(user_model).to receive(:generate) \
-        .with(contact: created_contact) \
+      notify_email_stub
+
+      allow(user_model).to receive(:generate)
+        .with(contact: created_contact)
         .and_return(username: username, password: password)
     end
 
-    context 'given an email address without a name part' do
-      let(:created_contact) { 'adrian@gov.uk' }
+    context 'in the production environment' do
       let(:environment) { 'production' }
       let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
-      let(:username) { 'MockUsername' }
-      let(:password) { 'MockPassword' }
 
-      it 'sends email to Notify with the new credentials' do
-        subject.execute(contact: created_contact)
-        expect(notify_email_stub).to have_been_requested.times(1)
+      context 'given an email address without a name part' do
+        let(:created_contact) { 'adrian@gov.uk' }
+        let(:username) { 'MockUsername' }
+        let(:password) { 'MockPassword' }
+
+        it 'sends email to Notify with the new credentials' do
+          subject.execute(contact: created_contact)
+          expect(notify_email_stub).to have_been_requested.times(1)
+        end
       end
     end
 
-    context 'given an email address with a name part' do
-      let(:created_contact) { 'ryan@gov.uk' }
+    context 'in the staging environment' do
       let(:environment) { 'staging' }
       let(:notify_template_id) { '96d1f5ac-2ebe-41a7-878f-9a569e0bb55c' }
-      let(:username) { 'MockUsername2' }
-      let(:password) { 'MockPassword2' }
 
-      it 'sends email to Notify with the new credentials' do
-        subject.execute(contact: 'Ryan <ryan@gov.uk>')
-        expect(notify_email_stub).to have_been_requested.times(1)
+      context 'given an email address with a name part' do
+        let(:created_contact) { 'ryan@gov.uk' }
+        let(:username) { 'MockUsername2' }
+        let(:password) { 'MockPassword2' }
+
+        it 'sends email to Notify with the new credentials' do
+          subject.execute(contact: 'Ryan <ryan@gov.uk>')
+          expect(notify_email_stub).to have_been_requested.times(1)
+        end
       end
-    end
-  end
 
-  describe 'Using an unauthorised email domain' do
-    it 'does not call the User#generate' do
-      expect(user_model).not_to receive(:generate)
-      subject.execute(contact: 'Ryan <ryan@example.com>')
+      context 'given an email address with a capitalised domain' do
+        let(:created_contact) { 'name@GOV.uk' }
+        let(:username) { 'qwert' }
+        let(:password) { 'qwertpass' }
+
+        it 'sends email to Notify with the new credentials' do
+          subject.execute(contact: 'Name <name@GOV.uk>')
+          expect(notify_email_stub).to have_been_requested.times(1)
+        end
+      end
+
+      context 'given an email address with a non-gov domain' do
+        let(:created_contact) { 'irrelevant@somewhere.uk' }
+        let(:username) { 'irrelevant' }
+        let(:password) { 'irrelephant' }
+
+        before { subject.execute(contact: 'Ryan <ryan@example.com>') }
+
+        it 'does not create a user' do
+          expect(user_model).not_to receive(:generate)
+        end
+
+        it 'does not send an email to Notify' do
+          expect(notify_email_stub).to_not have_been_requested
+        end
+      end
     end
   end
 end
