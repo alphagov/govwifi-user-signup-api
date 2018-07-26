@@ -8,29 +8,39 @@ describe PerformancePlatform::Gateway::Volumetrics do
   context 'given no signups' do
     it 'returns stats with zero signups' do
       expect(subject.fetch_stats).to eq(
-        today: 0,
+        yesterday: 0,
         cumulative: 0,
-        sms_today: 0,
+        sms_yesterday: 0,
         sms_cumulative: 0,
         metric_name: 'volumetrics',
         period: 'day',
-        email_today: 0,
+        email_yesterday: 0,
         email_cumulative: 0,
         sponsored_cumulative: 0,
-        sponsored_today: 0
+        sponsored_yesterday: 0
       )
     end
   end
 
-  context 'given 3 signups today' do
+  context 'with user sign up date being a full timestamp' do
+    before do
+      user_repository.create(username: 'full', created_at: Time.at(Time.now.to_i - 86400))
+    end
+
+    it 'compares sign up creation date by date only' do
+      expect(subject.fetch_stats[:yesterday]).to eq(1)
+    end
+  end
+
+  context 'given 3 signups yesterday' do
     before do
       3.times do |i|
-        user_repository.create(username: "Today #{i}")
+        user_repository.create(username: "new #{i}", created_at: Date.today - 1)
       end
     end
 
-    it 'returns signups for today' do
-      expect(subject.fetch_stats[:today]).to eq(3)
+    it 'returns signups for yesterday' do
+      expect(subject.fetch_stats[:yesterday]).to eq(3)
     end
 
     it 'returns same cumulative number of signups' do
@@ -38,17 +48,17 @@ describe PerformancePlatform::Gateway::Volumetrics do
     end
   end
 
-  context 'given 5 signups today and 1 yesterday' do
+  context 'given 5 signups yesterday and 1 day before that' do
     before do
-      user_repository.create(username: 'Yesterday', created_at: Date.today - 1)
+      user_repository.create(username: 'old', created_at: Date.today - 2)
 
       5.times do |i|
-        user_repository.create(username: "Today #{i}")
+        user_repository.create(username: "new #{i}", created_at: Date.today - 1)
       end
     end
 
-    it 'returns zero signups 5 signups for today' do
-      expect(subject.fetch_stats[:today]).to eq(5)
+    it 'returns zero signups 5 signups for yesterday' do
+      expect(subject.fetch_stats[:yesterday]).to eq(5)
     end
 
     it 'returns zero signups 6 signups cumulative' do
@@ -56,15 +66,15 @@ describe PerformancePlatform::Gateway::Volumetrics do
     end
   end
 
-  context 'given 2 signups tomorrow' do
+  context 'given 2 signups today' do
     before do
       2.times do |i|
-        user_repository.create(username: "Tomorrow #{i}", created_at: Date.today + 1)
+        user_repository.create(username: i, created_at: Date.today)
       end
     end
 
-    it 'returns zero signups for today' do
-      expect(subject.fetch_stats[:today]).to eq(0)
+    it 'returns zero signups for yesterday' do
+      expect(subject.fetch_stats[:yesterday]).to eq(0)
     end
 
     it 'returns zero signups cumulative' do
@@ -72,24 +82,27 @@ describe PerformancePlatform::Gateway::Volumetrics do
     end
   end
 
-  context 'given 1 SMS signup today and 2 email signups' do
+  context 'given 1 SMS signup yesterday and 2 email signups' do
     before do
       user_repository.create(
         username: 'Email 1',
         contact: 'foo@bar.com',
-        sponsor: 'foo@bar.com'
+        sponsor: 'foo@bar.com',
+        created_at: Date.today - 1
         )
 
       user_repository.create(
         username: 'Email 2',
         contact: 'foo@baz.com',
-        sponsor: 'foo@baz.com'
+        sponsor: 'foo@baz.com',
+        created_at: Date.today - 1
         )
 
       user_repository.create(
         username: "SMS",
         contact: '+0123456789',
-        sponsor: '+0123456789'
+        sponsor: '+0123456789',
+        created_at: Date.today - 1
         )
     end
 
@@ -97,24 +110,24 @@ describe PerformancePlatform::Gateway::Volumetrics do
       expect(subject.fetch_stats[:cumulative]).to eq(3)
     end
 
-    it 'counts all of them against todays signups' do
-      expect(subject.fetch_stats[:today]).to eq(3)
+    it 'counts all of them against yesterdays signups' do
+      expect(subject.fetch_stats[:yesterday]).to eq(3)
     end
 
     it 'calculates SMS cumulative signups' do
       expect(subject.fetch_stats[:sms_cumulative]).to eq(1)
     end
 
-    it 'calculates SMS todays signups' do
-      expect(subject.fetch_stats[:sms_today]).to eq(1)
+    it 'calculates SMS yesterdays signups' do
+      expect(subject.fetch_stats[:sms_yesterday]).to eq(1)
     end
 
     it 'calculates email cumulative signups' do
       expect(subject.fetch_stats[:email_cumulative]).to eq(2)
     end
 
-    it 'calculates email todays signups' do
-      expect(subject.fetch_stats[:email_today]).to eq(2)
+    it 'calculates email yesterdays signups' do
+      expect(subject.fetch_stats[:email_yesterday]).to eq(2)
     end
   end
 
@@ -122,15 +135,16 @@ describe PerformancePlatform::Gateway::Volumetrics do
     before do
       user_repository.create(
         username: "SMS old",
-        created_at: Date.today - 1,
+        created_at: Date.today - 6,
         contact: '+1123456789',
         sponsor: '+1123456789'
         )
 
       user_repository.create(
-        username: "SMS today",
+        username: "SMS new",
         contact: '+0123456789',
-        sponsor: '+0123456789'
+        sponsor: '+0123456789',
+        created_at: Date.today - 1
         )
     end
 
@@ -138,16 +152,16 @@ describe PerformancePlatform::Gateway::Volumetrics do
       expect(subject.fetch_stats[:cumulative]).to eq(2)
     end
 
-    it 'counts them against todays signups' do
-      expect(subject.fetch_stats[:today]).to eq(1)
+    it 'counts them against yesterdays signups' do
+      expect(subject.fetch_stats[:yesterday]).to eq(1)
     end
 
     it 'counts them against SMS cumulative signups' do
       expect(subject.fetch_stats[:sms_cumulative]).to eq(2)
     end
 
-    it 'counts them against SMS todays signups' do
-      expect(subject.fetch_stats[:sms_today]).to eq(1)
+    it 'counts them against SMS yesterdays signups' do
+      expect(subject.fetch_stats[:sms_yesterday]).to eq(1)
     end
   end
 
@@ -155,7 +169,7 @@ describe PerformancePlatform::Gateway::Volumetrics do
     before do
       user_repository.create(
         username: "Email old",
-        created_at: Date.today - 1,
+        created_at: Date.today - 5,
         contact: 'foo@bar.com',
         sponsor: 'foo@bar.com'
         )
@@ -163,7 +177,8 @@ describe PerformancePlatform::Gateway::Volumetrics do
       user_repository.create(
         username: "Email new",
         contact: 'foo@baz.com',
-        sponsor: 'foo@baz.com'
+        sponsor: 'foo@baz.com',
+        created_at: Date.today - 1
         )
     end
 
@@ -171,16 +186,16 @@ describe PerformancePlatform::Gateway::Volumetrics do
       expect(subject.fetch_stats[:cumulative]).to eq(2)
     end
 
-    it 'counts them against todays signups' do
-      expect(subject.fetch_stats[:today]).to eq(1)
+    it 'counts them against yesterdays signups' do
+      expect(subject.fetch_stats[:yesterday]).to eq(1)
     end
 
     it 'counts them against email cumulative signups' do
       expect(subject.fetch_stats[:email_cumulative]).to eq(2)
     end
 
-    it 'counts them against email signups today' do
-      expect(subject.fetch_stats[:email_today]).to eq(1)
+    it 'counts them against email signups yesterday' do
+      expect(subject.fetch_stats[:email_yesterday]).to eq(1)
     end
   end
 
@@ -189,14 +204,15 @@ describe PerformancePlatform::Gateway::Volumetrics do
       user_repository.create(
         username: 'Email',
         contact: 'foo@bar.com',
-        sponsor: 'sponsor@bar.com'
+        sponsor: 'sponsor@bar.com',
+        created_at: Date.today - 1
         )
 
       user_repository.create(
         username: 'SMS',
         contact: 'foo@baz.com',
         sponsor: 'sponsor@baz.com',
-        created_at: Date.today - 1
+        created_at: Date.today - 2
         )
     end
 
@@ -204,8 +220,8 @@ describe PerformancePlatform::Gateway::Volumetrics do
       expect(subject.fetch_stats[:sponsored_cumulative]).to eq(2)
     end
 
-    it 'counts one of them as sponsored sign up today' do
-      expect(subject.fetch_stats[:sponsored_today]).to eq(1)
+    it 'counts one of them as sponsored sign up yesterday' do
+      expect(subject.fetch_stats[:sponsored_yesterday]).to eq(1)
     end
   end
 end
