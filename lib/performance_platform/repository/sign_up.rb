@@ -1,11 +1,11 @@
 class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
   dataset_module do
     def all
-      where(Sequel[:created_at] < Date.today + 1)
+      where(Sequel.lit("date(created_at) <= '#{Date.today - 1}'"))
     end
 
-    def today
-      where(Sequel[:created_at] > Date.today)
+    def yesterday
+      where(Sequel.lit("date(created_at) = '#{Date.today - 1}'"))
     end
 
     def self_sign

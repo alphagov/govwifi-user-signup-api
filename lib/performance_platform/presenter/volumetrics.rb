@@ -6,10 +6,10 @@ class PerformancePlatform::Presenter::Volumetrics
     {
       metric_name: stats[:metric_name],
       payload: [
-        as_hash(stats[:today], stats[:cumulative], 'all-sign-ups'),
-        as_hash(stats[:sms_today], stats[:sms_cumulative], 'sms-sign-ups'),
-        as_hash(stats[:email_today], stats[:email_cumulative], 'email-sign-ups'),
-        as_hash(stats[:sponsored_today], stats[:sponsored_cumulative], 'sponsored-sign-ups'),
+        as_hash(stats[:yesterday], stats[:cumulative], 'all-sign-ups'),
+        as_hash(stats[:sms_yesterday], stats[:sms_cumulative], 'sms-sign-ups'),
+        as_hash(stats[:email_yesterday], stats[:email_cumulative], 'email-sign-ups'),
+        as_hash(stats[:sponsored_yesterday], stats[:sponsored_cumulative], 'sponsored-sign-ups'),
       ]
     }
   end
@@ -17,7 +17,7 @@ class PerformancePlatform::Presenter::Volumetrics
 private
 
   def generate_timestamp
-    "#{Date.today}T00:00:00+00:00"
+    "#{Date.today - 1}T00:00:00+00:00"
   end
 
   def as_hash(count, cumulative_count, channel)
