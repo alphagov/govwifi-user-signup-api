@@ -36,7 +36,7 @@ private
     Common::Base64.encode_array(
       [
         timestamp,
-        'gov-wifi',
+        ENV.fetch('PERFORMANCE_DATASET'),
         stats[:period],
         stats[:metric_name],
         channel
