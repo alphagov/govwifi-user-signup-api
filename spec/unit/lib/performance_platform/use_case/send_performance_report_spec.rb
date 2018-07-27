@@ -12,9 +12,9 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
     ENV['PERFORMANCE_BEARER_VOLUMETRICS'] = 'foobarbaz'
     ENV['PERFORMANCE_BEARER_COMPLETION_RATE'] = 'googoogoo'
     ENV['PERFORMANCE_URL'] = endpoint
-    ENV['PERFORMANCE_DATASET'] = 'gov-wifi'
+    ENV['PERFORMANCE_DATASET'] = dataset
 
-    stub_request(:post, "#{endpoint}data/gov-wifi/#{metric}")
+    stub_request(:post, "#{endpoint}data/#{dataset}/#{metric}")
     .with(
       body: data[:payload].to_json,
       headers: {
@@ -38,6 +38,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
   context 'report for volumetrics' do
     let(:metric) { 'volumetrics' }
     let(:bearer_token) { 'foobarbaz' }
+    let(:dataset) { 'gov-wifi' }
     let(:presenter) { PerformancePlatform::Presenter::Volumetrics.new }
     let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new }
     let(:stats_gateway_response) {
@@ -106,6 +107,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
   context 'report for completion rates' do
     let(:metric) { 'completion-rate' }
     let(:bearer_token) { 'googoogoo' }
+    let(:dataset) { 'gov-wifi' }
     let(:presenter) { PerformancePlatform::Presenter::CompletionRate.new }
     let(:stats_gateway) { PerformancePlatform::Gateway::CompletionRate.new }
     let(:stats_gateway_response) {
