@@ -1,4 +1,8 @@
+require 'logger'
+logger = Logger.new(STDOUT)
+
 task :publish_daily_statistics do
+  logger.info('publishing daily statistics')
   performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
   volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new
   volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new
@@ -10,6 +14,7 @@ task :publish_daily_statistics do
 end
 
 task :publish_weekly_statistics do
+  logger.info('publishing weekly statistics')
   performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
   completion_rate_gateway = PerformancePlatform::Gateway::CompletionRate.new
   completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new
