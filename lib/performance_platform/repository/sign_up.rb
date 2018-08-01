@@ -25,7 +25,7 @@ class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
     end
 
     def last_week
-      where(created_at: (Date.today - 14)..(Date.today - 7))
+      where(Sequel.lit("date(created_at) BETWEEN '#{Date.today - 14}' AND '#{Date.today - 7}'"))
     end
 
     def with_successful_login
