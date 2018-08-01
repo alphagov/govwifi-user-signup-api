@@ -75,6 +75,16 @@ describe PerformancePlatform::Gateway::CompletionRate do
       sponsor: 'me@example.com',
       last_login: Date.today
     )
+
+    # Email sponsored
+    # and logged in
+    user_repo.create(
+      username: '9',
+      created_at: Date.today - 10,
+      contact: 'me@example.com',
+      sponsor: 'sponsor@example.com',
+      last_login: Date.today
+    )
   end
 
   context 'given completed signups and logins' do
@@ -82,12 +92,12 @@ describe PerformancePlatform::Gateway::CompletionRate do
       expect(subject.fetch_stats).to eq(
         metric_name: 'completion-rate',
         period: 'week',
-        sms_registered: 4,
-        sms_logged_in: 2,
+        sms_registered: 2,
+        sms_logged_in: 1,
         email_registered: 2,
         email_logged_in: 1,
-        sponsor_registered: 2,
-        sponsor_logged_in: 1,
+        sponsor_registered: 3,
+        sponsor_logged_in: 2,
       )
     end
   end

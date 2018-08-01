@@ -19,11 +19,11 @@ private
   end
 
   def sms_registered
-    repository.with_sms.last_week
+    repository.self_sign.with_sms.last_week
   end
 
   def email_registered
-    repository.with_email.last_week
+    repository.self_sign.with_email.last_week
   end
 
   def sponsor_registered
