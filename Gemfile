@@ -10,7 +10,7 @@ gem 'puma'
 gem 'rake', '~> 12.3'
 gem 'require_all'
 gem 'sentry-raven'
-gem 'sequel', '~> 5.10'
+gem 'sequel', '~> 5.11'
 gem 'sinatra'
 
 group :test do
