@@ -31,7 +31,8 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
   subject do
     described_class.new(
       stats_gateway: stats_gateway,
-      performance_gateway: performance_gateway
+      performance_gateway: performance_gateway,
+      logger: double(info: '')
     )
   end
 
