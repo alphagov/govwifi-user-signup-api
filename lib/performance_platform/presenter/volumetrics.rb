@@ -9,7 +9,7 @@ class PerformancePlatform::Presenter::Volumetrics
         as_hash(stats[:yesterday], stats[:cumulative], 'all-sign-ups'),
         as_hash(stats[:sms_yesterday], stats[:sms_cumulative], 'sms-sign-ups'),
         as_hash(stats[:email_yesterday], stats[:email_cumulative], 'email-sign-ups'),
-        as_hash(stats[:sponsored_yesterday], stats[:sponsored_cumulative], 'sponsored-sign-ups'),
+        as_hash(stats[:sponsored_yesterday], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
       ]
     }
   end
