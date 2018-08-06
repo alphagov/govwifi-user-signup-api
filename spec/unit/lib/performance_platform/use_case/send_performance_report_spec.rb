@@ -88,11 +88,11 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
             cumulative_count: 21
           },
           {
-            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzcG9uc29yZWQtc2lnbi11cHM=',
+            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzcG9uc29yLXNpZ24tdXBz',
             _timestamp: '2018-07-16T00:00:00+00:00',
             dataType: 'volumetrics',
             period: 'day',
-            channel: 'sponsored-sign-ups',
+            channel: 'sponsor-sign-ups',
             count: 7,
             cumulative_count: 9
           }

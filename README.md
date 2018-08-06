@@ -7,7 +7,7 @@ End user signup journeys for GovWifi.
 ### Journeys
 
 With each journey, we generate a unique username and password for GovWifi.
-These get stored and sent to the user. 
+These get stored and sent to the user.
 
 * SMS signup - Users text a phone number and get a set of credentials
 * SMS help routes - Users can also ask for help from the same phone number and
@@ -52,3 +52,4 @@ Then access the site at [http://localhost:8080/healthcheck](http://localhost:808
 Once you have merged your changes into master branch.  Deploying is made up of
 two steps.  Pushing a built image to the docker registry from Jenkins, and
 restarting the running tasks so it picks up the latest image.
+
