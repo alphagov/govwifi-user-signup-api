@@ -1,4 +1,8 @@
 class PerformancePlatform::Gateway::CompletionRate
+  def initialize(date: Date.today.to_s)
+    @date = Date.parse(date)
+  end
+
   def fetch_stats
     {
       period: 'week',
@@ -14,20 +18,22 @@ class PerformancePlatform::Gateway::CompletionRate
 
 private
 
+  attr_reader :date
+
   def repository
     PerformancePlatform::Repository::SignUp
   end
 
   def sms_registered
-    repository.self_sign.with_sms.last_week
+    repository.self_sign.with_sms.week_before(date)
   end
 
   def email_registered
-    repository.self_sign.with_email.last_week
+    repository.self_sign.with_email.week_before(date)
   end
 
   def sponsor_registered
-    repository.sponsored.last_week
+    repository.sponsored.week_before(date)
   end
 
   def sms_logged_in

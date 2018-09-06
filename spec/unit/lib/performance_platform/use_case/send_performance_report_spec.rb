@@ -46,13 +46,13 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
       {
         metric_name: 'volumetrics',
         period: 'day',
-        yesterday: 12,
+        day_before: 12,
         cumulative: 24,
-        sms_yesterday: 2,
+        sms_day_before: 2,
         sms_cumulative: 3,
-        email_yesterday: 10,
+        email_day_before: 10,
         email_cumulative: 21,
-        sponsored_yesterday: 7,
+        sponsored_day_before: 7,
         sponsored_cumulative: 9
       }
     }

@@ -17,5 +17,6 @@ group :test do
   gem 'govuk-lint'
   gem 'rack-test'
   gem 'rspec'
+  gem 'timecop'
   gem 'webmock'
 end

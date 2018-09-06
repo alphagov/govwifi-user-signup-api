@@ -1,4 +1,8 @@
 class PerformancePlatform::Presenter::Volumetrics
+  def initialize(date: Date.today.to_s)
+    @date = Date.parse(date)
+  end
+
   def present(stats:)
     @stats = stats
     @timestamp = generate_timestamp
@@ -6,18 +10,20 @@ class PerformancePlatform::Presenter::Volumetrics
     {
       metric_name: stats[:metric_name],
       payload: [
-        as_hash(stats[:yesterday], stats[:cumulative], 'all-sign-ups'),
-        as_hash(stats[:sms_yesterday], stats[:sms_cumulative], 'sms-sign-ups'),
-        as_hash(stats[:email_yesterday], stats[:email_cumulative], 'email-sign-ups'),
-        as_hash(stats[:sponsored_yesterday], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
+        as_hash(stats[:day_before], stats[:cumulative], 'all-sign-ups'),
+        as_hash(stats[:sms_day_before], stats[:sms_cumulative], 'sms-sign-ups'),
+        as_hash(stats[:email_day_before], stats[:email_cumulative], 'email-sign-ups'),
+        as_hash(stats[:sponsored_day_before], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
       ]
     }
   end
 
 private
 
+  attr_reader :date
+
   def generate_timestamp
-    "#{Date.today - 1}T00:00:00+00:00"
+    "#{date - 1}T00:00:00+00:00"
   end
 
   def as_hash(count, cumulative_count, channel)

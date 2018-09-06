@@ -1,11 +1,11 @@
 class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
   dataset_module do
-    def all
-      where(Sequel.lit("date(created_at) <= '#{Date.today - 1}'"))
+    def all(date)
+      where(Sequel.lit("date(created_at) <= '#{date - 1}'"))
     end
 
-    def yesterday
-      where(Sequel.lit("date(created_at) = '#{Date.today - 1}'"))
+    def day_before(date)
+      where(Sequel.lit("date(created_at) = '#{date - 1}'"))
     end
 
     def self_sign
@@ -24,8 +24,8 @@ class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
       where(Sequel.like(:contact, '%@%'))
     end
 
-    def last_week
-      where(Sequel.lit("date(created_at) BETWEEN '#{Date.today - 14}' AND '#{Date.today - 7}'"))
+    def week_before(date)
+      where(Sequel.lit("date(created_at) BETWEEN '#{date - 14}' AND '#{date - 7}'"))
     end
 
     def with_successful_login
