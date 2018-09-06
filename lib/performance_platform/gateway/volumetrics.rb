@@ -1,43 +1,49 @@
 class PerformancePlatform::Gateway::Volumetrics
+  def initialize(date: Date.today.to_s)
+    @date = Date.parse(date)
+  end
+
   def fetch_stats
     {
       period: 'day',
       metric_name: 'volumetrics',
-      yesterday: signups_yesterday.count,
+      day_before: signups_day_before.count,
       cumulative: signups_cumulative.count,
-      sms_yesterday: sms_signups_yesterday.count,
+      sms_day_before: sms_signups_day_before.count,
       sms_cumulative: sms_signups_cumulative.count,
-      email_yesterday: email_signups_yesterday.count,
+      email_day_before: email_signups_day_before.count,
       email_cumulative: email_signups_cumulative.count,
-      sponsored_yesterday: sponsored_signups_yesterday.count,
+      sponsored_day_before: sponsored_signups_day_before.count,
       sponsored_cumulative: sponsored_signups_cumulative.count
     }
   end
 
 private
 
+  attr_reader :date
+
   def repository
     PerformancePlatform::Repository::SignUp
   end
 
-  def signups_yesterday
-    repository.yesterday
+  def signups_day_before
+    repository.day_before(date)
   end
 
   def signups_cumulative
-    repository.all
+    repository.all(date)
   end
 
-  def sms_signups_yesterday
-    signups_yesterday.self_sign.with_sms
+  def sms_signups_day_before
+    signups_day_before.self_sign.with_sms
   end
 
   def sms_signups_cumulative
     signups_cumulative.self_sign.with_sms
   end
 
-  def email_signups_yesterday
-    signups_yesterday.self_sign.with_email
+  def email_signups_day_before
+    signups_day_before.self_sign.with_email
   end
 
   def email_signups_cumulative
@@ -48,7 +54,7 @@ private
     signups_cumulative.sponsored
   end
 
-  def sponsored_signups_yesterday
-    signups_yesterday.sponsored
+  def sponsored_signups_day_before
+    signups_day_before.sponsored
   end
 end
