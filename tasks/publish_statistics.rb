@@ -19,7 +19,7 @@ task :publish_weekly_statistics, :date do |_, args|
   logger.info("publishing weekly statistics #{date}")
   performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
   completion_rate_gateway = PerformancePlatform::Gateway::CompletionRate.new(date: args[:date])
-  completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new
+  completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new(date: args[:date])
 
   PerformancePlatform::UseCase::SendPerformanceReport.new(
     stats_gateway: completion_rate_gateway,
