@@ -16,7 +16,7 @@ end
 
 task :publish_weekly_statistics, :date do |_, args|
   args.with_defaults(date: Date.today.to_s)
-  logger.info("publishing weekly statistics #{date}")
+  logger.info("publishing weekly statistics #{args}")
   performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
   completion_rate_gateway = PerformancePlatform::Gateway::CompletionRate.new(date: args[:date])
   completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new(date: args[:date])
