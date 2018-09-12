@@ -41,7 +41,7 @@ GEM
     mysql2 (0.5.2)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    notifications-ruby-client (2.7.0)
+    notifications-ruby-client (2.8.0)
       jwt (>= 1.5, < 3)
     parallel (1.12.1)
     parser (2.5.1.0)
@@ -117,7 +117,7 @@ DEPENDENCIES
   mail (~> 2.7)
   mysql2
   nokogiri (~> 1.8)
-  notifications-ruby-client (~> 2.7.0)
+  notifications-ruby-client (~> 2.8.0)
   puma
   rack-test
   rake (~> 12.3)
