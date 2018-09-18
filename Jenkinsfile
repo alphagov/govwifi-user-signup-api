@@ -88,7 +88,7 @@ def deploy_production() {
 
   try {
     timeout(time: 5, unit: 'MINUTES') {
-      input "Do you want to deploy to ${deploy_environment}?"
+      input "Do you want to deploy to production?"
 
       deploy('production')
     }
