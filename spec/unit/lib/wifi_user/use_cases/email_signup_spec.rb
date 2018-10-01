@@ -36,15 +36,24 @@ describe WifiUser::UseCase::EmailSignup do
     context 'in the production environment' do
       let(:environment) { 'production' }
       let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
+      let(:created_contact) { 'adrian@gov.uk' }
+      let(:username) { 'MockUsername' }
+      let(:password) { 'MockPassword' }
+      let(:template_finder) { double(execute: notify_template_id) }
 
       context 'given an email address without a name part' do
-        let(:created_contact) { 'adrian@gov.uk' }
-        let(:username) { 'MockUsername' }
-        let(:password) { 'MockPassword' }
 
         it 'sends email to Notify with the new credentials' do
           subject.execute(contact: created_contact)
           expect(notify_email_stub).to have_been_requested.times(1)
+        end
+      end
+
+      context 'bounces reply emails' do
+        it 'with content' do
+          response = subject.execute(contact: created_contact)
+          expect(template_finder).to receive(response)
+          pp response
         end
       end
     end
