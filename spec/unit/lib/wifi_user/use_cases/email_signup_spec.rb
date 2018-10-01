@@ -28,6 +28,10 @@ describe WifiUser::UseCase::EmailSignup do
 
       notify_email_stub
 
+      # allow(notify_email_stub).to receive(:execute)
+      # .with(body: notify_email_request)
+      # .and_return(body: notify_email_request)
+
       allow(user_model).to receive(:generate)
         .with(contact: created_contact)
         .and_return(username: username, password: password)
@@ -39,7 +43,7 @@ describe WifiUser::UseCase::EmailSignup do
       let(:created_contact) { 'adrian@gov.uk' }
       let(:username) { 'MockUsername' }
       let(:password) { 'MockPassword' }
-      let(:template_finder) { double(execute: notify_template_id) }
+      # let(:template_finder) { double(execute: notify_template_id) }
 
       context 'given an email address without a name part' do
 
@@ -51,9 +55,8 @@ describe WifiUser::UseCase::EmailSignup do
 
       context 'bounces reply emails' do
         it 'with content' do
-          response = subject.execute(contact: created_contact)
-          expect(template_finder).to receive(response)
-          pp response
+          subject.execute(contact: created_contact)
+          expect(notify_email_stub).to receive(:execute).and_return(body: "")
         end
       end
     end
