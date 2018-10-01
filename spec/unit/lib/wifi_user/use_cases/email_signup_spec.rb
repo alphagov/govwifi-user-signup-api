@@ -1,3 +1,4 @@
+require "pry"
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
   subject { described_class.new(user_model: user_model) }
@@ -11,9 +12,11 @@ describe WifiUser::UseCase::EmailSignup do
         personalisation: {
           username: username,
           password: password,
-        }
+        },
+        email_reply_to_id: "tom"
       }
     end
+
     let(:notify_email_stub) do
       stub_request(:post, notify_email_url)
         .with(body: notify_email_request)
@@ -28,10 +31,6 @@ describe WifiUser::UseCase::EmailSignup do
 
       notify_email_stub
 
-      # allow(notify_email_stub).to receive(:execute)
-      # .with(body: notify_email_request)
-      # .and_return(body: notify_email_request)
-
       allow(user_model).to receive(:generate)
         .with(contact: created_contact)
         .and_return(username: username, password: password)
@@ -40,23 +39,15 @@ describe WifiUser::UseCase::EmailSignup do
     context 'in the production environment' do
       let(:environment) { 'production' }
       let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
-      let(:created_contact) { 'adrian@gov.uk' }
-      let(:username) { 'MockUsername' }
-      let(:password) { 'MockPassword' }
-      # let(:template_finder) { double(execute: notify_template_id) }
 
       context 'given an email address without a name part' do
+        let(:created_contact) { 'adrian@gov.uk' }
+        let(:username) { 'MockUsername' }
+        let(:password) { 'MockPassword' }
 
         it 'sends email to Notify with the new credentials' do
           subject.execute(contact: created_contact)
           expect(notify_email_stub).to have_been_requested.times(1)
-        end
-      end
-
-      context 'bounces reply emails' do
-        it 'with content' do
-          subject.execute(contact: created_contact)
-          expect(notify_email_stub).to receive(:execute).and_return(body: "")
         end
       end
     end
