@@ -16,3 +16,5 @@ notify_email_template_ids:
     plural: 856a5726-1099-4236-b67c-23b654e9edbf
     singular: 079cb5ff-19b7-4a90-b2e8-dad342ca2bf9
     failed: efabdaea-36cf-4642-b656-2f9a8393ecc2
+
+do_not_reply_email_id: 45d6b6c4-6a36-47df-b34d-256b8c0d1511

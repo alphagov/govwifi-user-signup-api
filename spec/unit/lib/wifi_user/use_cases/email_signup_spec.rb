@@ -11,9 +11,11 @@ describe WifiUser::UseCase::EmailSignup do
         personalisation: {
           username: username,
           password: password,
-        }
+        },
+        email_reply_to_id: do_not_reply_id
       }
     end
+
     let(:notify_email_stub) do
       stub_request(:post, notify_email_url)
         .with(body: notify_email_request)
@@ -36,6 +38,7 @@ describe WifiUser::UseCase::EmailSignup do
     context 'in the production environment' do
       let(:environment) { 'production' }
       let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
+      let(:do_not_reply_id) { '0d22d71f-afa3-4c72-8cd4-7716678dbd43' }
 
       context 'given an email address without a name part' do
         let(:created_contact) { 'adrian@gov.uk' }
@@ -52,6 +55,7 @@ describe WifiUser::UseCase::EmailSignup do
     context 'in the staging environment' do
       let(:environment) { 'staging' }
       let(:notify_template_id) { '96d1f5ac-2ebe-41a7-878f-9a569e0bb55c' }
+      let(:do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
 
       context 'given an email address with a name part' do
         let(:created_contact) { 'ryan@gov.uk' }

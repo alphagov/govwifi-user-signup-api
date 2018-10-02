@@ -25,11 +25,16 @@ private
     client.send_email(
       email_address: email_address,
       template_id: credentials_template_id,
-      personalisation: login_details
+      personalisation: login_details,
+      email_reply_to_id: do_not_reply_email_address_id
     )
   end
 
   def credentials_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('notify_email_template_ids').fetch('self_signup_credentials')
+  end
+
+  def do_not_reply_email_address_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('do_not_reply_email_id')
   end
 end
