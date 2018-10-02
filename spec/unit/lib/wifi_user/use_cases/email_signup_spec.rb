@@ -27,7 +27,6 @@ describe WifiUser::UseCase::EmailSignup do
     before do
       ENV['NOTIFY_API_KEY'] = notify_api_key
       ENV['RACK_ENV'] = environment
-      # ENV[''] =
 
       notify_email_stub
 
