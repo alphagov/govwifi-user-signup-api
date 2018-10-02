@@ -11,9 +11,10 @@ notify_sms_template_ids:
 
 notify_email_template_ids:
   self_signup_credentials: f18708c0-e857-4f62-b5f3-8f0c75fc2fdb
-  do_not_reply_credentials: 0d22d71f-afa3-4c72-8cd4-7716678dbd43
   sponsored_credentials: fd536b81-bdd7-4b55-98aa-720173718642
   sponsor_confirmation:
     plural: 58e8ef4a-ca6b-40cd-81df-ec9c781fed56
     singular: 30ab6bc5-20bf-45af-b78d-34cacc0027cd
     failed: efc83658-dcb5-4401-af42-e26b1945c1a9
+
+do_not_reply_email_id: 0d22d71f-afa3-4c72-8cd4-7716678dbd43

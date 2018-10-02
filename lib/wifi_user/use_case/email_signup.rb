@@ -35,6 +35,6 @@ private
   end
 
   def do_not_reply_email_address_id
-    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('notify_email_template_ids').fetch('do_not_reply_credentials')
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('do_not_reply_email_id')
   end
 end
