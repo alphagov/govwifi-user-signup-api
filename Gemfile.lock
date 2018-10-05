@@ -39,7 +39,7 @@ GEM
     multipart-post (2.0.0)
     mustermann (1.0.2)
     mysql2 (0.5.2)
-    nokogiri (1.8.4)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     notifications-ruby-client (2.9.0)
       jwt (>= 1.5, < 3)
