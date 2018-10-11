@@ -17,6 +17,7 @@ group :test do
   gem 'govuk-lint'
   gem 'rack-test'
   gem 'rspec'
+  gem 'simplecov', require: false
   gem 'timecop'
   gem 'webmock'
 end
