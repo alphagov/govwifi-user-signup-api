@@ -6,7 +6,13 @@ require './lib/loader'
 class App < Sinatra::Base
   configure :production, :staging, :development do
     enable :logging
-
+configure do
+  enable :logging
+  set :logging, Logger::DEBUG
+end
+configure :production do
+  set :logging, Logger::INFO
+end
     set :logging, Logger::INFO if production?
     set :logging, Logger::DEBUG if development?
     set :logging, Logger::DEBUG if staging?
