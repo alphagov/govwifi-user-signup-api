@@ -18,3 +18,5 @@ services:
       DB_HOSTNAME: db
       RACK_ENV: development
       AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
+    depends_on:
+      - db
