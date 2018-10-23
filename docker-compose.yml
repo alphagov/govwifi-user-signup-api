@@ -20,6 +20,3 @@ services:
       AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
     depends_on:
       - db
-    ports:
-      - "8080:8080"
-
