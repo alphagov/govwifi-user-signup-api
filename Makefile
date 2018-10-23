@@ -15,7 +15,7 @@ serve:
 	$(MAKE) build
 	docker-compose up -d db
 	./mysql/bin/wait_for_mysql
-	docker-compose up
+	docker-compose up -d
 
 lint:
 	$(MAKE) build
