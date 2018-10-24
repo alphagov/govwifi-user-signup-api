@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'net/http'
-
+require 'logger'
 require './lib/loader'
 
 class App < Sinatra::Base
