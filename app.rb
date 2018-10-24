@@ -1,11 +1,16 @@
 require 'sinatra/base'
 require 'net/http'
-
+require 'logger'
 require './lib/loader'
 
 class App < Sinatra::Base
-  configure :production, :staging, :development do
+  configure do
     enable :logging
+    set :logging, Logger::DEBUG
+  end
+
+  configure :production do
+    set :logging, Logger::INFO
   end
 
   get '/healthcheck' do
