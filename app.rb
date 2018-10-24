@@ -9,6 +9,10 @@ class App < Sinatra::Base
     set :logging, Logger::DEBUG
   end
 
+  configure :production, :staging do
+    set :dump_errors, false
+  end
+
   configure :production do
     set :logging, Logger::INFO
   end
