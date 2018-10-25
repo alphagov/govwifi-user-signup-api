@@ -34,7 +34,7 @@ private
   end
 
   def notify_client
-    @client ||= Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
+    @notify_client ||= Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
   end
 
   def sponsor_phone_number(actual_sponsor, sponsee)
@@ -65,6 +65,7 @@ private
   def send_confirmation_email(sponsor, sponsees)
     return send_sponsor_failed(sponsor) if sponsees.empty?
     return send_confirmation_singular(sponsor, sponsees) if sponsees.length == 1
+
     send_confirmation_plural(sponsor, sponsees)
   end
 
