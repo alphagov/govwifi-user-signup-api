@@ -54,7 +54,8 @@ private
     notify_client.send_email(
       email_address: sponsee_address,
       template_id: config['notify_email_template_ids']['sponsored_credentials'],
-      personalisation: login_details.merge(sponsor: sponsor)
+      personalisation: login_details.merge(sponsor: sponsor),
+      email_reply_to_id: do_not_reply_email_address_id
     )
   end
 
@@ -76,7 +77,8 @@ private
       personalisation: {
         number_of_accounts: sponsees.length,
         contacts: sponsees.join("\r\n")
-      }
+      },
+      email_reply_to_id: do_not_reply_email_address_id
     )
   end
 
@@ -86,7 +88,8 @@ private
       template_id: sponsor_confirmation_template['singular'],
       personalisation: {
         contact: sponsees.first
-      }
+      },
+      email_reply_to_id: do_not_reply_email_address_id
     )
   end
 
@@ -94,7 +97,8 @@ private
     notify_client.send_email(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['failed'],
-      personalisation: {}
+      personalisation: {},
+      email_reply_to_id: do_not_reply_email_address_id
     )
   end
 
@@ -108,5 +112,9 @@ private
     rescue Mail::Field::ParseError
       false
     end
+  end
+
+  def do_not_reply_email_address_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('do_not_reply_email_id')
   end
 end
