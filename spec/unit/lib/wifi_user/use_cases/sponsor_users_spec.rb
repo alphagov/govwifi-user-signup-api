@@ -4,6 +4,8 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:username) { 'dummy_username' }
   let(:password) { 'dummy_password' }
   let(:environment) { 'production' }
+  let(:production_do_not_reply_id) { '0d22d71f-afa3-4c72-8cd4-7716678dbd43' }
+  let(:staging_do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
 
   let(:user_model) { double(generate: { username: username, password: password }) }
   subject { described_class.new(user_model: user_model) }
@@ -18,6 +20,7 @@ describe WifiUser::UseCase::SponsorUsers do
   context 'Sponsoring a single email address' do
     let(:sponsor) { 'Chris <chris@gov.uk>' }
     let(:sponsees) { ['adrian@example.com<mailto: adrian@example.com>'] }
+    let(:do_not_reply_id) { production_do_not_reply_id }
 
     it 'Calls user_model#generate with the sponsees email' do
       expect(user_model).to have_received(:generate) \
@@ -34,7 +37,8 @@ describe WifiUser::UseCase::SponsorUsers do
         template_id: '30ab6bc5-20bf-45af-b78d-34cacc0027cd',
         personalisation: {
           contact: 'adrian@example.com'
-        }
+        },
+        email_reply_to_id: do_not_reply_id
       }
       expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
     end
@@ -67,6 +71,7 @@ describe WifiUser::UseCase::SponsorUsers do
   context 'Sponsoring an email address and a phone number' do
     let(:sponsor) { 'Chloe <chloe@gov.uk>' }
     let(:sponsees) { ['Steve <steve@example.com>', '07700900004'] }
+    let(:do_not_reply_id) { production_do_not_reply_id }
 
     it 'Calls user_model#generate for the email address' do
       expect(user_model).to have_received(:generate) \
@@ -98,6 +103,7 @@ describe WifiUser::UseCase::SponsorUsers do
     context 'On staging' do
       let(:environment) { 'staging' }
       let(:plural_sponsor_confirmation_template_id) { '856a5726-1099-4236-b67c-23b654e9edbf' }
+      let(:do_not_reply_id) { staging_do_not_reply_id }
 
       it 'Sends a multiple user confirmation email to the sponsor' do
         expect(a_plural_sponsor_confirmation_request).to have_been_made.once
@@ -111,7 +117,8 @@ describe WifiUser::UseCase::SponsorUsers do
         personalisation: {
           number_of_accounts: 2,
           contacts: "steve@example.com\r\n+447700900004"
-        }
+        },
+        email_reply_to_id: do_not_reply_id
       }
       a_request(:post, notify_email_url).with(notify_request(body))
     end
@@ -120,6 +127,7 @@ describe WifiUser::UseCase::SponsorUsers do
   context 'Sponsoring invalid contact details' do
     let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
     let(:sponsees) { %w(Peter Paul 07invalid700900004) }
+    let(:do_not_reply_id) { production_do_not_reply_id }
 
     it 'Does not call user_model#generate' do
       expect(user_model).not_to have_received(:generate)
@@ -129,7 +137,8 @@ describe WifiUser::UseCase::SponsorUsers do
       body = {
         email_address: 'cassandra@gov.uk',
         template_id: 'efc83658-dcb5-4401-af42-e26b1945c1a9',
-        personalisation: {}
+        personalisation: {},
+        email_reply_to_id: do_not_reply_id
       }
       expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
     end
@@ -138,6 +147,7 @@ describe WifiUser::UseCase::SponsorUsers do
   context 'Sponsoring from a non-gov email address' do
     let(:sponsor) { 'adrian <adrian@fake.uk>' }
     let(:sponsees) { ['adrian@notgov.uk'] }
+    let(:do_not_reply_id) { staging_do_not_reply_id }
 
     it 'Does not call user_model#generate' do
       expect(user_model).not_to have_received(:generate)
@@ -165,7 +175,8 @@ describe WifiUser::UseCase::SponsorUsers do
         username: username,
         password: password,
         sponsor: sponsor
-      }
+      },
+      email_reply_to_id: do_not_reply_id
     }
     a_request(:post, notify_email_url).with(notify_request(body))
   end
