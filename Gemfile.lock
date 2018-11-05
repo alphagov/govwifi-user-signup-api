@@ -98,7 +98,7 @@ GEM
       sass (~> 3.5, >= 3.5.5)
     sentry-raven (2.7.4)
       faraday (>= 0.7.6, < 1.0)
-    sequel (5.13.0)
+    sequel (5.14.0)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -133,7 +133,7 @@ DEPENDENCIES
   require_all
   rspec
   sentry-raven
-  sequel (~> 5.13)
+  sequel (~> 5.14)
   simplecov
   sinatra
   timecop
@@ -143,4 +143,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.16.5
