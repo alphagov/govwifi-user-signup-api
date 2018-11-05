@@ -93,7 +93,6 @@ def deploy_production() {
   try {
     timeout(time: 5, unit: 'MINUTES') {
       input "Do you want to deploy to production?"
-
       deploy('production')
     }
   } catch(err) { // timeout reached or input false
@@ -131,6 +130,13 @@ def deploy(deploy_environment) {
     )
     appImage.push()
   }
+
+  if(deploy_environment == 'production') { deploy_environment = 'wifi' }
+
+  cluster_name = "${deploy_environment}-api-cluster"
+  service_name = "user-signup-api-service-${deploy_environment}"
+
+  sh("aws ecs update-service --force-new-deployment --cluster ${cluster_name} --service ${service_name} --region eu-west-2")
 }
 
 def publishStableTag() {
