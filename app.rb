@@ -1,9 +1,12 @@
 require 'sinatra/base'
 require 'net/http'
 require 'logger'
+require 'rack-mini-profiler'
 require './lib/loader'
 
 class App < Sinatra::Base
+  use Rack::MiniProfiler
+
   configure do
     enable :logging
     set :logging, Logger::DEBUG

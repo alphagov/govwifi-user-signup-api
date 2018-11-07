@@ -20,3 +20,7 @@ group :test do
   gem 'timecop'
   gem 'webmock'
 end
+
+group :development do
+  gem 'rack-mini-profiler'
+end
