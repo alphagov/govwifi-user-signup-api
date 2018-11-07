@@ -18,5 +18,7 @@ services:
       DB_HOSTNAME: db
       RACK_ENV: development
       AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
+    ports:
+        - "8080:8080"
     depends_on:
       - db
