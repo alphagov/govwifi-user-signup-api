@@ -33,6 +33,11 @@ module WifiUser
   module UseCase; end
 end
 
+module Gdpr
+  module UseCase; end
+  module Gateway; end
+end
+
 require 'require_all'
 
 require_all 'lib'
