@@ -12,7 +12,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it 'does not delete any users' do
-          expect{ subject.delete_users }.to_not change { user_details.count }
+          expect { subject.delete_users }.to_not change { user_details.count }
         end
       end
 
@@ -62,7 +62,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it 'does not delete any user details' do
-          expect{ subject.delete_users }.to_not change { user_details.count }
+          expect { subject.delete_users }.to_not change { user_details.count }
         end
       end
 
@@ -103,18 +103,18 @@ describe Gdpr::Gateway::Userdetails do
     end
   end
 
-  context 'obfusticate_sponsors' do
+  context 'obfuscate user details' do
     context 'inactive sponsor' do
       before do
         user_details.insert(username: 'bob', sponsor: 'sally@gov.uk')
       end
 
-      it 'obfusticates the sponsor if the sponsor user record does not exist' do
-        subject.obfusticate_sponsors
+      it 'obfuscates the sponsor if the sponsor user record does not exist' do
+        subject.obfuscate_sponsors
         expect(user_details.where(username: 'bob').get(:sponsor)).to eq('user@gov.uk')
       end
 
-      it 'does not obfusticate the sponsor more than once' do
+      it 'does not obfuscate the sponsor more than once' do
         user_details.insert(
           username: 'sally',
           contact: 'sally@gov.uk',
@@ -123,7 +123,7 @@ describe Gdpr::Gateway::Userdetails do
         )
 
         expect {
-          subject.obfusticate_sponsors
+          subject.obfuscate_sponsors
         }.to_not change { user_details.where(username: 'sally').get(:updated_at) }
       end
     end
@@ -134,25 +134,25 @@ describe Gdpr::Gateway::Userdetails do
         user_details.insert(username: 'sally', contact: 'sally@gov.uk', sponsor: 'sally@gov.uk')
       end
 
-      it 'does not obfusticate the sponsor if the sponsor user record exists' do
-        subject.obfusticate_sponsors
+      it 'does not obfuscate the sponsor if the sponsor user record exists' do
+        subject.obfuscate_sponsors
         expect(user_details.where(username: 'bob').get(:sponsor)).to eq('sally@gov.uk')
       end
     end
 
     context 'Given nobody sponsored the user' do
       context 'Given a mobile signup' do
-        it 'does not obfusticate the sponsor field' do
+        it 'does not obfuscate the sponsor field' do
           user_details.insert(username: 'fred', contact: '0839038939', sponsor: '0839038939')
-          subject.obfusticate_sponsors
+          subject.obfuscate_sponsors
           expect(user_details.where(username: 'fred').get(:sponsor)).to eq('0839038939')
         end
       end
 
       context 'Given an email signup' do
-        it 'does not obfusticate the sponsor field' do
+        it 'does not obfuscate the sponsor field' do
           user_details.insert(username: 'fred', contact: 'fred@example.com', sponsor: 'fred@example.com')
-          subject.obfusticate_sponsors
+          subject.obfuscate_sponsors
           expect(user_details.where(username: 'fred').get(:sponsor)).to eq('fred@example.com')
         end
       end

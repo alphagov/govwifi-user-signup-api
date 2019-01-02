@@ -1,4 +1,4 @@
-class Gdpr::UseCase::DeleteUsers
+class Gdpr::UseCase::DeleteInactiveUsers
   def initialize(user_details_gateway:)
     @user_details_gateway = user_details_gateway
   end

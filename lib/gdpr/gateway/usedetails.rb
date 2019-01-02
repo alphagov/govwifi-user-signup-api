@@ -6,7 +6,7 @@ class Gdpr::Gateway::Userdetails
         AND username != "HEALTH"')
   end
 
-  def obfusticate_sponsors
+  def obfuscate_sponsors
     DB.run("UPDATE userdetails ud1
         LEFT JOIN userdetails as ud2 ON ud1.sponsor = ud2.contact
         SET ud1.sponsor = REPLACE(ud1.sponsor, SUBSTRING_INDEX(ud1.sponsor, '@', '1'), 'user')

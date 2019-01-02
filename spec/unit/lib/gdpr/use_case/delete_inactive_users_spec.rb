@@ -1,4 +1,4 @@
-describe Gdpr::UseCase::DeleteUsers do
+describe Gdpr::UseCase::DeleteInactiveUsers do
   subject { described_class.new(user_details_gateway: user_details_gateway) }
 
   let(:user_details_gateway) { double(delete_users: nil) }
