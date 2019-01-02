@@ -45,6 +45,18 @@ aws ecs run-task --cluster api-cluster --task-definition user-signup-api-task --
 aws ecs run-task --cluster api-cluster --task-definition user-signup-api-task --count 1 --overrides "{ \"containerOverrides\": [{ \"name\": \"user-signup\", \"command\": [\"bundle\", \"exec\", \"rake\", \"publish_weekly_statistics['2018-05-03']\"] }] }" --region eu-west-2
 ```
 
+## GDPR
+
+#### Inactive User Deletion
+
+Any user who has not logged into GovWifi for more than 12 months is considered inactive.
+
+We have a Rake task that runs daily with ECS Scheduled tasks to ensure this happens.
+
+```shell
+bundle exec rake delete_inactive_users
+```
+
 ### Dependencies
 
 * [GOV.UK Notify](https://www.notifications.service.gov.uk/) - used to send outgoing emails and SMS replies
