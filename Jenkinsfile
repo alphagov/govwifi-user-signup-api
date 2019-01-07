@@ -4,23 +4,38 @@ class Globals {
 }
 
 pipeline {
-  agent any
+  agent none
   stages {
     stage('Linting') {
+      agent any
       steps {
         sh 'make lint'
+      }
+      post {
+        always {
+          sh 'make stop'
+        }
       }
     }
 
     stage('Test') {
+      agent any
       steps {
         sh 'make test'
       }
+      post {
+        always {
+          sh 'make stop'
+        }
+      }
+
     }
 
     stage('Publish stable tag') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -29,8 +44,10 @@ pipeline {
     }
 
     stage('Deploy to staging') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -38,9 +55,23 @@ pipeline {
       }
     }
 
+    stage('Confirm deploy to production') {
+      when {
+        branch 'master'
+        beforeAgent true
+      }
+      agent none
+      steps {
+        wait_for_input('production')
+      }
+    }
+
+
     stage('Deploy to production') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -48,10 +79,25 @@ pipeline {
       }
     }
   }
+}
 
-  post {
-    cleanup {
-      sh 'make stop'
+def wait_for_input(deploy_environment) {
+  if (deployCancelled()) {
+    return;
+  }
+  try {
+    timeout(time: 5, unit: 'MINUTES') {
+      input "Do you want to deploy to ${deploy_environment}?"
+    }
+  } catch (err) {
+    def user = err.getCauses()[0].getUser()
+
+    if('SYSTEM' == user.toString()) { // SYSTEM means timeout.
+      Globals.didTimeout = true
+      echo "Release window timed out, to deploy please re-run"
+    } else {
+      Globals.userInput = false
+      echo "Aborted by: [${user}]"
     }
   }
 }
@@ -64,23 +110,7 @@ def deploy_production() {
   if(deployCancelled()) {
     return
   }
-
-  try {
-    timeout(time: 5, unit: 'MINUTES') {
-      input "Do you want to deploy to production?"
-      deploy('production')
-    }
-  } catch(err) { // timeout reached or input false
-    def user = err.getCauses()[0].getUser()
-
-    if('SYSTEM' == user.toString()) { // SYSTEM means timeout.
-      Globals.didTimeout = true
-      echo "Release window timed out, to deploy please re-run"
-    } else {
-      Globals.userInput = false
-      echo "Aborted by: [${user}]"
-    }
-  }
+  deploy('production')
 }
 
 def deploy(deploy_environment) {
