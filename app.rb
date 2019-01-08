@@ -1,12 +1,20 @@
+# frozen_string_literal: true
+
+require 'sensible_logging'
 require 'sinatra/base'
 require 'net/http'
 require 'logger'
 require './lib/loader'
 
 class App < Sinatra::Base
+  register Sinatra::SensibleLogging
+
+  sensible_logging(
+    logger: Logger.new(STDOUT)
+  )
+
   configure do
-    enable :logging
-    set :logging, Logger::DEBUG
+    set :log_level, Logger::DEBUG
   end
 
   configure :production, :staging do
@@ -14,7 +22,7 @@ class App < Sinatra::Base
   end
 
   configure :production do
-    set :logging, Logger::INFO
+    set :log_level, Logger::INFO
   end
 
   get '/healthcheck' do
