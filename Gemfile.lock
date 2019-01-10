@@ -105,7 +105,7 @@ GEM
     scss_lint (0.57.1)
       rake (>= 0.9, < 13)
       sass (~> 3.5, >= 3.5.5)
-    sensible_logging (0.3.0)
+    sensible_logging (0.4.0)
       activesupport (~> 5.2)
       rack (~> 2.0)
     sentry-raven (2.7.4)
@@ -147,7 +147,7 @@ DEPENDENCIES
   rake (~> 12.3)
   require_all
   rspec
-  sensible_logging (~> 0.3.0)
+  sensible_logging (~> 0.4.0)
   sentry-raven
   sequel (~> 5.15)
   simplecov
