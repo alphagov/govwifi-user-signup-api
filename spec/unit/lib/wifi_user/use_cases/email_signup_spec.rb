@@ -1,6 +1,12 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
-  subject { described_class.new(user_model: user_model) }
+  let(:user_db_model) { instance_double(WifiUser::Repository::UserUser) }
+  subject {
+    described_class.new(
+      user_model: user_model,
+      user_db_model: user_db_model
+    )
+  }
 
   describe 'Using an authorised email domain' do
     let(:notify_email_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
@@ -31,6 +37,10 @@ describe WifiUser::UseCase::EmailSignup do
       notify_email_stub
 
       allow(user_model).to receive(:generate)
+        .with(contact: created_contact)
+        .and_return(username: username, password: password)
+
+      allow(user_db_model).to receive(:generate)
         .with(contact: created_contact)
         .and_return(username: username, password: password)
     end

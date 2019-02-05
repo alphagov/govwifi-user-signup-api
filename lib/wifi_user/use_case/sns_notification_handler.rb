@@ -39,7 +39,10 @@ private
     logger.info("Handling signup request from #{from_address}")
 
     ::WifiUser::UseCase::EmailSignup
-      .new(user_model: WifiUser::Repository::User.new)
+      .new(
+        user_model: WifiUser::Repository::User.new,
+        user_db_model: WifiUser::Repository::UserUser.new,
+      )
       .execute(contact: from_address)
   end
 
@@ -53,7 +56,10 @@ private
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
 
     ::WifiUser::UseCase::SponsorUsers
-      .new(user_model: WifiUser::Repository::User.new)
+      .new(
+        user_model: WifiUser::Repository::User.new,
+        user_db_model: WifiUser::Repository::UserUser.new
+      )
       .execute(sponsee_extractor.execute, from_address)
   end
 end

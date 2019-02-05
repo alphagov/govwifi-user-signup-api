@@ -8,7 +8,13 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:staging_do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
 
   let(:user_model) { double(generate: { username: username, password: password }) }
-  subject { described_class.new(user_model: user_model) }
+  let(:user_db_model) { double(generate: { username: username, password: password }) }
+  subject {
+    described_class.new(
+      user_model: user_model,
+      user_db_model: user_db_model
+    )
+  }
 
   before do
     ENV['RACK_ENV'] = environment

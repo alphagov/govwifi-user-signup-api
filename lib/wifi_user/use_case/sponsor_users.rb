@@ -1,6 +1,7 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:)
+  def initialize(user_model:, user_db_model:)
     @user_model = user_model
+    @user_db_model = user_db_model
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
@@ -16,7 +17,7 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser
+  attr_reader :user_model, :contact_sanitiser, :user_db_model
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq
@@ -39,6 +40,9 @@ private
 
   def sponsor_phone_number(actual_sponsor, sponsee)
     login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
+
+    user_db_model.generate(contact: sponsee, sponsor: actual_sponsor)
+
     notify_client.send_sms(
       phone_number: sponsee,
       template_id: config['notify_sms_template_ids']['credentials'],
@@ -51,6 +55,9 @@ private
 
   def sponsor_email(sponsor, sponsor_address, sponsee_address)
     login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)
+
+    user_db_model.generate(contact: sponsee_address, sponsor: sponsor_address)
+
     notify_client.send_email(
       email_address: sponsee_address,
       template_id: config['notify_email_template_ids']['sponsored_credentials'],

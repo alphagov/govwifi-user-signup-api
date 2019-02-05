@@ -2,8 +2,9 @@ require 'mail'
 require 'notifications/client'
 
 class WifiUser::UseCase::EmailSignup
-  def initialize(user_model:)
+  def initialize(user_model:, user_db_model:)
     @user_model = user_model
+    @user_db_model = user_db_model
   end
 
   def execute(contact:)
@@ -12,12 +13,15 @@ class WifiUser::UseCase::EmailSignup
     return unless Common::EmailAddress.authorised_email_domain?(email_address)
 
     login_details = user_model.generate(contact: email_address)
+
+    user_db_model.generate(contact: email_address)
+
     send_signup_instructions(email_address, login_details)
   end
 
 private
 
-  attr_accessor :user_model
+  attr_accessor :user_model, :user_db_model
 
   def send_signup_instructions(email_address, login_details)
     client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
