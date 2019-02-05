@@ -1,6 +1,7 @@
 describe WifiUser::Repository::User do
   after do
     DB[:userdetails].truncate
+    USER_DB[:userdetails].truncate
   end
 
   describe '#generate' do

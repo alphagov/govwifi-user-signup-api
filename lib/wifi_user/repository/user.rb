@@ -32,9 +32,19 @@ private
   end
 
   def create_user(contact, sponsor)
+    username = random_username
+    password = password_from_word_list
+
     self.class.create(
-      username: random_username,
-      password: password_from_word_list,
+      username: username,
+      password: password,
+      contact: contact,
+      sponsor: sponsor
+    )
+
+    WifiUser::Repository::UserDbUser.create(
+      username: username,
+      password: password,
       contact: contact,
       sponsor: sponsor
     )
