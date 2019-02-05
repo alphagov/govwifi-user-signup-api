@@ -19,6 +19,8 @@ serve:
 	$(MAKE) build
 	$(DOCKER_COMPOSE) up -d db
 	./mysql/bin/wait_for_mysql
+	$(DOCKER_COMPOSE) up -d user_db
+	./mysql_user/bin/wait_for_mysql
 	$(DOCKER_COMPOSE) up -d
 
 lint:
