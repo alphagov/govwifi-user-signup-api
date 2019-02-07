@@ -102,3 +102,4 @@ This codebase is released under [the MIT License][mit].
 [mit]: LICENCE
 [performance-platform]:https://www.gov.uk/performance/govwifi
 [Notify]:https://www.notifications.service.gov.uk/
+[build-repo]:https://github.com/alphagov/govwifi-build
