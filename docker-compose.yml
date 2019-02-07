@@ -9,14 +9,6 @@ services:
     ports:
       - "13306:3306"
 
-  user_db:
-    build: ./mysql_user
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: govwifi_user_test
-    ports:
-      - "13307:3306"
-
   app:
     build: .
     environment:
@@ -24,9 +16,7 @@ services:
       DB_PASS: root
       DB_USER: root
       DB_HOSTNAME: db
-      USER_DB_NAME: govwifi_user_test
-      USER_DB_PASS: root
-      USER_DB_USER: root
-      USER_DB_HOSTNAME: user_db
       RACK_ENV: development
       AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
+    depends_on:
+      - db

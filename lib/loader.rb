@@ -16,14 +16,6 @@ DB = Sequel.connect(
   password: ENV.fetch('DB_PASS')
 )
 
-USER_DB = Sequel.connect(
-  adapter: 'mysql2',
-  host: ENV.fetch('USER_DB_HOSTNAME'),
-  database: ENV.fetch('USER_DB_NAME'),
-  user: ENV.fetch('USER_DB_USER'),
-  password: ENV.fetch('USER_DB_PASS')
-)
-
 module Common;
   module Gateway; end
 end
