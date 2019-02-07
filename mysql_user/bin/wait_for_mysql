@@ -1,5 +1,0 @@
-until docker-compose exec -T user_db mysql -huser_db -uroot -proot -e 'SELECT 1' &> /dev/null
-do
-  printf "."
-  sleep 1
-done

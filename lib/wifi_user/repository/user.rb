@@ -1,4 +1,4 @@
-class WifiUser::Repository::User < Sequel::Model(DB[:userdetails])
+class WifiUser::Repository::User < Sequel::Model(:userdetails)
   self.unrestrict_primary_key
 
   WORD_LIST = File.readlines(ENV['WORD_LIST_FILE']).map(&:strip)
@@ -32,19 +32,9 @@ private
   end
 
   def create_user(contact, sponsor)
-    username = random_username
-    password = password_from_word_list
-
     self.class.create(
-      username: username,
-      password: password,
-      contact: contact,
-      sponsor: sponsor
-    )
-
-    WifiUser::Repository::UserDbUser.create(
-      username: username,
-      password: password,
+      username: random_username,
+      password: password_from_word_list,
       contact: contact,
       sponsor: sponsor
     )
