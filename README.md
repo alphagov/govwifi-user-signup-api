@@ -1,6 +1,8 @@
 # GovWifi User Signup API
 
-End user signup journeys for GovWifi.
+This handles incoming sign-up texts and e-mails.
+
+The private GovWifi [build repository][build-repo] contains instructions on how to build GovWifi end-to-end - the sites, services and infrastructure.
 
 ## Overview
 
@@ -9,13 +11,13 @@ End user signup journeys for GovWifi.
 With each journey, we generate a unique username and password for GovWifi.
 These get stored and sent to the user.
 
-* SMS signup - Users text a phone number and get a set of credentials
+* SMS signup - Users text a phone number and get a set of credentials.
 * SMS help routes - Users can also ask for help from the same phone number and
-  are sent some guides based on their selected operating system
+  are sent some guides based on their selected operating system.
 * Email signup - Users with a government domain email send a blank email to
-  signup@wifi.service.gov.uk
+  signup@wifi.service.gov.uk.
 * Sponsor signup - Users with a government domain email address send through a
-  list of email addresses and/or phone numbers to sponsor@wifi.service.gov.uk
+  list of email addresses and/or phone numbers to sponsor@wifi.service.gov.uk.
 
 ### Sinatra routes
 
@@ -25,7 +27,7 @@ These get stored and sent to the user.
 
 ## Performance Platform
 
-This application sends statistics to the [Performance Platform](https://www.gov.uk/performance/govwifi) for volumetrics and completion rates via a Rake task.  This Rake task is triggered by an ECS scheduled task.
+This application sends statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task.  This Rake task is triggered by an ECS scheduled task.
 
 ### Send statistics manually
 
@@ -47,7 +49,7 @@ aws ecs run-task --cluster api-cluster --task-definition user-signup-api-task --
 
 ## GDPR
 
-#### Inactive User Deletion
+### Inactive User Deletion
 
 Any user who has not logged into GovWifi for more than 12 months is considered inactive.
 
@@ -59,17 +61,20 @@ bundle exec rake delete_inactive_users
 
 ### Dependencies
 
-* [GOV.UK Notify](https://www.notifications.service.gov.uk/) - used to send outgoing emails and SMS replies
+* [GOV.UK Notify][Notify] - used to send outgoing emails and SMS replies
 * MySQL database - used to store generated credentials
 
 ## Developing
 
 ### Running the tests
 
-You can run the tests and linter with the following commands:
-
 ```shell
 make test
+```
+
+### Using the linter
+
+```shell
 make lint
 ```
 
@@ -79,11 +84,22 @@ make lint
 make serve
 ```
 
-Then access the site at [http://localhost:8080/healthcheck](http://localhost:8080/healthcheck)
+Then access the site at <http://localhost:8080/healthcheck>
 
 ### Deploying changes
 
-Once you have merged your changes into master branch.  Deploying is made up of
-two steps.  Pushing a built image to the docker registry from Jenkins, and
-restarting the running tasks so it picks up the latest image.
+Once you have merged your changes into master branch, deploying them is made up of
+two steps:
 
+* Pushing a built image to the docker registry from Jenkins.
+
+* Restarting the running tasks so it picks up the latest image.
+
+## Licence
+
+This codebase is released under [the MIT License][mit].
+
+[mit]: LICENCE
+[performance-platform]:https://www.gov.uk/performance/govwifi
+[Notify]:https://www.notifications.service.gov.uk/
+[build-repo]:https://github.com/alphagov/govwifi-build
