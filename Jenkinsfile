@@ -4,23 +4,38 @@ class Globals {
 }
 
 pipeline {
-  agent any
+  agent none
   stages {
     stage('Linting') {
+      agent any
       steps {
         sh 'make lint'
+      }
+      post {
+        always {
+          sh 'make stop'
+        }
       }
     }
 
     stage('Test') {
+      agent any
       steps {
         sh 'make test'
       }
+      post {
+        always {
+          sh 'make stop'
+        }
+      }
+
     }
 
     stage('Publish stable tag') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -29,8 +44,10 @@ pipeline {
     }
 
     stage('Deploy to staging') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -38,9 +55,23 @@ pipeline {
       }
     }
 
+    stage('Confirm deploy to production') {
+      when {
+        branch 'master'
+        beforeAgent true
+      }
+      agent none
+      steps {
+        wait_for_input('production')
+      }
+    }
+
+
     stage('Deploy to production') {
+      agent any
       when{
         branch 'master'
+        beforeAgent true
       }
 
       steps {
@@ -48,54 +79,17 @@ pipeline {
       }
     }
   }
+}
 
-  post {
-    failure {
-      script {
-        if(deployCancelled()) {
-          setBuildStatus("Build successful", "SUCCESS");
-          return
-        }
-      }
-      setBuildStatus("Build failed", "FAILURE");
-    }
-
-    success {
-      setBuildStatus("Build successful", "SUCCESS");
-    }
-
-    cleanup {
-      sh 'make stop'
-    }
+def wait_for_input(deploy_environment) {
+  if (deployCancelled()) {
+    return;
   }
-}
-
-void setBuildStatus(String message, String state) {
-  step([
-      $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/alphagov/govwifi-user-signup-api"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-  ]);
-}
-
-def deploy_staging() {
-  deploy('staging')
-}
-
-def deploy_production() {
-  if(deployCancelled()) {
-    setBuildStatus("Build successful", "SUCCESS");
-    return
-  }
-
   try {
     timeout(time: 5, unit: 'MINUTES') {
-      input "Do you want to deploy to production?"
-      deploy('production')
+      input "Do you want to deploy to ${deploy_environment}?"
     }
-  } catch(err) { // timeout reached or input false
+  } catch (err) {
     def user = err.getCauses()[0].getUser()
 
     if('SYSTEM' == user.toString()) { // SYSTEM means timeout.
@@ -106,6 +100,17 @@ def deploy_production() {
       echo "Aborted by: [${user}]"
     }
   }
+}
+
+def deploy_staging() {
+  deploy('staging')
+}
+
+def deploy_production() {
+  if(deployCancelled()) {
+    return
+  }
+  deploy('production')
 }
 
 def deploy(deploy_environment) {
