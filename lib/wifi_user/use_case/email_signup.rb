@@ -2,14 +2,15 @@ require 'mail'
 require 'notifications/client'
 
 class WifiUser::UseCase::EmailSignup
-  def initialize(user_model:)
+  def initialize(user_model:, s3_gateway:)
     @user_model = user_model
+    @s3_gateway = s3_gateway
   end
 
   def execute(contact:)
     email_address = Mail::Address.new(contact).address
 
-    return unless Common::EmailAddress.authorised_email_domain?(email_address)
+    return unless authorised_email_domain?(email_address)
 
     login_details = user_model.generate(contact: email_address)
     send_signup_instructions(email_address, login_details)
@@ -17,7 +18,12 @@ class WifiUser::UseCase::EmailSignup
 
 private
 
-  attr_accessor :user_model
+  attr_accessor :user_model, :s3_gateway
+
+  def authorised_email_domain?(email)
+    regex = Regexp.new(s3_gateway.fetch, Regexp::IGNORECASE)
+    regex.match?(email)
+  end
 
   def send_signup_instructions(email_address, login_details)
     client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))

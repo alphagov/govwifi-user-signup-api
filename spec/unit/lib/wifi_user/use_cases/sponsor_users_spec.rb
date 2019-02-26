@@ -8,10 +8,18 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:staging_do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
 
   let(:user_model) { double(generate: { username: username, password: password }) }
-  subject { described_class.new(user_model: user_model) }
+  let(:s3_gateway) { double(fetch: '.gov.uk$') }
+
+  subject do
+    described_class.new(
+      user_model: user_model,
+      s3_gateway: s3_gateway
+    )
+  end
 
   before do
     ENV['RACK_ENV'] = environment
+    ENV['NOTIFY_API_KEY'] = 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000'
     stub_request(:post, notify_email_url).to_return(status: 200, body: {}.to_json)
     stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
     subject.execute(sponsees, sponsor)

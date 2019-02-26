@@ -1,13 +1,14 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:)
+  def initialize(user_model:, s3_gateway:)
     @user_model = user_model
+    @s3_gateway = s3_gateway
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
   def execute(unsanitised_sponsees, sponsor)
     sponsor_address = Mail::Address.new(sponsor).address
 
-    return unless Common::EmailAddress.authorised_email_domain?(sponsor_address)
+    return unless authorised_email_domain?(sponsor_address)
 
     sponsees = sanitise_sponsees(unsanitised_sponsees)
     invite_sponsees(sponsor, sponsor_address, sponsees)
@@ -16,7 +17,12 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser
+  attr_reader :user_model, :contact_sanitiser, :s3_gateway
+
+  def authorised_email_domain?(email)
+    regex = Regexp.new(s3_gateway.fetch, Regexp::IGNORECASE)
+    regex.match?(email)
+  end
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq

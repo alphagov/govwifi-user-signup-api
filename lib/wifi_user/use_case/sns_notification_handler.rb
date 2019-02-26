@@ -39,7 +39,13 @@ private
     logger.info("Handling signup request from #{from_address}")
 
     ::WifiUser::UseCase::EmailSignup
-      .new(user_model: WifiUser::Repository::User.new)
+      .new(
+        user_model: WifiUser::Repository::User.new,
+        s3_gateway: Common::Gateway::S3ObjectFetcher.new(
+          bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
+          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY')
+        )
+      )
       .execute(contact: from_address)
   end
 

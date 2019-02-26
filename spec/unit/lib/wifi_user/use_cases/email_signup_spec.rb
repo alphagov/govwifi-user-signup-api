@@ -1,6 +1,13 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
-  subject { described_class.new(user_model: user_model) }
+  let(:s3_gateway) { double(fetch: '.gov.uk$') }
+
+  subject do
+    described_class.new(
+      user_model: user_model,
+      s3_gateway: s3_gateway
+    )
+  end
 
   describe 'Using an authorised email domain' do
     let(:notify_email_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
