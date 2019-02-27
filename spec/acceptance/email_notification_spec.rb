@@ -1,6 +1,4 @@
 RSpec.describe App do
-  before { ENV['AUTHORISED_EMAIL_DOMAINS_REGEX'] = '.gov.uk$' }
-
   describe 'POSTing a Notification to /user-signup/email-notification' do
     let(:bucket_name) { 'stub-bucket-name' }
     let(:object_key) { 'stub-object-key' }
