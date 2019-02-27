@@ -1,0 +1,20 @@
+notify_sms_template_ids:
+  credentials: aaa
+  help_menu: bbb
+  generic_help: ccc
+  device_help:
+    android: ddd
+    blackberry: eee
+    mac: fff
+    iphone: ggg
+    windows: hhh
+
+notify_email_template_ids:
+  self_signup_credentials: iii
+  sponsored_credentials: jjj
+  sponsor_confirmation:
+    plural: kkk
+    singular: lll
+    failed: mmm
+
+do_not_reply_email_id: nnn

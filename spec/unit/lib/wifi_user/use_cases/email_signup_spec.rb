@@ -29,10 +29,7 @@ describe WifiUser::UseCase::EmailSignup do
         .to_return(status: 200, body: {}.to_json)
     end
 
-    let(:notify_api_key) { 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000' }
-
     before do
-      ENV['NOTIFY_API_KEY'] = notify_api_key
       ENV['RACK_ENV'] = environment
 
       notify_email_stub

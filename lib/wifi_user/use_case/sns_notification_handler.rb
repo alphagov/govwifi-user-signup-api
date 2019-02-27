@@ -1,5 +1,7 @@
 class WifiUser::UseCase::SnsNotificationHandler
-  def initialize(logger)
+  def initialize(email_signup_handler:, sponsor_signup_handler:, logger: Logger.new(STDOUT))
+    @email_signup_handler = email_signup_handler
+    @sponsor_signup_handler = sponsor_signup_handler
     @logger = logger
   end
 
@@ -13,7 +15,7 @@ class WifiUser::UseCase::SnsNotificationHandler
 
 private
 
-  attr_reader :logger
+  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler
 
   def handle_email_notification(payload)
     ses_notification = JSON.parse(payload['Message'])
@@ -38,16 +40,7 @@ private
     from_address = ses_notification['mail']['commonHeaders']['from'][0]
     logger.info("Handling signup request from #{from_address}")
 
-    ::WifiUser::UseCase::EmailSignup.new(
-      user_model: WifiUser::Repository::User.new,
-      whitelist_checker: WifiUser::UseCases::CheckIfWhitelistedEmail.new(
-        gateway: Common::Gateway::S3ObjectFetcher.new(
-          bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
-          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
-          region: 'eu-west-2'
-        )
-      )
-    ).execute(contact: from_address)
+    email_signup_handler.execute(contact: from_address)
   end
 
   def handle_sponsor_request(ses_notification)
@@ -62,15 +55,6 @@ private
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
 
-    ::WifiUser::UseCase::SponsorUsers.new(
-      user_model: WifiUser::Repository::User.new,
-      whitelist_checker: WifiUser::UseCases::CheckIfWhitelistedEmail.new(
-        gateway: Common::Gateway::S3ObjectFetcher.new(
-          bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
-          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
-          region: 'eu-west-2'
-        )
-      )
-    ).execute(sponsee_extractor.execute, from_address)
+    sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)
   end
 end
