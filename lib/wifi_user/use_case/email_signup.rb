@@ -2,36 +2,33 @@ require 'mail'
 require 'notifications/client'
 
 class WifiUser::UseCase::EmailSignup
-  def initialize(user_model:, s3_gateway:)
+  def initialize(user_model:, whitelist_checker:, logger: Logger.new(STDOUT))
     @user_model = user_model
-    @s3_gateway = s3_gateway
+    @whitelist_checker = whitelist_checker
+    @logger = logger
   end
 
   def execute(contact:)
     email_address = Mail::Address.new(contact).address
 
-    return unless authorised_email_domain?(email_address)
-
-    login_details = user_model.generate(contact: email_address)
-    send_signup_instructions(email_address, login_details)
+    if whitelist_checker.execute(email_address)[:success]
+      send_signup_instructions(email_address)
+    else
+      logger.info("Unsuccessful email signup attempt: #{email_address}")
+    end
   end
 
 private
 
-  attr_accessor :user_model, :s3_gateway
+  attr_accessor :user_model, :whitelist_checker, :logger
 
-  def authorised_email_domain?(email)
-    regex = Regexp.new(s3_gateway.fetch, Regexp::IGNORECASE)
-    regex.match?(email)
-  end
-
-  def send_signup_instructions(email_address, login_details)
+  def send_signup_instructions(email_address)
     client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
 
     client.send_email(
       email_address: email_address,
       template_id: credentials_template_id,
-      personalisation: login_details,
+      personalisation: user_model.generate(contact: email_address),
       email_reply_to_id: do_not_reply_email_address_id
     )
   end

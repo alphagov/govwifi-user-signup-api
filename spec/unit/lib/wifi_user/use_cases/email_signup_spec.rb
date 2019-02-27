@@ -1,11 +1,11 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
-  let(:s3_gateway) { double(fetch: '.gov.uk$') }
+  let(:whitelist_checker) { double(execute: { success: true }) }
 
   subject do
     described_class.new(
       user_model: user_model,
-      s3_gateway: s3_gateway
+      whitelist_checker: whitelist_checker
     )
   end
 
@@ -87,6 +87,7 @@ describe WifiUser::UseCase::EmailSignup do
       end
 
       context 'given an email address with a non-gov domain' do
+        let(:whitelist_checker) { double(execute: { success: false }) }
         let(:created_contact) { 'irrelevant@somewhere.uk' }
         let(:username) { 'irrelevant' }
         let(:password) { 'irrelephant' }

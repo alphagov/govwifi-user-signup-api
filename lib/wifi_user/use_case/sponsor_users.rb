@@ -1,28 +1,26 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, s3_gateway:)
+  def initialize(user_model:, whitelist_checker:, logger: Logger.new(STDOUT))
+    @logger = logger
     @user_model = user_model
-    @s3_gateway = s3_gateway
+    @whitelist_checker = whitelist_checker
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
   def execute(unsanitised_sponsees, sponsor)
     sponsor_address = Mail::Address.new(sponsor).address
 
-    return unless authorised_email_domain?(sponsor_address)
-
-    sponsees = sanitise_sponsees(unsanitised_sponsees)
-    invite_sponsees(sponsor, sponsor_address, sponsees)
-    send_confirmation_email(sponsor_address, sponsees)
+    if whitelist_checker.execute(sponsor_address)[:success]
+      sponsees = sanitise_sponsees(unsanitised_sponsees)
+      invite_sponsees(sponsor, sponsor_address, sponsees)
+      send_confirmation_email(sponsor_address, sponsees)
+    else
+      logger.info("Unsuccessful sponsor signup attempt: #{sponsor_address}")
+    end
   end
 
 private
 
-  attr_reader :user_model, :contact_sanitiser, :s3_gateway
-
-  def authorised_email_domain?(email)
-    regex = Regexp.new(s3_gateway.fetch, Regexp::IGNORECASE)
-    regex.match?(email)
-  end
+  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :logger
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq

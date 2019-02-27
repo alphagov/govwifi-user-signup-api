@@ -8,12 +8,12 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:staging_do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
 
   let(:user_model) { double(generate: { username: username, password: password }) }
-  let(:s3_gateway) { double(fetch: '.gov.uk$') }
+  let(:whitelist_checker) { double(execute: { success: true }) }
 
   subject do
     described_class.new(
       user_model: user_model,
-      s3_gateway: s3_gateway
+      whitelist_checker: whitelist_checker
     )
   end
 
@@ -156,6 +156,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:sponsor) { 'adrian <adrian@fake.uk>' }
     let(:sponsees) { ['adrian@notgov.uk'] }
     let(:do_not_reply_id) { staging_do_not_reply_id }
+    let(:whitelist_checker) { double(execute: { success: false }) }
 
     it 'Does not call user_model#generate' do
       expect(user_model).not_to have_received(:generate)
