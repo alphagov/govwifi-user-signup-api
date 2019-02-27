@@ -29,6 +29,7 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/email-notification' do
+    logger.info(request)
     WifiUser::UseCase::SnsNotificationHandler.new(logger).handle(request)
   end
 
