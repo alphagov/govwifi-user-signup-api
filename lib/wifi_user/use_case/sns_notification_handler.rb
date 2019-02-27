@@ -43,7 +43,8 @@ private
       whitelist_checker: WifiUser::UseCases::CheckIfWhitelistedEmail.new(
         gateway: Common::Gateway::S3ObjectFetcher.new(
           bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
-          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY')
+          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
+          region: 'eu-west-2'
         )
       )
     ).execute(contact: from_address)
@@ -55,13 +56,20 @@ private
 
     logger.info("Handling sponsor request from #{from_address} with email #{action['objectKey']}")
 
-    email_fetcher = Common::Gateway::S3ObjectFetcher.new(bucket: action['bucketName'], key: action['objectKey'])
+    email_fetcher = Common::Gateway::S3ObjectFetcher.new(
+      bucket: action['bucketName'],
+      key: action['objectKey']
+    )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
 
     ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: WifiUser::UseCases::CheckIfWhitelistedEmail.new(
-        gateway: email_fetcher
+        gateway: Common::Gateway::S3ObjectFetcher.new(
+          bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
+          key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
+          region: 'eu-west-2'
+        )
       )
     ).execute(sponsee_extractor.execute, from_address)
   end
