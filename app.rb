@@ -47,9 +47,12 @@ class App < Sinatra::Base
       whitelist_checker: whitelist_checker
     )
 
+    email_parser = WifiUser::UseCase::ParseEmailRequest.new
+
     WifiUser::UseCase::SnsNotificationHandler.new(
       email_signup_handler: email_signup_handler,
-      sponsor_signup_handler: sponsor_signup_handler
+      sponsor_signup_handler: sponsor_signup_handler,
+      email_parser: email_parser
     ).handle(request)
   end
 
