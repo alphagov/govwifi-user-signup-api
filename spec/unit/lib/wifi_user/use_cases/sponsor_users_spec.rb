@@ -19,7 +19,6 @@ describe WifiUser::UseCase::SponsorUsers do
 
   before do
     ENV['RACK_ENV'] = environment
-    ENV['NOTIFY_API_KEY'] = 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000'
     stub_request(:post, notify_email_url).to_return(status: 200, body: {}.to_json)
     stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
     subject.execute(sponsees, sponsor)

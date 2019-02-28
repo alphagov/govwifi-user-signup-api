@@ -7,7 +7,6 @@ describe App do
 
     before do
       ENV['RACK_ENV'] = 'staging'
-      ENV['NOTIFY_API_KEY'] = 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000'
       stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
     end
 
