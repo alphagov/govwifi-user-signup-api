@@ -12,10 +12,11 @@ class WifiUser::UseCase::SnsNotificationHandler
     begin
       payload = email_parser.execute(params)
     rescue KeyError
-      logger.debug("Unable to process signup.  Malformed request: #{params}") && return
+      logger.debug("Unable to process signup.  Malformed request: #{params}")
+      return
     end
 
-    logger.info(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
+    logger.debug(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
     handle_email_notification(payload) if payload.fetch(:type) == 'Notification'
     ''
   end
@@ -39,13 +40,13 @@ private
   end
 
   def handle_signup_request(payload)
-    logger.info("Handling signup request from #{payload.fetch(:from_address)}")
+    logger.debug("Handling signup request from #{payload.fetch(:from_address)}")
     email_signup_handler.execute(contact: payload.fetch(:from_address))
   end
 
   def handle_sponsor_request(payload)
     from_address = payload.fetch(:from_address)
-    logger.info("Handling sponsor request from #{from_address} with email #{payload.fetch(:s3_object_key)}")
+    logger.debug("Handling sponsor request from #{from_address} with email #{payload.fetch(:s3_object_key)}")
 
     email_fetcher = Common::Gateway::S3ObjectFetcher.new(
       bucket: payload.fetch(:s3_bucket_name),
