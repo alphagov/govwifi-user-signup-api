@@ -1,57 +1,55 @@
 class WifiUser::UseCase::SnsNotificationHandler
-  def initialize(email_signup_handler:, sponsor_signup_handler:, logger: Logger.new(STDOUT))
+  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, logger: Logger.new(STDOUT))
     @email_signup_handler = email_signup_handler
     @sponsor_signup_handler = sponsor_signup_handler
     @logger = logger
+    @email_parser = email_parser
   end
 
   def handle(request)
-    payload = JSON.parse request.body.read
+    params = request.body.read
 
-    logger.info(payload) if payload['Type'] == 'SubscriptionConfirmation'
-    handle_email_notification(payload) if payload['Type'] == 'Notification'
+    begin
+      payload = email_parser.execute(params)
+    rescue KeyError
+      logger.debug("Unable to process signup.  Malformed request: #{params}") && return
+    end
+
+    logger.info(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
+    handle_email_notification(payload) if payload.fetch(:type) == 'Notification'
     ''
   end
 
 private
 
-  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler
+  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler, :email_parser
 
   def handle_email_notification(payload)
-    ses_notification = JSON.parse(payload['Message'])
-    return if ses_notification['mail']['messageId'] == 'AMAZON_SES_SETUP_NOTIFICATION'
+    return if payload.fetch(:message_id) == 'AMAZON_SES_SETUP_NOTIFICATION'
 
-    if sponsor_request?(ses_notification)
-      handle_sponsor_request(ses_notification)
+    if sponsor_request?(payload)
+      handle_sponsor_request(payload)
     else
-      handle_signup_request(ses_notification)
+      handle_signup_request(payload)
     end
   end
 
-  def sponsor_request?(ses_notification)
-    recipient_name(ses_notification) == "sponsor"
+  def sponsor_request?(payload)
+    Mail::Address.new(payload.fetch(:to_address)).local == "sponsor"
   end
 
-  def recipient_name(ses_notification)
-    Mail::Address.new(ses_notification['mail']['commonHeaders']['to'][0]).local
+  def handle_signup_request(payload)
+    logger.info("Handling signup request from #{payload.fetch(:from_address)}")
+    email_signup_handler.execute(contact: payload.fetch(:from_address))
   end
 
-  def handle_signup_request(ses_notification)
-    from_address = ses_notification['mail']['commonHeaders']['from'][0]
-    logger.info("Handling signup request from #{from_address}")
-
-    email_signup_handler.execute(contact: from_address)
-  end
-
-  def handle_sponsor_request(ses_notification)
-    from_address = ses_notification['mail']['commonHeaders']['from'][0]
-    action = ses_notification['receipt']['action']
-
-    logger.info("Handling sponsor request from #{from_address} with email #{action['objectKey']}")
+  def handle_sponsor_request(payload)
+    from_address = payload.fetch(:from_address)
+    logger.info("Handling sponsor request from #{from_address} with email #{payload.fetch(:s3_object_key)}")
 
     email_fetcher = Common::Gateway::S3ObjectFetcher.new(
-      bucket: action['bucketName'],
-      key: action['objectKey']
+      bucket: payload.fetch(:s3_bucket_name),
+      key: payload.fetch(:s3_object_key)
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
 
