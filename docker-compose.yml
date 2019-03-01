@@ -19,6 +19,7 @@ services:
       RACK_ENV: development
       S3_SIGNUP_WHITELIST_OBJECT_KEY: 'somefile'
       S3_SIGNUP_WHITELIST_BUCKET: 'somebucket'
+      NOTIFY_API_KEY: dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000
     expose:
         - "8080"
     depends_on:
