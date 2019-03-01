@@ -46,6 +46,20 @@ describe WifiUser::Repository::User do
     end
   end
 
+  context 'avoiding usernames including aeiou' do
+    let(:email) { 'foo@bar.gov.uk' }
+
+    let!(:user) do
+      srand(1)
+      described_class.new.generate(contact: email)
+    end
+
+    it 'does not allow usernames containing any vowels' do
+      expect { raise RuntimeError, 'Contains vowels'}.
+      to raise_error('Contains vowels')
+    end
+  end
+
   context 'generate with a sponsor value specified' do
     let(:user_from_db) { described_class.first }
 

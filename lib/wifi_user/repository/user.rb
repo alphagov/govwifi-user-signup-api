@@ -15,12 +15,21 @@ private
 
   def random_username
     username = generate_username
+    username_validator(username)
 
     while self.class.find(username: username)
       username = generate_username
     end
 
     username
+  end
+
+  def username_validator(generated_username)
+    if generated_username.include?('f')
+      generate_username
+    else
+      generated_username
+    end
   end
 
   def generate_username
