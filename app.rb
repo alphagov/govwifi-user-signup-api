@@ -28,6 +28,7 @@ class App < Sinatra::Base
     'Healthy'
   end
 
+  # rubocop:disable Metrics/BlockLength
   post '/user-signup/email-notification' do
     whitelist_checker = WifiUser::UseCases::CheckIfWhitelistedEmail.new(
       gateway: Common::Gateway::S3ObjectFetcher.new(
@@ -39,22 +40,28 @@ class App < Sinatra::Base
 
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
       user_model: WifiUser::Repository::User.new,
-      whitelist_checker: whitelist_checker
+      whitelist_checker: whitelist_checker,
+      logger: logger
     )
 
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
-      whitelist_checker: whitelist_checker
+      whitelist_checker: whitelist_checker,
+      logger: logger
     )
 
-    email_parser = WifiUser::UseCase::ParseEmailRequest.new
+    email_parser = WifiUser::UseCase::ParseEmailRequest.new(
+      logger: logger
+    )
 
     WifiUser::UseCase::SnsNotificationHandler.new(
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
-      email_parser: email_parser
+      email_parser: email_parser,
+      logger: logger
     ).handle(request)
   end
+  # rubocop:enable Metrics/BlockLength
 
   post '/user-signup/sms-notification' do
     logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} with message #{params[:message]}")

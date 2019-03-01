@@ -16,7 +16,7 @@ class WifiUser::UseCase::SnsNotificationHandler
       return
     end
 
-    logger.debug(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
+    logger.info(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
     handle_email_notification(payload) if payload.fetch(:type) == 'Notification'
     ''
   end
