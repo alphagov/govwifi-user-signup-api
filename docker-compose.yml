@@ -6,8 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: govwifi_test
-    ports:
-      - "13306:3306"
+    expose:
+      - "3306"
 
   app:
     build: .
@@ -17,8 +17,10 @@ services:
       DB_USER: root
       DB_HOSTNAME: db
       RACK_ENV: development
-      AUTHORISED_EMAIL_DOMAINS_REGEX: "\\.gov\\.uk$$"
-    ports:
-        - "8080:8080"
+      S3_SIGNUP_WHITELIST_OBJECT_KEY: 'somefile'
+      S3_SIGNUP_WHITELIST_BUCKET: 'somebucket'
+      NOTIFY_API_KEY: dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000
+    expose:
+        - "8080"
     depends_on:
       - db

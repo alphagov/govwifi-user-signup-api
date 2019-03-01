@@ -29,7 +29,31 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/email-notification' do
-    WifiUser::UseCase::SnsNotificationHandler.new(logger).handle(request)
+    whitelist_checker = WifiUser::UseCases::CheckIfWhitelistedEmail.new(
+      gateway: Common::Gateway::S3ObjectFetcher.new(
+        bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
+        key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
+        region: 'eu-west-2'
+      )
+    )
+
+    email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
+      user_model: WifiUser::Repository::User.new,
+      whitelist_checker: whitelist_checker
+    )
+
+    sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
+      user_model: WifiUser::Repository::User.new,
+      whitelist_checker: whitelist_checker
+    )
+
+    email_parser = WifiUser::UseCase::ParseEmailRequest.new
+
+    WifiUser::UseCase::SnsNotificationHandler.new(
+      email_signup_handler: email_signup_handler,
+      sponsor_signup_handler: sponsor_signup_handler,
+      email_parser: email_parser
+    ).handle(request)
   end
 
   post '/user-signup/sms-notification' do

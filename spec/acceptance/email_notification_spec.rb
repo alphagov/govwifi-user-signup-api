@@ -1,15 +1,15 @@
 RSpec.describe App do
-  before { ENV['AUTHORISED_EMAIL_DOMAINS_REGEX'] = '.gov.uk$' }
-
   describe 'POSTing a Notification to /user-signup/email-notification' do
     let(:bucket_name) { 'stub-bucket-name' }
     let(:object_key) { 'stub-object-key' }
+    let(:message_id) { 'some-message-id' }
 
     let(:ses_notification) do
       # Notification format taken from
       # https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-notifications-examples.html
       {
         mail: {
+          messageId: message_id,
           commonHeaders: {
             from: [from_address],
             to: [to_address]
@@ -54,6 +54,14 @@ RSpec.describe App do
         post_notification
         expect(last_response.body).to eq('')
       end
+
+      describe 'POSTing a Amazon SES Setup Notification to /user-signup/email-notification' do
+        let(:message_id) { 'AMAZON_SES_SETUP_NOTIFICATION' }
+
+        it 'ignores the message' do
+          expect { post_notification }.to_not(raise_error)
+        end
+      end
     end
 
     describe 'when the Notification is a sponsor' do
@@ -90,20 +98,6 @@ RSpec.describe App do
         post_notification
         expect(sponsor_users).to have_received(:execute)
                                    .with(['a_fantastic_email@example.com'], 'chris@example.com')
-      end
-    end
-
-    describe 'POSTing a Amazon SES Setup Notification to /user-signup/email-notification' do
-      let(:ses_notification) do
-        {
-          mail: {
-            messageId: 'AMAZON_SES_SETUP_NOTIFICATION'
-          }
-        }
-      end
-
-      it 'ignores the message' do
-        expect { post_notification }.to_not(raise_error)
       end
     end
   end

@@ -1,6 +1,13 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
-  subject { described_class.new(user_model: user_model) }
+  let(:whitelist_checker) { double(execute: { success: true }) }
+
+  subject do
+    described_class.new(
+      user_model: user_model,
+      whitelist_checker: whitelist_checker
+    )
+  end
 
   describe 'Using an authorised email domain' do
     let(:notify_email_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
@@ -22,10 +29,7 @@ describe WifiUser::UseCase::EmailSignup do
         .to_return(status: 200, body: {}.to_json)
     end
 
-    let(:notify_api_key) { 'dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000' }
-
     before do
-      ENV['NOTIFY_API_KEY'] = notify_api_key
       ENV['RACK_ENV'] = environment
 
       notify_email_stub
@@ -80,6 +84,7 @@ describe WifiUser::UseCase::EmailSignup do
       end
 
       context 'given an email address with a non-gov domain' do
+        let(:whitelist_checker) { double(execute: { success: false }) }
         let(:created_contact) { 'irrelevant@somewhere.uk' }
         let(:username) { 'irrelevant' }
         let(:password) { 'irrelephant' }
