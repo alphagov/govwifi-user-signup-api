@@ -55,7 +55,6 @@ describe WifiUser::Repository::User do
 
     it 'does not allow usernames containing any vowels' do
       expect(user[:username]).to eq('fmxjlq')
-      pp user
     end
   end
 

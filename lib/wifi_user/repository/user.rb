@@ -25,11 +25,14 @@ private
 
   def generate_username
     username = ('a'..'z').to_a.sample(6).join
+    remove_vowels(username)
+  end
 
+  def remove_vowels(username)
     if username.include?('a') || username.include?('e') || username.include?('i') ||
-        username.include?('o') || username.include?('u')
+      username.include?('o') || username.include?('u')
 
-      username.tr! 'a', 'k'
+      username.tr! 'a', 'g'
       username.tr! 'e', 'p'
       username.tr! 'i', 'l'
       username.tr! 'o', 'x'
