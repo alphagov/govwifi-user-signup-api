@@ -30,7 +30,7 @@ private
 
   def remove_vowels(username)
     if username.include?('a') || username.include?('e') || username.include?('i') ||
-      username.include?('o') || username.include?('u')
+        username.include?('o') || username.include?('u')
 
       username.tr! 'a', 'g'
       username.tr! 'e', 'p'
