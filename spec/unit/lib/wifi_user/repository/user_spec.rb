@@ -27,7 +27,7 @@ describe WifiUser::Repository::User do
       let(:split_password) { user[:password].split(/(?=[A-Z])/) }
 
       it 'creates a user and returns it' do
-        expect(user[:username]).to eq(random_username)
+        expect(user[:username]).to eq('lqxjnx')
         expect(user[:password]).not_to be_empty
       end
 
@@ -48,15 +48,14 @@ describe WifiUser::Repository::User do
 
   context 'avoiding usernames including aeiou' do
     let(:email) { 'foo@bar.gov.uk' }
-
     let!(:user) do
       srand(1)
       described_class.new.generate(contact: email)
     end
 
     it 'does not allow usernames containing any vowels' do
-      expect { raise RuntimeError, 'Contains vowels'}.
-      to raise_error('Contains vowels')
+      expect(user[:username]).to eq('fmxjlq')
+      pp user
     end
   end
 

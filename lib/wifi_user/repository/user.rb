@@ -15,7 +15,6 @@ private
 
   def random_username
     username = generate_username
-    username_validator(username)
 
     while self.class.find(username: username)
       username = generate_username
@@ -24,16 +23,20 @@ private
     username
   end
 
-  def username_validator(generated_username)
-    if generated_username.include?('f')
-      generate_username
-    else
-      generated_username
-    end
-  end
-
   def generate_username
-    ('a'..'z').to_a.sample(6).join
+    username = ('a'..'z').to_a.sample(6).join
+
+    if username.include?('a') || username.include?('e') || username.include?('i') ||
+        username.include?('o') || username.include?('u')
+
+      username.tr! 'a', 'g'
+      username.tr! 'e', 'p'
+      username.tr! 'i', 'l'
+      username.tr! 'o', 'x'
+      username.tr! 'u', 'z'
+
+      username
+    end
   end
 
   def password_from_word_list
