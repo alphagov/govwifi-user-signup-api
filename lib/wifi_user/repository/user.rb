@@ -29,7 +29,7 @@ private
     if username.include?('a') || username.include?('e') || username.include?('i') ||
         username.include?('o') || username.include?('u')
 
-      username.tr! 'a', 'g'
+      username.tr! 'a', 'k'
       username.tr! 'e', 'p'
       username.tr! 'i', 'l'
       username.tr! 'o', 'x'
