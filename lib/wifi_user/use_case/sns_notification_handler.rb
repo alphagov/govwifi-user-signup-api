@@ -62,13 +62,14 @@ private
   end
 
   def request_invalid?(request)
-    # For now, we only care that the correct header is set to see if we're
-    # actually dealing with a notification.
-    # There is much more that should be in here.
     !request_valid?(request)
   end
 
   def request_valid?(request)
+    # For now, we only care that the correct header is set to see if we're
+    # actually dealing with a notification.
+    # There is much more that should be in here.
+
     request.has_header?('x-amz-sns-message-type') \
     && request.get_header('x-amz-sns-message-type') == 'Notification'
   end
