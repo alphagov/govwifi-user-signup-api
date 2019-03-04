@@ -46,7 +46,7 @@ describe WifiUser::Repository::User do
     end
   end
 
-  context 'avoiding usernames including aeiou' do
+  context 'avoiding potential offensive usernames' do
     let(:email) { 'foo@bar.gov.uk' }
     let!(:user) do
       srand(1)
