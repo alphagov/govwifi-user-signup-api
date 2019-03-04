@@ -27,7 +27,7 @@ describe WifiUser::Repository::User do
       let(:split_password) { user[:password].split(/(?=[A-Z])/) }
 
       it 'creates a user and returns it' do
-        expect(user[:username]).to eq('lqxjnx')
+        expect(user[:username]).to eq('lvsmrd')
         expect(user[:password]).not_to be_empty
       end
 
@@ -54,7 +54,7 @@ describe WifiUser::Repository::User do
     end
 
     it 'does not allow usernames containing any vowels' do
-      expect(user[:username]).to eq('fmxjlq')
+      expect(user[:username]).to eq('hqsmpv')
     end
   end
 

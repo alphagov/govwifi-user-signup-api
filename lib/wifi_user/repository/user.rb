@@ -13,6 +13,8 @@ class WifiUser::Repository::User < Sequel::Model(:userdetails)
 
 private
 
+  ALPHABET_WITHOUT_VOWELS = %w(b c d f g h j k l m n p q r s t v w x y z).freeze
+
   def random_username
     username = generate_username
 
@@ -24,22 +26,7 @@ private
   end
 
   def generate_username
-    username = ('a'..'z').to_a.sample(6).join
-    remove_vowels(username)
-  end
-
-  def remove_vowels(username)
-    if username.include?('a') || username.include?('e') || username.include?('i') ||
-        username.include?('o') || username.include?('u')
-
-      username.tr! 'a', 'g'
-      username.tr! 'e', 'p'
-      username.tr! 'i', 'l'
-      username.tr! 'o', 'x'
-      username.tr! 'u', 'z'
-
-      username
-    end
+    ALPHABET_WITHOUT_VOWELS.sample(6).join
   end
 
   def password_from_word_list
