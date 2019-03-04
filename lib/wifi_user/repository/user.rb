@@ -26,7 +26,7 @@ private
   end
 
   def generate_username
-    (0...6).map { ALPHABET_WITHOUT_VOWELS[rand(21)] }.join
+    (0...6).map { ALPHABET_WITHOUT_VOWELS[rand(ALPHABET_WITHOUT_VOWELS.count)] }.join
   end
 
   def password_from_word_list

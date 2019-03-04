@@ -19,7 +19,7 @@ describe WifiUser::Repository::User do
 
     let(:random_username) do
       srand(2)
-      (0...6).map { ALPHABET_WITHOUT_VOWELS[rand(21)] }.join
+      (0...6).map { ALPHABET_WITHOUT_VOWELS[rand(ALPHABET_WITHOUT_VOWELS.count)] }.join
     end
 
     context 'new user' do
