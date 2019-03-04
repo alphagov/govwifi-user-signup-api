@@ -5,6 +5,7 @@ describe WifiUser::Repository::User do
 
   describe '#generate' do
     ALPHABET_WITHOUT_VOWELS = %w(b c d f g h j k l m n p q r s t v w x y z).freeze
+
     let(:word_list) { %w[These Are Words] }
 
     before do
