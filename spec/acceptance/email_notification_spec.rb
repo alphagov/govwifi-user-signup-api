@@ -24,7 +24,7 @@ RSpec.describe App do
       }
     end
 
-    let (:sns_headers) do
+    let(:sns_headers) do
       {
         'x-amz-sns-message-type' => 'Notification'
       }
