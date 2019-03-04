@@ -4,30 +4,31 @@ describe WifiUser::Repository::User do
   end
 
   describe '#generate' do
+    ALPHABET_WITHOUT_VOWELS = %w(b c d f g h j k l m n p q r s t v w x y z).freeze
+    let(:word_list) { %w[These Are Words] }
+
+    before do
+      stub_const("#{described_class}::WORD_LIST", word_list)
+    end
+
+    let!(:user) do
+      srand(2)
+      described_class.new.generate(contact: email)
+    end
+
+    let(:random_username) do
+      srand(2)
+      ALPHABET_WITHOUT_VOWELS.sample(6).join
+    end
+
     context 'new user' do
-      before do
-        stub_const("#{described_class}::WORD_LIST", word_list)
-      end
-
-      let(:random_username) do
-        srand(2)
-        ('a'..'z').to_a.sample(6).join
-      end
-
-      let(:word_list) { %w[These Are Words] }
       let(:email) { 'foo@bar.gov.uk' }
-
-      let!(:user) do
-        srand(2)
-        described_class.new.generate(contact: email)
-      end
-
       let(:username_password_from_db) { described_class.select(:username, :password).first.values }
       let(:user_from_db) { described_class.first }
       let(:split_password) { user[:password].split(/(?=[A-Z])/) }
 
       it 'creates a user and returns it' do
-        expect(user[:username]).to eq('lvsmrd')
+        expect(user[:username]).to eq(random_username)
         expect(user[:password]).not_to be_empty
       end
 
@@ -43,18 +44,14 @@ describe WifiUser::Repository::User do
         expect(user_from_db.contact).to eq(email)
         expect(user_from_db.sponsor).to eq(email)
       end
-    end
-  end
 
-  context 'avoiding potential offensive usernames' do
-    let(:email) { 'foo@bar.gov.uk' }
-    let!(:user) do
-      srand(1)
-      described_class.new.generate(contact: email)
-    end
+      context 'avoiding potential offensive usernames' do
+        let(:email) { 'foo@bar.gov.uk' }
 
-    it 'does not allow usernames containing any vowels' do
-      expect(user[:username]).to eq('hqsmpv')
+        it 'does not allow usernames containing any vowels' do
+          expect(user[:username]).to eq(random_username)
+        end
+      end
     end
   end
 
