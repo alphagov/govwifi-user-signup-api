@@ -24,11 +24,17 @@ RSpec.describe App do
       }
     end
 
+    let (:sns_headers) do
+      {
+        'x-amz-sns-message-type' => 'Notification'
+      }
+    end
+
     def post_notification
       post '/user-signup/email-notification', {
         Type: 'Notification',
         Message: ses_notification.to_json
-      }.to_json
+      }.to_json, sns_headers
     end
 
     describe 'when the Notification is a signup' do

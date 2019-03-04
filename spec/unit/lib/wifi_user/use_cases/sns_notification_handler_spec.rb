@@ -7,6 +7,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
   let(:sponsor_signup_handler) { double(execute: nil) }
   let(:logger) { double(debug: nil) }
   let(:notification_type) { 'Notification' }
+  let(:sns_type_header_name) { 'x-amz-sns-message-type' }
 
   subject do
     described_class.new(
@@ -28,6 +29,9 @@ describe WifiUser::UseCase::SnsNotificationHandler do
     )
 
     allow_any_instance_of(Common::Gateway::S3ObjectFetcher).to receive(:fetch) # This will go away once injected
+
+    allow(request).to receive(:get_header).with(sns_type_header_name).and_return(notification_type)
+    allow(request).to receive(:has_header?).with(sns_type_header_name).and_return(true)
   end
 
   it 'parses the request' do
