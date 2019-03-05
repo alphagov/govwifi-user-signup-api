@@ -7,6 +7,10 @@ class WifiUser::UseCase::SnsNotificationHandler
   end
 
   def handle(request)
+    if request_invalid?(request)
+      logger.warn("Unexpected request: \n #{request.body.read}")
+      return
+    end
     params = request.body.read
 
     begin
@@ -55,5 +59,18 @@ private
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)
+  end
+
+  def request_invalid?(request)
+    !request_valid?(request)
+  end
+
+  def request_valid?(request)
+    # For now, we only care that the correct header is set to see if we're
+    # actually dealing with a notification.
+    # There is much more that should be in here.
+
+    request.has_header?('x-amz-sns-message-type') \
+    && request.get_header('x-amz-sns-message-type') == 'Notification'
   end
 end
