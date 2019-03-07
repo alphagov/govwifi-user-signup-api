@@ -22,7 +22,7 @@ describe WifiUser::UseCase::SponsorUsers do
   before do
     ENV['RACK_ENV'] = environment
     stub_request(:post, notify_email_url).to_return(status: 200, body: {}.to_json)
-    stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
+    #stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
     subject.execute(sponsees, sponsor)
   end
 
@@ -63,7 +63,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     it 'Sends an sms to the sponsee_address confirming the signup' do
-      expect(a_signup_sms_request(phone_number: '+447700900003')).to have_been_made.once
+      expect(send_sms_gateway).to have_received(:execute)
+        .with(a_signup_sms(phone_number: '+447700900003'))
     end
   end
 
@@ -97,7 +98,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     it 'Sends a sms to the sponsee_address confirming the signup' do
-      expect(a_signup_sms_request(phone_number: '+447700900004')).to have_been_made.once
+      expect(send_sms_gateway).to have_received(:execute)
+        .with(a_signup_sms(phone_number: '+447700900004'))
     end
 
     context 'On production' do
@@ -164,17 +166,15 @@ describe WifiUser::UseCase::SponsorUsers do
     end
   end
 
-  def a_signup_sms_request(phone_number:)
-    body = {
+  def a_signup_sms(phone_number:)
+    {
       phone_number: phone_number,
       template_id: '3a4b1ca8-7b26-4266-8b5f-e05fdbd11879',
-      personalisation: {
+      template_parameters: {
         login: username,
-        pass: password,
+        pass: password
       }
     }
-
-    a_request(:post, notify_sms_url).with(notify_request(body))
   end
 
   def a_signup_email_request(email:)

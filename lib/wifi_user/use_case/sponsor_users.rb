@@ -44,10 +44,10 @@ private
 
   def sponsor_phone_number(actual_sponsor, sponsee)
     login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
-    notify_client.send_sms(
+    send_sms_gateway.execute(
       phone_number: sponsee,
       template_id: config['notify_sms_template_ids']['credentials'],
-      personalisation: {
+      template_parameters: {
         login: login_details[:username],
         pass: login_details[:password]
       }
