@@ -31,6 +31,10 @@ test:
 	$(DOCKER_COMPOSE) run --rm app rspec
 	$(MAKE) stop
 
+shell: serve
+	./mysql/bin/wait_for_mysql
+	$(DOCKER_COMPOSE) run --rm app ash
+
 stop:
 	$(DOCKER_COMPOSE) kill
 	$(DOCKER_COMPOSE) rm -f
