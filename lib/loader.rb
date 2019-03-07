@@ -31,6 +31,7 @@ module WifiUser
   module Gateway; end
   module Repository; end
   module UseCase; end
+  module Domain; end
 end
 
 module Gdpr
