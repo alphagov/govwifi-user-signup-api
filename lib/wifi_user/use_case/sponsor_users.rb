@@ -1,8 +1,9 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, whitelist_checker:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, logger: Logger.new(STDOUT))
     @logger = logger
     @user_model = user_model
     @whitelist_checker = whitelist_checker
+    @send_sms_gateway = send_sms_gateway
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
@@ -20,7 +21,7 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :logger
+  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :send_sms_gateway, :logger
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq
