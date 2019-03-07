@@ -41,12 +41,6 @@ describe WifiUser::Gateway::GovNotifySMS do
   # These contexts are to test the different specified errors from the API
   # https://docs.notifications.service.gov.uk/ruby.html#error-codes
 
-  context 'with unexpected error' do
-    # This will cause a parse error, which we want to see as an exception
-    let(:return_body) { '' }
-    it { expect { subject }.to raise_error(Exception) }
-  end
-
   context 'with a bad request' do
     let(:return_status) { 400 }
 
