@@ -14,6 +14,7 @@ class WifiUser::Gateway::GovNotifySMS
     WifiUser::Domain::SMSResponse.new(success: true)
   end
 
-  private
+private
+
   attr_accessor :client
 end

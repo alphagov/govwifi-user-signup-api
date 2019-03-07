@@ -3,7 +3,7 @@ require 'notifications/client'
 
 describe WifiUser::Gateway::GovNotifySMS do
   let(:api_key) { "dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000" }
-  
+
   # modify the actual request
   let(:template_id) { SecureRandom.uuid }
   let(:parameters) { {} }
@@ -18,7 +18,7 @@ describe WifiUser::Gateway::GovNotifySMS do
     stub_request(:post, api_url).to_return(status: return_status, body: return_body.to_json)
   end
 
-  let(:subject) do 
+  let(:subject) do
     described_class.new(api_key)
       .execute(phone_number, template_id, template_parameters: parameters)
   end
