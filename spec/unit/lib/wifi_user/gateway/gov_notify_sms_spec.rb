@@ -37,4 +37,43 @@ describe WifiUser::Gateway::GovNotifySMS do
   context 'on Success' do
     it { expect(subject.success).to be true }
   end
+
+  # These contexts are to test the different specified errors from the API
+  # https://docs.notifications.service.gov.uk/ruby.html#error-codes
+
+  context 'with unexpected error' do
+    # This will cause a parse error, which we want to see as an exception
+    let(:return_body) { '' }
+    it { expect { subject }.to raise_error(Exception) }
+  end
+
+  context 'with a bad request' do
+    let(:return_status) { 400 }
+
+    context 'due to server incorrectly set up' do
+      let(:return_body) do
+        { errors: [
+          {
+            error: "BadRequestError",
+            message: "..."
+          }
+        ] }
+      end
+
+      it { expect { subject }.to raise_error(Notifications::Client::BadRequestError) }
+    end
+
+    context 'due to bad input' do
+      let(:return_body) do
+        { errors: [
+          {
+            error: "ValidationError",
+            message: "..."
+          }
+        ] }
+      end
+
+      it { expect(subject.success).to be false }
+    end
+  end
 end
