@@ -14,10 +14,9 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
-    
-    set :gateways, {
+
+    set :gateways,
       send_sms: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY'))
-    }
   end
 
   configure :production, :staging do

@@ -9,7 +9,7 @@ describe WifiUser::UseCase::SponsorUsers do
 
   let(:user_model) { double(generate: { username: username, password: password }) }
   let(:whitelist_checker) { double(execute: { success: true }) }
-  let(:send_sms_gateway) { double(execute: double(success: true) ) }
+  let(:send_sms_gateway) { double(execute: double(success: true)) }
 
   subject do
     described_class.new(
