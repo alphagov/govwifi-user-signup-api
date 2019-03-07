@@ -18,7 +18,10 @@ describe WifiUser::Gateway::GovNotifySMS do
     stub_request(:post, api_url).to_return(status: return_status, body: return_body.to_json)
   end
 
-  let(:subject) { described_class.new(api_key, template_id).execute(phone_number) }
+  let(:subject) do 
+    described_class.new(api_key)
+      .execute(phone_number, template_id, template_parameters: parameters)
+  end
 
   it 'sends an SMS request' do
     subject

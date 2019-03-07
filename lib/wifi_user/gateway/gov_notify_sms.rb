@@ -1,12 +1,11 @@
 require 'notifications/client'
 
 class WifiUser::Gateway::GovNotifySMS
-  def initialize(api_key, template_id)
+  def initialize(api_key)
     @client = Notifications::Client.new(api_key)
-    @template_id = template_id
   end
 
-  def execute(phone_number, template_parameters: {})
+  def execute(phone_number, template_id, template_parameters: {})
     client.send_sms(
       phone_number: phone_number,
       template_id: template_id,
@@ -16,5 +15,5 @@ class WifiUser::Gateway::GovNotifySMS
   end
 
   private
-  attr_accessor :client, :template_id
+  attr_accessor :client
 end
