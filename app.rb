@@ -14,9 +14,6 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
-
-    set :gateways,
-      send_sms: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY'))
   end
 
   configure :production, :staging do
@@ -50,7 +47,7 @@ class App < Sinatra::Base
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
-      send_sms_gateway: options.gateways[:send_sms],
+      send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY')),
       logger: logger
     )
 
