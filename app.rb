@@ -47,6 +47,7 @@ class App < Sinatra::Base
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
+      send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY')),
       logger: logger
     )
 

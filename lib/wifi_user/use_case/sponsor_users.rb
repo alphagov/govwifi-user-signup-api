@@ -1,8 +1,9 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, whitelist_checker:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, logger: Logger.new(STDOUT))
     @logger = logger
     @user_model = user_model
     @whitelist_checker = whitelist_checker
+    @send_sms_gateway = send_sms_gateway
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
@@ -20,7 +21,7 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :logger
+  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :send_sms_gateway, :logger
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq
@@ -43,10 +44,10 @@ private
 
   def sponsor_phone_number(actual_sponsor, sponsee)
     login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
-    notify_client.send_sms(
+    send_sms_gateway.execute(
       phone_number: sponsee,
       template_id: config['notify_sms_template_ids']['credentials'],
-      personalisation: {
+      template_parameters: {
         login: login_details[:username],
         pass: login_details[:password]
       }
