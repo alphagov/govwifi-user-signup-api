@@ -168,7 +168,7 @@ describe WifiUser::UseCase::SponsorUsers do
     end
   end
 
-  context 'On Failing to send an SMS' do
+  context 'on failing to send an SMS' do
     let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
     let(:success_sponsees) { [] }
     let(:failed_sponsees) { %w(+447770000666) }
