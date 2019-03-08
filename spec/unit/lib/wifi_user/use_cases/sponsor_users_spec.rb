@@ -143,7 +143,7 @@ describe WifiUser::UseCase::SponsorUsers do
       expect(user_model).not_to have_received(:generate)
     end
 
-    it 'Sends a sponsorship failed email to the sponsor' do
+    it 'sends a sponsorship failed email to the sponsor' do
       body = {
         email_address: 'cassandra@gov.uk',
         template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
