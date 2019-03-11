@@ -12,7 +12,7 @@ class WifiUser::UseCase::SponsorUsers
 
     if whitelist_checker.execute(sponsor_address)[:success]
       sponsees = sanitise_sponsees(unsanitised_sponsees)
-      failed_sponsees = invite_sponsees(sponsor, sponsor_address, sponsees)
+      failed_sponsees = invite_sponsees(sponsor, sponsor_address, sponsees)[:failed]
       send_confirmation_email(sponsor_address, sponsees, failed_sponsees: failed_sponsees)
     else
       logger.info("Unsuccessful sponsor signup attempt: #{sponsor_address}")
@@ -36,7 +36,10 @@ private
         sponsor_phone_number(sponsor_address, sponsee)
       end
     end
-    failed_sponsees
+    {
+      success: (sponsees.to_set - failed_sponsees.to_set).to_a,
+      failed: failed_sponsees
+    }
   end
 
   def notify_client
