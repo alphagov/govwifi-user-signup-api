@@ -72,7 +72,7 @@ private
   end
 
   def send_confirmation_email(sponsor, sponsees, failed_sponsees: [])
-    return send_sponsor_failed(sponsor, failed_sponsees: failed_sponsees) if sponsees.empty? || !failed_sponsees.empty?
+    return send_failed_sponsoring_email(sponsor, failed_sponsees: failed_sponsees) if sponsees.empty? || !failed_sponsees.empty?
     return send_confirmation_singular(sponsor, sponsees) if sponsees.length == 1
 
     send_confirmation_plural(sponsor, sponsees)
@@ -101,7 +101,7 @@ private
     )
   end
 
-  def send_sponsor_failed(sponsor_address, failed_sponsees: [])
+  def send_failed_sponsoring_email(sponsor_address, failed_sponsees: [])
     notify_client.send_email(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['failed'],

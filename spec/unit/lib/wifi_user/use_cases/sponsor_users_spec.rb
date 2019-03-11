@@ -148,7 +148,6 @@ describe WifiUser::UseCase::SponsorUsers do
         email_address: 'cassandra@gov.uk',
         template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
         personalisation: {
-          # TODO: this should pick up failed sponsees in the contact sanitisor
           failedSponsees: ''
         },
         email_reply_to_id: do_not_reply_id
