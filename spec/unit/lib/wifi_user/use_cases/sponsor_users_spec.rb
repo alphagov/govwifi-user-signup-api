@@ -143,11 +143,13 @@ describe WifiUser::UseCase::SponsorUsers do
       expect(user_model).not_to have_received(:generate)
     end
 
-    it 'Sends a sponsorship failed email to the sponsor' do
+    it 'sends a sponsorship failed email to the sponsor' do
       body = {
         email_address: 'cassandra@gov.uk',
-        template_id: 'efc83658-dcb5-4401-af42-e26b1945c1a9',
-        personalisation: {},
+        template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
+        personalisation: {
+          failedSponsees: ''
+        },
         email_reply_to_id: do_not_reply_id
       }
       expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
@@ -162,6 +164,83 @@ describe WifiUser::UseCase::SponsorUsers do
 
     it 'Does not call user_model#generate' do
       expect(user_model).not_to have_received(:generate)
+    end
+  end
+
+  context 'on failing to send an SMS' do
+    let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
+    let(:success_sponsees) { [] }
+    let(:failed_sponsees) { %w(+447770000666) }
+    let(:sponsees) { success_sponsees + failed_sponsees }
+    let(:do_not_reply_id) { production_do_not_reply_id }
+    let(:formatted_failed_sponsees) { "* +447770000666" }
+
+    let(:send_sms_gateway) do
+      set_send_sms_gateway_execution_branches(
+        double,
+        successful_numbers: success_sponsees,
+        unsucessful_numbers: failed_sponsees
+      )
+    end
+
+    def set_send_sms_gateway_execution_branches(dbl, successful_numbers:, unsucessful_numbers:)
+      allow(dbl).to receive(:execute).and_return(double(success: true))
+      successful_numbers.each do |sponsee|
+        allow(dbl).to receive(:execute)
+          .with(hash_including(phone_number: sponsee))
+          .and_return(double(success: true))
+      end
+      unsucessful_numbers.each do |sponsee|
+        allow(dbl).to receive(:execute)
+          .with(hash_including(phone_number: sponsee))
+          .and_return(double(success: false))
+      end
+      dbl
+    end
+
+    let(:failing_body) do
+      {
+        email_address: 'cassandra@gov.uk',
+        template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
+        email_reply_to_id: do_not_reply_id,
+        personalisation: {
+          failedSponsees: formatted_failed_sponsees
+        }
+      }
+    end
+
+    it 'sends a sponsorship failed email to the sponsor' do
+      expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+    end
+
+    context 'With one success and one fail' do
+      let(:success_sponsees) { %w(+447770000111) }
+      let(:failed_sponsees) { %w(+447770000222) }
+      let(:formatted_failed_sponsees) { "* +447770000222" }
+
+      it 'sends a sponsorship failed email to the sponsor' do
+        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+      end
+    end
+
+    context 'With one success and two fail' do
+      let(:success_sponsees) { %w(+447770000111) }
+      let(:failed_sponsees) { %w(+447770000222 +447770000333) }
+      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
+
+      it 'sends a sponsorship failed email to the sponsor' do
+        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+      end
+    end
+
+    context 'With two success and one fail' do
+      let(:success_sponsees) { %w(+447770000111 +447770000444) }
+      let(:failed_sponsees) { %w(+447770000222 +447770000333) }
+      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
+
+      it 'sends a sponsorship failed email to the sponsor' do
+        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+      end
     end
   end
 
