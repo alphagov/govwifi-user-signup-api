@@ -66,7 +66,6 @@ private
       personalisation: login_details.merge(sponsor: sponsor),
       email_reply_to_id: do_not_reply_email_address_id
     )
-    # FIXME: we currently don't support checking if the email was invalid, so always say it is
     true
   end
 
