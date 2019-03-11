@@ -5,7 +5,7 @@ class WifiUser::Gateway::GovNotifySMS
     @client = Notifications::Client.new(api_key)
   end
 
-  def execute(phone_number, template_id, template_parameters: {})
+  def execute(phone_number:, template_id:, template_parameters: {})
     begin
       client.send_sms(
         phone_number: phone_number,
