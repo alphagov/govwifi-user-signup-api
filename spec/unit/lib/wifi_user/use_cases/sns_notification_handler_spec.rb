@@ -7,7 +7,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
   let(:sponsor_signup_handler) { double(execute: nil) }
   let(:logger) { double(debug: nil) }
   let(:notification_type) { 'Notification' }
-  let(:sns_type_header_name) { 'x-amz-sns-message-type' }
+  let(:sns_type_header_name) { 'HTTP_X_AMZ_SNS_MESSAGE_TYPE' }
 
   subject do
     described_class.new(
