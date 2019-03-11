@@ -70,7 +70,7 @@ private
     # actually dealing with a notification.
     # There is much more that should be in here.
 
-    request.has_header?('x-amz-sns-message-type') \
-    && request.get_header('x-amz-sns-message-type') == 'Notification'
+    request.has_header?('HTTP_X_AMZ_SNS_MESSAGE_TYPE') \
+    && request.get_header('HTTP_X_AMZ_SNS_MESSAGE_TYPE') == 'Notification'
   end
 end
