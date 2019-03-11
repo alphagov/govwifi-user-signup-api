@@ -176,14 +176,21 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:formatted_failed_sponsees) { "* +447770000666" }
 
     let(:send_sms_gateway) do
-      dbl = double
+      set_send_sms_gateway_execution_branches(
+        double,
+        successful_numbers: success_sponsees,
+        unsucessful_numbers: failed_sponsees
+      )
+    end
+
+    def set_send_sms_gateway_execution_branches(dbl, successful_numbers:, unsucessful_numbers:)
       allow(dbl).to receive(:execute).and_return(double(success: true))
-      success_sponsees.each do |sponsee|
+      successful_numbers.each do |sponsee|
         allow(dbl).to receive(:execute)
           .with(hash_including(phone_number: sponsee))
           .and_return(double(success: true))
       end
-      failed_sponsees.each do |sponsee|
+      unsucessful_numbers.each do |sponsee|
         allow(dbl).to receive(:execute)
           .with(hash_including(phone_number: sponsee))
           .and_return(double(success: false))
