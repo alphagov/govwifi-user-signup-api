@@ -20,8 +20,12 @@ describe WifiUser::Gateway::GovNotifyEmail do
   end
 
   let(:subject) do
-    described_class.new(api_key)
-      .execute(email_address: email_address, template_id: template_id, template_parameters: parameters, reply_to_id: reply_to_id)
+    described_class.new(api_key).execute(
+      email_address: email_address,
+      template_id: template_id,
+      template_parameters: parameters,
+      reply_to_id: reply_to_id
+    )
   end
 
   it 'sends an email request' do
