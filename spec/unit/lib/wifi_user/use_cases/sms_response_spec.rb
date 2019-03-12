@@ -51,6 +51,15 @@ describe WifiUser::UseCase::SmsResponse do
     end
   end
 
+  context 'With no credentials' do
+    let(:phone_number) { '' }
+
+    it 'does not send details to Notify' do
+      subject.execute(contact: phone_number, sms_content: '')
+      expect(notify_sms_stub).to_not have_been_requested
+    end
+  end
+
   context 'For one set of credentials' do
     let(:username) { 'AnExampleUsername' }
     let(:password) { 'AnExamplePassword' }
