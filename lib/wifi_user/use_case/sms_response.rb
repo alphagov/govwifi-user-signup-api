@@ -1,11 +1,14 @@
 class WifiUser::UseCase::SmsResponse
-  def initialize(user_model:, template_finder:)
+  def initialize(user_model:, template_finder:, logger: Logger.new(STDOUT))
     @user_model = user_model
     @template_finder = template_finder
+    @logger = logger
   end
 
   def execute(contact:, sms_content:)
     phone_number = WifiUser::UseCase::ContactSanitiser.new.execute(contact)
+    return logger.warn("Unexpected contact detail found #{contact}") if phone_number.nil?
+
     login_details = user_model.generate(contact: phone_number)
     notify_params = { login: login_details[:username], pass: login_details[:password] }
     send_signup_instructions(phone_number, notify_params, sms_content)
@@ -13,7 +16,7 @@ class WifiUser::UseCase::SmsResponse
 
 private
 
-  attr_reader :user_model, :template_finder
+  attr_reader :user_model, :template_finder, :logger
 
   def send_signup_instructions(phone_number, login_details, sms_content)
     client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
