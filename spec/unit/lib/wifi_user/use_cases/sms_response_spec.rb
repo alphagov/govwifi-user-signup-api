@@ -3,7 +3,7 @@ describe WifiUser::UseCase::SmsResponse do
   let(:template_finder) { double(execute: notify_template_id) }
   subject { described_class.new(user_model: user_model, template_finder: template_finder) }
 
-  context 'With invalid credentials' do
+  context 'With named number' do
     let(:phone_number) { 'HIDDENNUMBER' }
     let(:notify_template_id) { '00000000-7777-8888-9999-000000000000' }
     let(:notify_sms_url) { stub_request(:post, 'https://api.notifications.service.gov.uk/v2/notifications/sms') }
@@ -19,7 +19,7 @@ describe WifiUser::UseCase::SmsResponse do
     end
   end
 
-  context 'with valid credentials'do
+  context 'With valid phone number' do
     before do
       expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
     end
