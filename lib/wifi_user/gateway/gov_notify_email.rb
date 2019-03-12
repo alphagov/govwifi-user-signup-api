@@ -5,12 +5,13 @@ class WifiUser::Gateway::GovNotifyEmail
     @client = Notifications::Client.new(api_key)
   end
 
-  def execute(email_address:, template_id:, template_parameters: {})
+  def execute(email_address:, template_id:, template_parameters: {}, reply_to_id: nil)
     begin
       client.send_email(
         email_address: email_address,
         template_id: template_id,
-        personalisation: template_parameters
+        personalisation: template_parameters,
+        email_reply_to_id: reply_to_id
       )
       success = true
     rescue Notifications::Client::RequestError => e

@@ -8,6 +8,7 @@ describe WifiUser::Gateway::GovNotifyEmail do
   let(:template_id) { SecureRandom.uuid }
   let(:parameters) { {} }
   let(:email_address) { '' }
+  let(:reply_to_id) { SecureRandom.uuid }
 
   # modify the stub
   let(:api_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
@@ -20,7 +21,7 @@ describe WifiUser::Gateway::GovNotifyEmail do
 
   let(:subject) do
     described_class.new(api_key)
-      .execute(email_address: email_address, template_id: template_id, template_parameters: parameters)
+      .execute(email_address: email_address, template_id: template_id, template_parameters: parameters, reply_to_id: reply_to_id)
   end
 
   it 'sends an email request' do
@@ -30,7 +31,8 @@ describe WifiUser::Gateway::GovNotifyEmail do
       body: {
         email_address: email_address,
         template_id: template_id,
-        personalisation: parameters
+        personalisation: parameters,
+        email_reply_to_id: reply_to_id
       }
   end
 
