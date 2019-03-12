@@ -56,7 +56,7 @@ private
   end
 
   def sponsor_email(sponsor, sponsor_address, sponsee_address)
-    login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)    
+    login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)
     send_email_gateway.execute(
       email_address: sponsee_address,
       template_id: config['notify_email_template_ids']['sponsored_credentials'],

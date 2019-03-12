@@ -171,19 +171,27 @@ describe WifiUser::UseCase::SponsorUsers do
     end
   end
 
-  context 'on failing to send an SMS' do
+  context 'on failing to send to sponsees' do
     let(:sponsor) { 'Cassandra <cassandra@gov.uk>' }
     let(:success_sponsees) { [] }
-    let(:failed_sponsees) { %w(+447770000666) }
+    let(:failed_sponsees) { %w(+447770000666 hello@example.org) }
     let(:sponsees) { success_sponsees + failed_sponsees }
     let(:do_not_reply_id) { production_do_not_reply_id }
-    let(:formatted_failed_sponsees) { "* +447770000666" }
+    let(:formatted_failed_sponsees) { "* +447770000666\n* hello@example.org" }
 
     let(:send_sms_gateway) do
       set_send_sms_gateway_execution_branches(
         double,
         successful_numbers: success_sponsees,
         unsucessful_numbers: failed_sponsees
+      )
+    end
+
+    let(:send_email_gateway) do
+      set_send_email_gateway_execution_branches(
+        double,
+        successful_emails: success_sponsees,
+        unsucessful_emails: failed_sponsees
       )
     end
 
@@ -197,6 +205,21 @@ describe WifiUser::UseCase::SponsorUsers do
       unsucessful_numbers.each do |sponsee|
         allow(dbl).to receive(:execute)
           .with(hash_including(phone_number: sponsee))
+          .and_return(double(success: false))
+      end
+      dbl
+    end
+
+    def set_send_email_gateway_execution_branches(dbl, successful_emails:, unsucessful_emails:)
+      allow(dbl).to receive(:execute).and_return(double(success: true))
+      successful_emails.each do |sponsee|
+        allow(dbl).to receive(:execute)
+          .with(hash_including(email_address: sponsee))
+          .and_return(double(success: true))
+      end
+      unsucessful_emails.each do |sponsee|
+        allow(dbl).to receive(:execute)
+          .with(hash_including(email_address: sponsee))
           .and_return(double(success: false))
       end
       dbl
@@ -218,9 +241,9 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     context 'With one success and one fail' do
-      let(:success_sponsees) { %w(+447770000111) }
-      let(:failed_sponsees) { %w(+447770000222) }
-      let(:formatted_failed_sponsees) { "* +447770000222" }
+      let(:success_sponsees) { %w(+447770000111 one@example.org) }
+      let(:failed_sponsees) { %w(+447770000222 two@example.org) }
+      let(:formatted_failed_sponsees) { "* +447770000222\n* two@example.org" }
 
       it 'sends a sponsorship failed email to the sponsor' do
         expect(send_email_gateway).to have_received(:execute).with(failing_body)
@@ -229,8 +252,8 @@ describe WifiUser::UseCase::SponsorUsers do
 
     context 'With one success and two fail' do
       let(:success_sponsees) { %w(+447770000111) }
-      let(:failed_sponsees) { %w(+447770000222 +447770000333) }
-      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
+      let(:failed_sponsees) { %w(+447770000222 +447770000333 one@example.org two@example.org) }
+      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333\n* one@example.org\n* two@example.org" }
 
       it 'sends a sponsorship failed email to the sponsor' do
         expect(send_email_gateway).to have_received(:execute).with(failing_body)
@@ -238,9 +261,9 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     context 'With two success and one fail' do
-      let(:success_sponsees) { %w(+447770000111 +447770000444) }
-      let(:failed_sponsees) { %w(+447770000222 +447770000333) }
-      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
+      let(:success_sponsees) { %w(+447770000111 +447770000444 three@example.org four@example.org) }
+      let(:failed_sponsees) { %w(+447770000222 +447770000333 five@example.org six@example.org) }
+      let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333\n* five@example.org\n* six@example.org" }
 
       it 'sends a sponsorship failed email to the sponsor' do
         expect(send_email_gateway).to have_received(:execute).with(failing_body)
