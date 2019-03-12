@@ -10,18 +10,19 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:user_model) { double(generate: { username: username, password: password }) }
   let(:whitelist_checker) { double(execute: { success: true }) }
   let(:send_sms_gateway) { double(execute: double(success: true)) }
+  let(:send_email_gateway) { double(execute: double(success: true)) }
 
   subject do
     described_class.new(
       user_model: user_model,
       whitelist_checker: whitelist_checker,
-      send_sms_gateway: send_sms_gateway
+      send_sms_gateway: send_sms_gateway,
+      send_email_gateway: send_email_gateway
     )
   end
 
   before do
     ENV['RACK_ENV'] = environment
-    stub_request(:post, notify_email_url).to_return(status: 200, body: {}.to_json)
     subject.execute(sponsees, sponsor)
   end
 
@@ -36,19 +37,20 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     it 'Sends an email to the sponsee_address with the login details' do
-      expect(a_signup_email_request(email: 'adrian@example.com')).to have_been_made.once
+      expect(send_email_gateway).to have_received(:execute)
+        .with(a_signup_email(email: 'adrian@example.com'))
     end
 
     it 'Sends a single user confirmation email to the sponsor' do
-      body = {
-        email_address: 'chris@gov.uk',
-        template_id: '30ab6bc5-20bf-45af-b78d-34cacc0027cd',
-        personalisation: {
-          contact: 'adrian@example.com'
-        },
-        email_reply_to_id: do_not_reply_id
-      }
-      expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
+      expect(send_email_gateway).to have_received(:execute)
+        .with(
+          email_address: 'chris@gov.uk',
+          template_id: '30ab6bc5-20bf-45af-b78d-34cacc0027cd',
+          template_parameters: {
+            contact: 'adrian@example.com'
+          },
+          reply_to_id: do_not_reply_id
+        )
     end
   end
 
@@ -93,7 +95,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     it 'Sends an email to the sponsee_address with the login details' do
-      expect(a_signup_email_request(email: 'steve@example.com')).to have_been_made.once
+      expect(send_email_gateway).to have_received(:execute)
+        .with(a_signup_email(email: 'steve@example.com'))
     end
 
     it 'Sends a sms to the sponsee_address confirming the signup' do
@@ -106,7 +109,8 @@ describe WifiUser::UseCase::SponsorUsers do
       let(:plural_sponsor_confirmation_template_id) { '58e8ef4a-ca6b-40cd-81df-ec9c781fed56' }
 
       it 'Sends a multiple user confirmation email to the sponsor' do
-        expect(a_plural_sponsor_confirmation_request).to have_been_made.once
+        expect(send_email_gateway).to have_received(:execute)
+          .with(a_plural_sponsor_confirmation)
       end
     end
 
@@ -116,21 +120,21 @@ describe WifiUser::UseCase::SponsorUsers do
       let(:do_not_reply_id) { staging_do_not_reply_id }
 
       it 'Sends a multiple user confirmation email to the sponsor' do
-        expect(a_plural_sponsor_confirmation_request).to have_been_made.once
+        expect(send_email_gateway).to have_received(:execute)
+          .with(a_plural_sponsor_confirmation)
       end
     end
 
-    def a_plural_sponsor_confirmation_request
-      body = {
+    def a_plural_sponsor_confirmation
+      {
         email_address: 'chloe@gov.uk',
         template_id: plural_sponsor_confirmation_template_id,
-        personalisation: {
+        template_parameters: {
           number_of_accounts: 2,
           contacts: "steve@example.com\r\n+447700900004"
         },
-        email_reply_to_id: do_not_reply_id
+        reply_to_id: do_not_reply_id
       }
-      a_request(:post, notify_email_url).with(notify_request(body))
     end
   end
 
@@ -144,15 +148,15 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     it 'sends a sponsorship failed email to the sponsor' do
-      body = {
-        email_address: 'cassandra@gov.uk',
-        template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
-        personalisation: {
-          failedSponsees: ''
-        },
-        email_reply_to_id: do_not_reply_id
-      }
-      expect(a_request(:post, notify_email_url).with(notify_request(body))).to have_been_made.once
+      expect(send_email_gateway).to have_received(:execute)
+        .with(
+          email_address: 'cassandra@gov.uk',
+          template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
+          template_parameters: {
+            failedSponsees: ''
+          },
+          reply_to_id: do_not_reply_id
+        )
     end
   end
 
@@ -202,15 +206,15 @@ describe WifiUser::UseCase::SponsorUsers do
       {
         email_address: 'cassandra@gov.uk',
         template_id: '52c19b68-4d8b-497a-b6ae-ee27d49439c3',
-        email_reply_to_id: do_not_reply_id,
-        personalisation: {
+        reply_to_id: do_not_reply_id,
+        template_parameters: {
           failedSponsees: formatted_failed_sponsees
         }
       }
     end
 
     it 'sends a sponsorship failed email to the sponsor' do
-      expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+      expect(send_email_gateway).to have_received(:execute).with(failing_body)
     end
 
     context 'With one success and one fail' do
@@ -219,7 +223,7 @@ describe WifiUser::UseCase::SponsorUsers do
       let(:formatted_failed_sponsees) { "* +447770000222" }
 
       it 'sends a sponsorship failed email to the sponsor' do
-        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+        expect(send_email_gateway).to have_received(:execute).with(failing_body)
       end
     end
 
@@ -229,7 +233,7 @@ describe WifiUser::UseCase::SponsorUsers do
       let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
 
       it 'sends a sponsorship failed email to the sponsor' do
-        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+        expect(send_email_gateway).to have_received(:execute).with(failing_body)
       end
     end
 
@@ -239,7 +243,7 @@ describe WifiUser::UseCase::SponsorUsers do
       let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333" }
 
       it 'sends a sponsorship failed email to the sponsor' do
-        expect(a_request(:post, notify_email_url).with(notify_request(failing_body))).to have_been_made.once
+        expect(send_email_gateway).to have_received(:execute).with(failing_body)
       end
     end
   end
@@ -255,27 +259,16 @@ describe WifiUser::UseCase::SponsorUsers do
     }
   end
 
-  def a_signup_email_request(email:)
-    body = {
+  def a_signup_email(email:)
+    {
       email_address: email,
       template_id: 'fd536b81-bdd7-4b55-98aa-720173718642',
-      personalisation: {
+      template_parameters: {
         username: username,
         password: password,
         sponsor: sponsor
       },
-      email_reply_to_id: do_not_reply_id
-    }
-    a_request(:post, notify_email_url).with(notify_request(body))
-  end
-
-  def notify_request(body)
-    {
-      body: body,
-      headers: {
-        'Accept' => '*/*',
-        'Content-Type' => 'application/json',
-      }
+      reply_to_id: do_not_reply_id
     }
   end
 end
