@@ -27,4 +27,8 @@ describe WifiUser::UseCase::ContactSanitiser do
   it 'does not throw an exception when given crap' do
     expect(subject.execute('asdoihoasdhsioadhj')).to eq(nil)
   end
+
+  it 'does not throw an exception when given a named number' do
+    expect(subject.execute('ABCDELIVERY')).to eq(nil)
+  end
 end
