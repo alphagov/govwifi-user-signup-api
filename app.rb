@@ -65,7 +65,12 @@ class App < Sinatra::Base
   # rubocop:enable Metrics/BlockLength
 
   post '/user-signup/sms-notification' do
-    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} with message #{params[:message]}")
+    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
+
+    if params[:source] == params[:destination]
+      logger.warn("SMS loop detected: #{params[:destination]}")
+      return ''
+    end
 
     template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
 
