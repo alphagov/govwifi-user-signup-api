@@ -7,7 +7,7 @@ RSpec.describe App do
     end
 
     it 'returns 200' do
-      post '/user-signup/sms-notification', source: '000000000', message: 'Go'
+      post '/user-signup/sms-notification', source: '000000000', message: 'Go', destination: ''
       expect(last_response.body).to eq('')
       expect(last_response).to be_successful
     end

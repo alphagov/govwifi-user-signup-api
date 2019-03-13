@@ -31,6 +31,38 @@ describe App do
       expect(a_request(:post, notify_sms_url).with(expected_request)).to have_been_made.once
     end
 
+    context 'with a a phone texting itself' do
+      shared_examples "rejecting an SMS" do
+        let(:sms_response_stub) { class_double(WifiUser::UseCase::SmsResponse).as_stubbed_const }
+        let(:subject) { post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: to_phone_number }
+
+        it 'gives an empty ok' do
+          subject
+          expect(last_response.ok?).to be true
+          expect(last_response.body).to eq('')
+        end
+
+        it 'does not send an SMS' do
+          expect(sms_response_stub).not_to receive(:new)
+          subject
+        end
+      end
+
+      context 'with both the same number' do
+        NUMBERS = %w(07900000001 447900000001 +447900000001).freeze
+        NUMBERS.each do |from_number|
+          NUMBERS.each do |to_number|
+            context "with #{from_number} to #{to_number}" do
+              let(:from_phone_number) { from_number }
+              let(:to_phone_number) { to_number }
+
+              it_behaves_like "rejecting an SMS"
+            end
+          end
+        end
+      end
+    end
+
     def created_user
       WifiUser::Repository::User.find(contact: internationalised_phone_number)
     end
