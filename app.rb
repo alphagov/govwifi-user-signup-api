@@ -71,7 +71,8 @@ class App < Sinatra::Base
 
     WifiUser::UseCase::SmsResponse.new(
       user_model: WifiUser::Repository::User.new,
-      template_finder: template_finder
+      template_finder: template_finder,
+      logger: logger
     ).execute(
       contact: params[:source],
       sms_content: params[:message]

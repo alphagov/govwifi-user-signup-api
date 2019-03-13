@@ -12,8 +12,8 @@ class WifiUser::UseCase::SponsorUsers
 
     if whitelist_checker.execute(sponsor_address)[:success]
       sponsees = sanitise_sponsees(unsanitised_sponsees)
-      invite_sponsees(sponsor, sponsor_address, sponsees)
-      send_confirmation_email(sponsor_address, sponsees)
+      failed_sponsees = invite_sponsees(sponsor, sponsor_address, sponsees)[:failed]
+      send_confirmation_email(sponsor_address, sponsees, failed_sponsees: failed_sponsees)
     else
       logger.info("Unsuccessful sponsor signup attempt: #{sponsor_address}")
     end
@@ -28,7 +28,7 @@ private
   end
 
   def invite_sponsees(sponsor, sponsor_address, sponsees)
-    sponsees.each do |sponsee|
+    failed_sponsees = sponsees.reject do |sponsee|
       if email?(sponsee)
         sponsee_address = Mail::Address.new(sponsee).address
         sponsor_email(sponsor, sponsor_address, sponsee_address)
@@ -36,6 +36,10 @@ private
         sponsor_phone_number(sponsor_address, sponsee)
       end
     end
+    {
+      success: (sponsees.to_set - failed_sponsees.to_set).to_a,
+      failed: failed_sponsees
+    }
   end
 
   def notify_client
@@ -51,7 +55,7 @@ private
         login: login_details[:username],
         pass: login_details[:password]
       }
-    )
+    ).success
   end
 
   def sponsor_email(sponsor, sponsor_address, sponsee_address)
@@ -62,14 +66,15 @@ private
       personalisation: login_details.merge(sponsor: sponsor),
       email_reply_to_id: do_not_reply_email_address_id
     )
+    true
   end
 
   def config
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml")
   end
 
-  def send_confirmation_email(sponsor, sponsees)
-    return send_sponsor_failed(sponsor) if sponsees.empty?
+  def send_confirmation_email(sponsor, sponsees, failed_sponsees: [])
+    return send_failed_sponsoring_email(sponsor, failed_sponsees: failed_sponsees) if sponsees.empty? || !failed_sponsees.empty?
     return send_confirmation_singular(sponsor, sponsees) if sponsees.length == 1
 
     send_confirmation_plural(sponsor, sponsees)
@@ -98,11 +103,13 @@ private
     )
   end
 
-  def send_sponsor_failed(sponsor_address)
+  def send_failed_sponsoring_email(sponsor_address, failed_sponsees: [])
     notify_client.send_email(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['failed'],
-      personalisation: {},
+      personalisation: {
+        failedSponsees: format_failed_sponsees(failed_sponsees)
+      },
       email_reply_to_id: do_not_reply_email_address_id
     )
   end
@@ -121,5 +128,9 @@ private
 
   def do_not_reply_email_address_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('do_not_reply_email_id')
+  end
+
+  def format_failed_sponsees(failed_sponsees)
+    failed_sponsees.map { |sponsee| "* #{sponsee}" }.join("\n")
   end
 end

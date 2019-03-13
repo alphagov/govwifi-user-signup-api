@@ -1,16 +1,17 @@
 require 'notifications/client'
 
-class WifiUser::Gateway::GovNotifySMS
+class WifiUser::Gateway::GovNotifyEmail
   def initialize(api_key)
     @client = Notifications::Client.new(api_key)
   end
 
-  def execute(phone_number:, template_id:, template_parameters: {})
+  def execute(email_address:, template_id:, template_parameters: {}, reply_to_id: nil)
     begin
-      client.send_sms(
-        phone_number: phone_number,
+      client.send_email(
+        email_address: email_address,
         template_id: template_id,
-        personalisation: template_parameters
+        personalisation: template_parameters,
+        email_reply_to_id: reply_to_id
       )
       success = true
     rescue Notifications::Client::RequestError => e
@@ -18,7 +19,7 @@ class WifiUser::Gateway::GovNotifySMS
 
       success = false
     end
-    WifiUser::Domain::SMSResponse.new(success: success)
+    WifiUser::Domain::EmailResponse.new(success: success)
   end
 
 private

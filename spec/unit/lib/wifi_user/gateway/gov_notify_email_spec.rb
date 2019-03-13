@@ -1,16 +1,17 @@
 require 'securerandom'
 require 'notifications/client'
 
-describe WifiUser::Gateway::GovNotifySMS do
+describe WifiUser::Gateway::GovNotifyEmail do
   let(:api_key) { "dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000" }
 
   # modify the actual request
   let(:template_id) { SecureRandom.uuid }
   let(:parameters) { {} }
-  let(:phone_number) { '' }
+  let(:email_address) { '' }
+  let(:reply_to_id) { SecureRandom.uuid }
 
   # modify the stub
-  let(:api_url) { 'https://api.notifications.service.gov.uk/v2/notifications/sms' }
+  let(:api_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
   let(:return_status) { 200 }
   let(:return_body) { {} }
 
@@ -19,18 +20,23 @@ describe WifiUser::Gateway::GovNotifySMS do
   end
 
   let(:subject) do
-    described_class.new(api_key)
-      .execute(phone_number: phone_number, template_id: template_id, template_parameters: parameters)
+    described_class.new(api_key).execute(
+      email_address: email_address,
+      template_id: template_id,
+      template_parameters: parameters,
+      reply_to_id: reply_to_id
+    )
   end
 
-  it 'sends an SMS request' do
+  it 'sends an email request' do
     subject
     assert_requested :post, api_url,
       times: 1,
       body: {
-        phone_number: phone_number,
+        email_address: email_address,
         template_id: template_id,
-        personalisation: parameters
+        personalisation: parameters,
+        email_reply_to_id: reply_to_id
       }
   end
 

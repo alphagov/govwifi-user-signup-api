@@ -15,6 +15,6 @@ notify_email_template_ids:
   sponsor_confirmation:
     plural: 58e8ef4a-ca6b-40cd-81df-ec9c781fed56
     singular: 30ab6bc5-20bf-45af-b78d-34cacc0027cd
-    failed: efc83658-dcb5-4401-af42-e26b1945c1a9
+    failed: 52c19b68-4d8b-497a-b6ae-ee27d49439c3
 
 do_not_reply_email_id: 0d22d71f-afa3-4c72-8cd4-7716678dbd43
