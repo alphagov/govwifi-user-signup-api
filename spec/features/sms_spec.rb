@@ -32,11 +32,6 @@ describe App do
     end
 
     context 'with a a phone texting itself' do
-      let(:from_phone_number) { '07900000001' }
-      let(:to_phone_number) { '07900000001' }
-
-      
-
       shared_examples "rejecting an SMS" do
         let(:sms_response_stub) { class_double(WifiUser::UseCase::SmsResponse).as_stubbed_const }
         let(:subject) { post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: to_phone_number }
@@ -54,7 +49,7 @@ describe App do
       end
 
       context 'with both the same number' do
-        NUMBERS = %w(07900000001 447900000001 +447900000001)
+        NUMBERS = %w(07900000001 447900000001 +447900000001).freeze
         NUMBERS.each do |from_number|
           NUMBERS.each do |to_number|
             context "with #{from_number} to #{to_number}" do

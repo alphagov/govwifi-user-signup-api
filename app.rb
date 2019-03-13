@@ -85,9 +85,9 @@ class App < Sinatra::Base
     )
     ''
   end
-  
-  def numbers_are_equal?(number_1, number_2)
+
+  def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
-    contact_sanitiser.execute(number_1) == contact_sanitiser.execute(number_2)
+    contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
   end
 end
