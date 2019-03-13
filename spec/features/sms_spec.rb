@@ -11,7 +11,7 @@ describe App do
     end
 
     it 'sends an SMS containing login details back to the user' do
-      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go'
+      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: ''
 
       expected_request = {
         body: {
