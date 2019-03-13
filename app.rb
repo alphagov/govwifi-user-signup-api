@@ -67,7 +67,8 @@ class App < Sinatra::Base
   post '/user-signup/sms-notification' do
     logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
 
-    if params[:source] == params[:destination]
+
+    if numbers_are_equal?(params[:source], params[:destination])
       logger.warn("SMS loop detected: #{params[:destination]}")
       return ''
     end
@@ -83,5 +84,10 @@ class App < Sinatra::Base
       sms_content: params[:message]
     )
     ''
+  end
+  
+  def numbers_are_equal?(number_1, number_2)
+    contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
+    contact_sanitiser.execute(number_1) == contact_sanitiser.execute(number_2)
   end
 end
