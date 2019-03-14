@@ -1,9 +1,10 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, send_email_gateway:, logger: Logger.new(STDOUT))
     @logger = logger
     @user_model = user_model
     @whitelist_checker = whitelist_checker
     @send_sms_gateway = send_sms_gateway
+    @send_email_gateway = send_email_gateway
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
   end
 
@@ -21,7 +22,7 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :send_sms_gateway, :logger
+  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :send_sms_gateway, :send_email_gateway, :logger
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq
@@ -42,10 +43,6 @@ private
     }
   end
 
-  def notify_client
-    @notify_client ||= Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
-  end
-
   def sponsor_phone_number(actual_sponsor, sponsee)
     login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
     send_sms_gateway.execute(
@@ -60,13 +57,12 @@ private
 
   def sponsor_email(sponsor, sponsor_address, sponsee_address)
     login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)
-    notify_client.send_email(
+    send_email_gateway.execute(
       email_address: sponsee_address,
       template_id: config['notify_email_template_ids']['sponsored_credentials'],
-      personalisation: login_details.merge(sponsor: sponsor),
-      email_reply_to_id: do_not_reply_email_address_id
-    )
-    true
+      template_parameters: login_details.merge(sponsor: sponsor),
+      reply_to_id: do_not_reply_email_address_id
+    ).success
   end
 
   def config
@@ -81,36 +77,36 @@ private
   end
 
   def send_confirmation_plural(sponsor_address, sponsees)
-    notify_client.send_email(
+    send_email_gateway.execute(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['plural'],
-      personalisation: {
+      template_parameters: {
         number_of_accounts: sponsees.length,
         contacts: sponsees.join("\r\n")
       },
-      email_reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id
     )
   end
 
   def send_confirmation_singular(sponsor_address, sponsees)
-    notify_client.send_email(
+    send_email_gateway.execute(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['singular'],
-      personalisation: {
+      template_parameters: {
         contact: sponsees.first
       },
-      email_reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id
     )
   end
 
   def send_failed_sponsoring_email(sponsor_address, failed_sponsees: [])
-    notify_client.send_email(
+    send_email_gateway.execute(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template['failed'],
-      personalisation: {
+      template_parameters: {
         failedSponsees: format_failed_sponsees(failed_sponsees)
       },
-      email_reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id
     )
   end
 

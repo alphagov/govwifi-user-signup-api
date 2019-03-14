@@ -48,6 +48,7 @@ class App < Sinatra::Base
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
       send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY')),
+      send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new(ENV.fetch('NOTIFY_API_KEY')),
       logger: logger
     )
 
