@@ -3,7 +3,7 @@ RSpec.describe App do
     let(:from_phone_number) { '07700900000' }
 
     def post_sms_notification
-      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go'
+      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: ''
     end
 
     it 'returns no sensitive information to sms provider' do
