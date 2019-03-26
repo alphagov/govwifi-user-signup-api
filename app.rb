@@ -87,6 +87,31 @@ class App < Sinatra::Base
     ''
   end
 
+  post '/user-signup/sms-notification/notify' do
+    source = params[:source_number]
+    destination = params[:destination_number]
+    message = params[:message]
+    logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{params[:message]}")
+
+
+    if numbers_are_equal?(source, destination)
+      logger.warn("SMS loop detected: #{destination}")
+      return ''
+    end
+
+    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
+
+    WifiUser::UseCase::SmsResponse.new(
+      user_model: WifiUser::Repository::User.new,
+      template_finder: template_finder,
+      logger: logger
+    ).execute(
+      contact: source,
+      sms_content: message
+    )
+    ''
+  end
+
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
