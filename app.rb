@@ -96,7 +96,7 @@ class App < Sinatra::Base
     source = params[:source_number]
     destination = params[:destination_number]
     message = params[:message]
-    logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{params[:message]}")
+    logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
 
 
     if numbers_are_equal?(source, destination)
