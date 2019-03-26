@@ -15,7 +15,7 @@ describe App do
     it 'sends an SMS containing login details back to the user' do
       post '/user-signup/sms-notification/notify',
         { source_number: from_phone_number, message: 'Go', destination_number: '' },
-        'HTTP_AUTHORIZATION' => notify_token
+        'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
 
       expected_request = {
         body: {
@@ -41,7 +41,7 @@ describe App do
         let(:subject) do
           post '/user-signup/sms-notification/notify',
             { source_number: from_phone_number, message: 'Go', destination_number: to_phone_number },
-            'HTTP_AUTHORIZATION' => notify_token
+            'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
         end
 
         it 'gives an empty ok' do
@@ -77,7 +77,7 @@ describe App do
       before do
         post '/user-signup/sms-notification/notify',
           { source_number: from_phone_number, message: 'Go', destination_number: '' },
-          'HTTP_AUTHORIZATION' => notify_token
+          'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
       end
 
       it 'receives an unauthorised response' do
