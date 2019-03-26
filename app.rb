@@ -15,6 +15,7 @@ class App < Sinatra::Base
   configure do
     set :log_level, Logger::DEBUG
     set :firetext_token, ENV['FIRETEXT_TOKEN']
+    set :govnotify_token, ENV['GOVNOTIFY_BEARER_TOKEN']
   end
 
   configure :production, :staging do
@@ -90,6 +91,8 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/sms-notification/notify' do
+    halt(403, '') if !is_govnotify_token_valid?
+
     source = params[:source_number]
     destination = params[:destination_number]
     message = params[:message]
@@ -121,5 +124,9 @@ class App < Sinatra::Base
 
   def is_firetext_token_valid?
     params[:token] == options.firetext_token
+  end
+
+  def is_govnotify_token_valid?
+    env.fetch('HTTP_AUTHORIZATION') == options.govnotify_token
   end
 end
