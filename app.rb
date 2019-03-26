@@ -68,7 +68,7 @@ class App < Sinatra::Base
   # rubocop:enable Metrics/BlockLength
 
   post '/user-signup/sms-notification' do
-    halt(403, '') if !is_firetext_token_valid?
+    halt(401, '') if !is_firetext_token_valid?
 
     logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
 
@@ -91,7 +91,7 @@ class App < Sinatra::Base
   end
 
   post '/user-signup/sms-notification/notify' do
-    halt(403, '') if !is_govnotify_token_valid?
+    halt(401, '') if !is_govnotify_token_valid?
 
     source = params[:source_number]
     destination = params[:destination_number]

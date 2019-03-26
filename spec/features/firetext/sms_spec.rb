@@ -72,7 +72,7 @@ describe App do
       end
 
       it 'receives an unauthorised response' do
-        expect(last_response.status).to eq(403)
+        expect(last_response.status).to eq(401)
       end
 
       it 'does not send an SMS' do
