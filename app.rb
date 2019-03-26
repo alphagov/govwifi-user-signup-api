@@ -14,6 +14,8 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
+    set :firetext_token, ENV['FIRETEXT_TOKEN']
+    set :govnotify_token, ENV['GOVNOTIFY_BEARER_TOKEN']
   end
 
   configure :production, :staging do
@@ -66,8 +68,9 @@ class App < Sinatra::Base
   # rubocop:enable Metrics/BlockLength
 
   post '/user-signup/sms-notification' do
-    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
+    halt(403, '') if !is_firetext_token_valid?
 
+    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
 
     if numbers_are_equal?(params[:source], params[:destination])
       logger.warn("SMS loop detected: #{params[:destination]}")
@@ -87,8 +90,43 @@ class App < Sinatra::Base
     ''
   end
 
+  post '/user-signup/sms-notification/notify' do
+    halt(403, '') if !is_govnotify_token_valid?
+
+    source = params[:source_number]
+    destination = params[:destination_number]
+    message = params[:message]
+    logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
+
+
+    if numbers_are_equal?(source, destination)
+      logger.warn("SMS loop detected: #{destination}")
+      return ''
+    end
+
+    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
+
+    WifiUser::UseCase::SmsResponse.new(
+      user_model: WifiUser::Repository::User.new,
+      template_finder: template_finder,
+      logger: logger
+    ).execute(
+      contact: source,
+      sms_content: message
+    )
+    ''
+  end
+
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
+  end
+
+  def is_firetext_token_valid?
+    params[:token] == options.firetext_token
+  end
+
+  def is_govnotify_token_valid?
+    env.fetch('HTTP_AUTHORIZATION') == options.govnotify_token
   end
 end
