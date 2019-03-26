@@ -64,6 +64,22 @@ describe App do
       end
     end
 
+    context 'with an invalid bearer token' do
+      let(:firetext_token) { 'INVALID TOKEN' }
+
+      before do
+        post "/user-signup/sms-notification?token=#{firetext_token}", source: from_phone_number, message: 'Go', destination: ''
+      end
+
+      it 'receives an unauthorised response' do
+        expect(last_response.status).to eq(403)
+      end
+
+      it 'does not send an SMS' do
+        expect(a_request(:post, notify_sms_url)).to_not have_been_made
+      end
+    end
+
     def created_user
       WifiUser::Repository::User.find(contact: internationalised_phone_number)
     end
