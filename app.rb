@@ -14,6 +14,7 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
+    set :firetext_token, ENV['FIRETEXT_TOKEN']
   end
 
   configure :production, :staging do
@@ -66,8 +67,9 @@ class App < Sinatra::Base
   # rubocop:enable Metrics/BlockLength
 
   post '/user-signup/sms-notification' do
-    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
+    halt(403, '') if !is_firetext_token_valid?
 
+    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
 
     if numbers_are_equal?(params[:source], params[:destination])
       logger.warn("SMS loop detected: #{params[:destination]}")
@@ -115,5 +117,9 @@ class App < Sinatra::Base
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
+  end
+
+  def is_firetext_token_valid?
+    params[:token] == options.firetext_token
   end
 end

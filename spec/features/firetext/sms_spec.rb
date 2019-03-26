@@ -4,6 +4,7 @@ describe App do
     let(:internationalised_phone_number) { '+447700900000' }
     let(:notify_sms_url) { 'https://api.notifications.service.gov.uk/v2/notifications/sms' }
     let(:notify_template_id) { '24d47eb3-8b02-4eba-aa04-81ffaf4bb1b4' }
+    let(:firetext_token) { ENV['FIRETEXT_TOKEN'] }
 
     before do
       ENV['RACK_ENV'] = 'staging'
@@ -11,7 +12,7 @@ describe App do
     end
 
     it 'sends an SMS containing login details back to the user' do
-      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: ''
+      post "/user-signup/sms-notification?token=#{firetext_token}", source: from_phone_number, message: 'Go', destination: ''
 
       expected_request = {
         body: {
@@ -34,7 +35,7 @@ describe App do
     context 'with a a phone texting itself' do
       shared_examples "rejecting an SMS" do
         let(:sms_response_stub) { class_double(WifiUser::UseCase::SmsResponse).as_stubbed_const }
-        let(:subject) { post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: to_phone_number }
+        let(:subject) { post "/user-signup/sms-notification?token=#{firetext_token}", source: from_phone_number, message: 'Go', destination: to_phone_number }
 
         it 'gives an empty ok' do
           subject

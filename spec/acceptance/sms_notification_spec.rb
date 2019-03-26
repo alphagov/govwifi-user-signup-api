@@ -1,9 +1,10 @@
 RSpec.describe App do
   describe 'POSTing an SMS to /user-signup/sms-notification' do
     let(:from_phone_number) { '07700900000' }
+    let(:firetext_token) { ENV['FIRETEXT_TOKEN'] }
 
     def post_sms_notification
-      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: ''
+      post "/user-signup/sms-notification?token=#{firetext_token}", source: from_phone_number, message: 'Go', destination: ''
     end
 
     it 'returns no sensitive information to sms provider' do
