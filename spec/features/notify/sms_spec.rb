@@ -1,11 +1,21 @@
 describe App do
   describe 'Signing up to GovWifi via the text message service' do
     let(:from_phone_number) { '07700900000' }
+    let(:to_phone_number) { '' }
+    let(:message) { 'Go' }
     let(:internationalised_phone_number) { '+447700900000' }
     let(:notify_sms_url) { 'https://api.notifications.service.gov.uk/v2/notifications/sms' }
     let(:notify_template_id) { '24d47eb3-8b02-4eba-aa04-81ffaf4bb1b4' }
     let(:notify_token) { ENV['GOVNOTIFY_BEARER_TOKEN'] }
     let(:created_user) { WifiUser::Repository::User.find(contact: internationalised_phone_number) }
+
+    let(:payload) do
+      {
+        source_number: from_phone_number,
+        destination_number: to_phone_number,
+        message: message
+      }.to_json
+    end
 
     before do
       ENV['RACK_ENV'] = 'staging'
@@ -14,7 +24,7 @@ describe App do
 
     it 'sends an SMS containing login details back to the user' do
       post '/user-signup/sms-notification/notify',
-        { source_number: from_phone_number, message: 'Go', destination_number: '' },
+        payload,
         'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
 
       expected_request = {
@@ -40,7 +50,7 @@ describe App do
         let(:sms_response_stub) { class_double(WifiUser::UseCase::SmsResponse).as_stubbed_const }
         let(:subject) do
           post '/user-signup/sms-notification/notify',
-            { source_number: from_phone_number, message: 'Go', destination_number: to_phone_number },
+            payload,
             'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
         end
 

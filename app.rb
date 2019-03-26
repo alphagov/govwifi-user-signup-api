@@ -93,11 +93,11 @@ class App < Sinatra::Base
   post '/user-signup/sms-notification/notify' do
     halt(401, '') if !is_govnotify_token_valid?
 
-    source = params[:source_number]
-    destination = params[:destination_number]
-    message = params[:message]
+    payload = JSON.parse(request.body.read)
+    source = payload["source_number"]
+    destination = payload["destination_number"]
+    message = payload["message"]
     logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
-
 
     if numbers_are_equal?(source, destination)
       logger.warn("SMS loop detected: #{destination}")
