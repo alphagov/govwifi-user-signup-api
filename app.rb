@@ -14,7 +14,6 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
-    set :firetext_token, ENV['FIRETEXT_TOKEN']
     set :govnotify_token, ENV['GOVNOTIFY_BEARER_TOKEN']
   end
 
@@ -67,29 +66,6 @@ class App < Sinatra::Base
   end
   # rubocop:enable Metrics/BlockLength
 
-  post '/user-signup/sms-notification' do
-    halt(401, '') if !is_firetext_token_valid?
-
-    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
-
-    if numbers_are_equal?(params[:source], params[:destination])
-      logger.warn("SMS loop detected: #{params[:destination]}")
-      return ''
-    end
-
-    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
-
-    WifiUser::UseCase::SmsResponse.new(
-      user_model: WifiUser::Repository::User.new,
-      template_finder: template_finder,
-      logger: logger
-    ).execute(
-      contact: params[:source],
-      sms_content: params[:message]
-    )
-    ''
-  end
-
   post '/user-signup/sms-notification/notify' do
     halt(401, '') if !is_govnotify_token_valid?
 
@@ -120,10 +96,6 @@ class App < Sinatra::Base
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
-  end
-
-  def is_firetext_token_valid?
-    params[:token] == options.firetext_token
   end
 
   def is_govnotify_token_valid?
