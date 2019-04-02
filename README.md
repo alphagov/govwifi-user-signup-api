@@ -11,23 +11,23 @@ The private GovWifi [build repository][build-repo] contains instructions on how 
 With each journey, we generate a unique username and password for GovWifi.
 These get stored and sent to the user.
 
-* SMS signup - Users text a phone number and get a set of credentials.
-* SMS help routes - Users can also ask for help from the same phone number and
+- SMS signup - Users text a phone number and get a set of credentials.
+- SMS help routes - Users can also ask for help from the same phone number and
   are sent some guides based on their selected operating system.
-* Email signup - Users with a government domain email send a blank email to
+- Email signup - Users with a government domain email send a blank email to
   signup@wifi.service.gov.uk.
-* Sponsor signup - Users with a government domain email address send through a
+- Sponsor signup - Users with a government domain email address send through a
   list of email addresses and/or phone numbers to sponsor@wifi.service.gov.uk.
 
 ### Sinatra routes
 
-* `GET /healthcheck` - AWS ELB target group health checking
-* `POST /user-signup/email-notification` - AWS SES incoming email notifications
-* `POST /user-signup/sms-notification` - Firetext incoming SMS notifications
+- `GET /healthcheck` - AWS ELB target group health checking
+- `POST /user-signup/email-notification` - AWS SES incoming email notifications
+- `POST /user-signup/sms-notification/notify` - Notify incoming SMS notifications
 
 ## Performance Platform
 
-This application sends statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task.  This Rake task is triggered by an ECS scheduled task.
+This application sends statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task. This Rake task is triggered by an ECS scheduled task.
 
 ### Send statistics manually
 
@@ -61,8 +61,8 @@ bundle exec rake delete_inactive_users
 
 ### Dependencies
 
-* [GOV.UK Notify][Notify] - used to send outgoing emails and SMS replies
-* MySQL database - used to store generated credentials
+- [GOV.UK Notify][notify] - used to send outgoing emails and SMS replies
+- MySQL database - used to store generated credentials
 
 ## Developing
 
@@ -91,15 +91,15 @@ Then access the site at <http://localhost:8080/healthcheck>
 Once you have merged your changes into master branch, deploying them is made up of
 two steps:
 
-* Pushing a built image to the docker registry from Jenkins.
+- Pushing a built image to the docker registry from Jenkins.
 
-* Restarting the running tasks so it picks up the latest image.
+- Restarting the running tasks so it picks up the latest image.
 
 ## Licence
 
 This codebase is released under [the MIT License][mit].
 
 [mit]: LICENCE
-[performance-platform]:https://www.gov.uk/performance/govwifi
-[Notify]:https://www.notifications.service.gov.uk/
-[build-repo]:https://github.com/alphagov/govwifi-build
+[performance-platform]: https://www.gov.uk/performance/govwifi
+[notify]: https://www.notifications.service.gov.uk/
+[build-repo]: https://github.com/alphagov/govwifi-build
