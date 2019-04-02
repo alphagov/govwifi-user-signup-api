@@ -1,9 +1,17 @@
 RSpec.describe App do
   describe 'POSTing an SMS to /user-signup/sms-notification' do
     let(:from_phone_number) { '07700900000' }
+    let(:notify_token) { ENV['GOVNOTIFY_BEARER_TOKEN'] }
+    let(:payload) do
+      {
+        source_number: from_phone_number,
+        destination_number: '',
+        message: 'Go'
+      }.to_json
+    end
 
     def post_sms_notification
-      post '/user-signup/sms-notification', source: from_phone_number, message: 'Go', destination: ''
+      post "/user-signup/sms-notification/notify", payload, 'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
     end
 
     it 'returns no sensitive information to sms provider' do

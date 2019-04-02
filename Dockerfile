@@ -14,5 +14,6 @@ RUN apk --update --upgrade add build-base mysql-dev && \
 
 COPY . .
 
+ENV GOVNOTIFY_BEARER_TOKEN ''
 
 CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0", "-p", "8080"]

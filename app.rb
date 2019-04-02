@@ -14,6 +14,7 @@ class App < Sinatra::Base
 
   configure do
     set :log_level, Logger::DEBUG
+    set :govnotify_token, ENV['GOVNOTIFY_BEARER_TOKEN']
   end
 
   configure :production, :staging do
@@ -65,12 +66,17 @@ class App < Sinatra::Base
   end
   # rubocop:enable Metrics/BlockLength
 
-  post '/user-signup/sms-notification' do
-    logger.info("Processing SMS on /user-signup/sms-notification from #{params[:source]} to #{params[:destination]} with message #{params[:message]}")
+  post '/user-signup/sms-notification/notify' do
+    halt(401, '') if !is_govnotify_token_valid?
 
+    payload = JSON.parse(request.body.read)
+    source = payload["source_number"]
+    destination = payload["destination_number"]
+    message = payload["message"]
+    logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
 
-    if numbers_are_equal?(params[:source], params[:destination])
-      logger.warn("SMS loop detected: #{params[:destination]}")
+    if numbers_are_equal?(source, destination)
+      logger.warn("SMS loop detected: #{destination}")
       return ''
     end
 
@@ -81,8 +87,8 @@ class App < Sinatra::Base
       template_finder: template_finder,
       logger: logger
     ).execute(
-      contact: params[:source],
-      sms_content: params[:message]
+      contact: source,
+      sms_content: message
     )
     ''
   end
@@ -90,5 +96,9 @@ class App < Sinatra::Base
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
+  end
+
+  def is_govnotify_token_valid?
+    env.fetch('HTTP_AUTHORIZATION') == "Bearer #{options.govnotify_token}"
   end
 end
