@@ -4,16 +4,28 @@ ifdef DEPLOYMENT
 	BUNDLE_FLAGS = --build-arg BUNDLE_INSTALL_CMD='bundle install --without test'
 endif
 
-DOCKER_BUILD_CMD = docker-compose build $(BUNDLE_FLAGS)
 DOCKER_COMPOSE = docker-compose -f docker-compose.yml
 
-ifndef JENKINS_URL
-  DOCKER_COMPOSE += -f docker-compose.development.yml
+ifdef ON_CONCOURSE
+  DOCKER_COMPOSE += -f docker-compose.concourse.yml
 endif
 
-build:
-	$(MAKE) stop
+ifndef JENKINS_URL
+  ifndef ON_CONCOURSE
+    DOCKER_COMPOSE += -f docker-compose.development.yml
+	endif
+endif
+
+DOCKER_BUILD_CMD = $(DOCKER_COMPOSE) build $(BUNDLE_FLAGS)
+
+build: stop
+ifndef ON_CONCOURSE
 	$(DOCKER_BUILD_CMD)
+endif
+
+prebuild:
+	$(DOCKER_BUILD_CMD)
+	$(DOCKER_COMPOSE) up --no-start
 
 serve:
 	$(MAKE) build

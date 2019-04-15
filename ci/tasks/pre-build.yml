@@ -3,7 +3,8 @@ platform: linux
 
 inputs:
   - name: src
-  # - name: docker-cache/<% image name %>-image
+  - name: docker-cache/mysql-image
+  - name: docker-cache/ruby-image
 
 outputs:
   # aligns with PREBUILT_TAG
