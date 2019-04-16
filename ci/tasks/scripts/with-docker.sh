@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -u -o pipefail
+
 # Launches the docker daemon, and loads our cached images from the `docker-cache` folder.
 
 source /docker-helpers.sh
