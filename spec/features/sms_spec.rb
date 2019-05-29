@@ -32,7 +32,7 @@ describe App do
           "phone_number": internationalised_phone_number,
           "template_id": notify_template_id,
           "personalisation": {
-            "login": created_user.username,
+            "login": "#{created_user.username} ",
             "pass": created_user.password
           }
         },

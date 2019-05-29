@@ -34,7 +34,7 @@ describe WifiUser::UseCase::SmsResponse do
         phone_number: phone_number,
         template_id: notify_template_id,
         personalisation: {
-          login: username,
+          login: "#{username} ",
           pass: password,
         }
       }
