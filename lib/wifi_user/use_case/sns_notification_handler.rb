@@ -56,7 +56,10 @@ private
       bucket: payload.fetch(:s3_bucket_name),
       key: payload.fetch(:s3_object_key)
     )
-    sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(email_fetcher: email_fetcher)
+    sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
+      email_fetcher: email_fetcher,
+      sponsor_address: from_address
+    )
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)
   end
