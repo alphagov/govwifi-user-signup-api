@@ -3,7 +3,7 @@ describe WifiUser::UseCase::EmailSponseesExtractor do
   let(:email_fetcher) { double(fetch: email.to_s) }
   let(:sponsees) { subject.execute }
 
-  subject { described_class.new(email_fetcher: email_fetcher) }
+  subject { described_class.new(email_fetcher: email_fetcher, sponsor_address: 'sponsor@example.com') }
 
   it 'Grabs a single email address' do
     email.body = 'adrian@example.com'
@@ -70,6 +70,11 @@ describe WifiUser::UseCase::EmailSponseesExtractor do
     it 'Base64 encoded HTML message' do
       test_case 'email-sponsor-base64-htmlonly'
       expect(sponsees).to eq(['example.user2@example.co.uk', '07123456789'])
+    end
+
+    it 'Filters the sponsor address from results' do
+      email.body = "adrian@example.com\r\nchris@example.com\r\nsponsor@example.com"
+      expect(sponsees).to eq(['adrian@example.com', 'chris@example.com'])
     end
 
     def test_case(regression_test_name)

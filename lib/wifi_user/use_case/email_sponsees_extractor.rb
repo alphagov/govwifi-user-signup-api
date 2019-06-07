@@ -1,14 +1,16 @@
 require 'nokogiri'
 
 class WifiUser::UseCase::EmailSponseesExtractor
-  def initialize(email_fetcher:)
+  def initialize(email_fetcher:, sponsor_address:)
     @email_fetcher = email_fetcher
+    @sponsor_address = sponsor_address
   end
 
   def execute
     mail = Mail.read_from_string(email_fetcher.fetch)
 
     contacts_from_mail(mail).map(&:strip).reject(&:empty?)
+                            .reject { |contact| @sponsor_address == contact }
   end
 
 private
