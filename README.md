@@ -38,7 +38,7 @@ Populate the date argument to the Rake task with the date that you want to send 
 #### Volumetrics
 
 ```shell
-aws ecs run-task --cluster api-cluster --task-definition user-signup-api-task --count 1 --overrides "{ \"containerOverrides\": [{ \"name\": \"user-signup\", \"command\": [\"bundle\", \"exec\", \"rake\", \"publish_daily_statistics['2018-05-03']\"] }] }" --region eu-west-2
+aws ecs run-task --cluster wifi-api-cluster --task-definition user-signup-api-task-wifi --count 1 --overrides "{ \"containerOverrides\": [{ \"name\": \"user-signup\", \"command\": [\"bundle\", \"exec\", \"rake\", \"publish_daily_statistics['2019-02-11']\"] }] }" --network-configuration "{ \"awsvpcConfiguration\": { \"assignPublicIp\": \"ENABLED\", \"subnets\": [\"subnet-XXXXXXX\", \"subnet-XXXXXXX\"],\"securityGroups\": [\"sg-XXXXXX\"]}}" --region eu-west-2 --launch-type FARGATE
 ```
 
 #### Completion Rate
