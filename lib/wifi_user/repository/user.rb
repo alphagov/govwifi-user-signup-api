@@ -13,7 +13,7 @@ class WifiUser::Repository::User < Sequel::Model(:userdetails)
 
 private
 
-  ALPHABET_WITHOUT_VOWELS = %w(b c d f g h j k l m n p q r s t v w x y z).freeze
+  CHARACTER_LIST = %w(b c d f g h j k m n p q r s t v w x y z).freeze
 
   def random_username
     username = generate_username
@@ -26,7 +26,7 @@ private
   end
 
   def generate_username
-    (0...6).map { ALPHABET_WITHOUT_VOWELS[rand(ALPHABET_WITHOUT_VOWELS.count)] }.join
+    (0...6).map { CHARACTER_LIST[rand(CHARACTER_LIST.count)] }.join
   end
 
   def password_from_word_list
