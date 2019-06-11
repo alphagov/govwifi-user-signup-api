@@ -58,7 +58,7 @@ private
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
       email_fetcher: email_fetcher,
-      sponsor_address: from_address
+      exclude_addresses: [from_address]
     )
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)

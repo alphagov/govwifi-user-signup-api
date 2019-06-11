@@ -97,7 +97,7 @@ RSpec.describe App do
       it 'constructs WifiUser::UseCase::EmailSponseesExtractor with the Common::Gateway::S3ObjectFetcher' do
         post_notification
         expect(WifiUser::UseCase::EmailSponseesExtractor).to have_received(:new)
-          .with(email_fetcher: email_fetcher, sponsor_address: from_address)
+          .with(email_fetcher: email_fetcher, exclude_addresses: [from_address])
       end
 
       it 'calls WifiUser::UseCase::SponsorUsers with the sponsees from WifiUser::UseCase::EmailSponseesExtractor and from address' do

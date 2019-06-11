@@ -3,7 +3,7 @@ describe WifiUser::UseCase::EmailSponseesExtractor do
   let(:email_fetcher) { double(fetch: email.to_s) }
   let(:sponsees) { subject.execute }
 
-  subject { described_class.new(email_fetcher: email_fetcher, sponsor_address: 'sponsor@example.com') }
+  subject { described_class.new(email_fetcher: email_fetcher, exclude_addresses: %W(sponsor@example.com)) }
 
   it 'Grabs a single email address' do
     email.body = 'adrian@example.com'
