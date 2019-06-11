@@ -3,7 +3,7 @@ require 'nokogiri'
 class WifiUser::UseCase::EmailSponseesExtractor
   def initialize(email_fetcher:, exclude_addresses:)
     @email_fetcher = email_fetcher
-    @exclude_addresses = exclude_addresses
+    @exclude_addresses = exclude_addresses.map { |addr| Mail::Address.new(addr).address }
   end
 
   def execute
