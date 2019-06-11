@@ -56,7 +56,7 @@ describe WifiUser::UseCase::SponsorUsers do
 
   context 'Sponsoring a single phone number' do
     let(:sponsor) { 'Craig <craig@gov.uk>' }
-    let(:sponsees) { ['+447700900003'] }
+    let(:sponsees) { ['+44 7700 900003'] }
 
     it 'Calls user_model#generate with the sponsees phone number' do
       expect(user_model).to have_received(:generate) \
