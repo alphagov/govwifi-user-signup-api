@@ -1,9 +1,10 @@
 class WifiUser::UseCase::SnsNotificationHandler
-  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, logger: Logger.new(STDOUT))
+  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, sns_payload_validator:, logger: Logger.new(STDOUT))
     @email_signup_handler = email_signup_handler
     @sponsor_signup_handler = sponsor_signup_handler
     @logger = logger
     @email_parser = email_parser
+    @sns_payload_validator = sns_payload_validator
   end
 
   def handle(request)
@@ -27,7 +28,7 @@ class WifiUser::UseCase::SnsNotificationHandler
 
 private
 
-  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler, :email_parser
+  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler, :email_parser, :sns_payload_validator
 
   def handle_email_notification(payload)
     return if payload.fetch(:message_id) == 'AMAZON_SES_SETUP_NOTIFICATION'

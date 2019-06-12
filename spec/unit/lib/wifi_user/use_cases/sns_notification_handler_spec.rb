@@ -5,6 +5,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
   let(:to_address) { 'bob@something.gov.uk' }
   let(:email_signup_handler) { double(execute: nil) }
   let(:sponsor_signup_handler) { double(execute: nil) }
+  let(:sns_payload_validator) { double(execute: true) }
   let(:logger) { double(debug: nil) }
   let(:notification_type) { 'Notification' }
   let(:sns_type_header_name) { 'HTTP_X_AMZ_SNS_MESSAGE_TYPE' }
@@ -14,6 +15,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
       email_parser: email_parser,
+      sns_payload_validator: sns_payload_validator,
       logger: logger
     )
   end

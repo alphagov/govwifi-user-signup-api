@@ -61,6 +61,9 @@ class App < Sinatra::Base
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
       email_parser: email_parser,
+      sns_payload_validator: WifiUser::UseCase::SnsPayloadValidator.new(
+        expected_account_id: ENV.fetch('SNS_ACCOUNT_ID')
+      )
       logger: logger
     ).handle(request)
   end
