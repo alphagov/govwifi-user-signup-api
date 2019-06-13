@@ -28,5 +28,6 @@ run:
   args:
     - '-exc'
     - |
+      aws s3 cp s3://govwifi-wordlist/wordlist-short ./tmp/wordlist
       echo "$TAG" > image/tag
       build
