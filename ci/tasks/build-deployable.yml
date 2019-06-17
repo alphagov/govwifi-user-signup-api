@@ -29,6 +29,6 @@ run:
   args:
     - '-exc'
     - |
-      cp wordlist-short ./tmp/wordlist
+      cp wordlist-file/wordlist-short ./tmp/wordlist
       echo "$TAG" > image/tag
       build
