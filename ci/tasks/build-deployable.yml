@@ -16,6 +16,7 @@ params:
 
 inputs:
   - name: src
+  - name: wordlist-file
 
 outputs:
   - name: image
@@ -28,5 +29,6 @@ run:
   args:
     - '-exc'
     - |
+      cp wordlist-file/wordlist-short ./src/tmp/wordlist
       echo "$TAG" > image/tag
       build

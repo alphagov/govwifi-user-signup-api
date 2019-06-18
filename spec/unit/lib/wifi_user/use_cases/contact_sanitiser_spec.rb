@@ -19,6 +19,11 @@ describe WifiUser::UseCase::ContactSanitiser do
     expect(subject.execute(phone_number)).to eq('+447700900004')
   end
 
+  it 'strips spaces from a phone number' do
+    phone_number = '07700 900 004'
+    expect(subject.execute(phone_number)).to eq('+447700900004')
+  end
+
   it 'passes through an internationalised phone number' do
     phone_number = '+447700900004'
     expect(subject.execute(phone_number)).to eq('+447700900004')
