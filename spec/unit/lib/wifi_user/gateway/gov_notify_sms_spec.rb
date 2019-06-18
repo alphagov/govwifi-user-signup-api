@@ -25,13 +25,16 @@ describe WifiUser::Gateway::GovNotifySMS do
 
   it 'sends an SMS request' do
     subject
-    assert_requested :post, api_url,
+    assert_requested(
+      :post,
+      api_url,
       times: 1,
       body: {
         phone_number: phone_number,
         template_id: template_id,
         personalisation: parameters
       }
+    )
   end
 
   context 'on Success' do

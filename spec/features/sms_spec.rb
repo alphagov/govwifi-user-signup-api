@@ -24,8 +24,8 @@ describe App do
 
     it 'sends an SMS containing login details back to the user' do
       post '/user-signup/sms-notification/notify',
-        payload,
-        'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
+           payload,
+           'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
 
       expected_request = {
         body: {
@@ -50,8 +50,8 @@ describe App do
         let(:sms_response_stub) { class_double(WifiUser::UseCase::SmsResponse).as_stubbed_const }
         let(:subject) do
           post '/user-signup/sms-notification/notify',
-            payload,
-            'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
+               payload,
+               'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
         end
 
         it 'gives an empty ok' do
@@ -86,8 +86,8 @@ describe App do
 
       before do
         post '/user-signup/sms-notification/notify',
-          { source_number: from_phone_number, message: 'Go', destination_number: '' },
-          'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
+             { source_number: from_phone_number, message: 'Go', destination_number: '' },
+             'HTTP_AUTHORIZATION' => "Bearer #{notify_token}"
       end
 
       it 'receives an unauthorised response' do
