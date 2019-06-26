@@ -14,6 +14,20 @@ task :publish_daily_statistics, :date do |_, args|
   ).execute(presenter: volumetrics_presenter)
 end
 
+task :publish_monthly_statistics, :date do |_, args|
+  args.with_defaults(date: Date.today.to_s)
+  logger.info("publishing monthly statistics with #{args}")
+  performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
+  volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new(date: args[:date])
+  volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new(date: args[:date], period: 'month')
+
+  PerformancePlatform::UseCase::SendPerformanceReport.new(
+    stats_gateway: volumetrics_gateway,
+    performance_gateway: performance_gateway
+  ).execute(presenter: volumetrics_presenter)
+end
+
+
 task :publish_weekly_statistics, :date do |_, args|
   args.with_defaults(date: Date.today.to_s)
   logger.info("publishing weekly statistics #{args}")
