@@ -30,7 +30,9 @@ describe WifiUser::Gateway::GovNotifyEmail do
 
   it 'sends an email request' do
     subject
-    assert_requested :post, api_url,
+    assert_requested(
+      :post,
+      api_url,
       times: 1,
       body: {
         email_address: email_address,
@@ -38,6 +40,7 @@ describe WifiUser::Gateway::GovNotifyEmail do
         personalisation: parameters,
         email_reply_to_id: reply_to_id
       }
+    )
   end
 
   context 'on Success' do
