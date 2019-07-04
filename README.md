@@ -91,7 +91,7 @@ Then access the site at <http://localhost:8080/healthcheck>
 Once you have merged your changes into master branch, deploying them is made up of
 two steps:
 
-- Pushing a built image to the docker registry from Jenkins.
+- Pushing a built image to the docker registry.
 
 - Restarting the running tasks so it picks up the latest image.
 
