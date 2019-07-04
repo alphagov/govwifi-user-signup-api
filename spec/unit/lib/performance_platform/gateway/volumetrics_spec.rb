@@ -252,4 +252,19 @@ describe PerformancePlatform::Gateway::Volumetrics do
       expect(subject.fetch_stats[:sponsored_day_before]).to eq(1)
     end
   end
+
+  context 'Stats for month' do
+    subject { described_class.new(period: 'month') }
+
+    before do
+      yesterday = Date.today.prev_day
+      user_repository.create(username: 'Email', contact: 'foo@bar.com', created_at: yesterday.prev_month)
+      user_repository.create(username: 'SMS', contact: '1234567', created_at: yesterday.prev_day)
+      user_repository.create(username: 'Notme', contact: '2345678', created_at: yesterday.prev_month.prev_day)
+    end
+
+    it 'counts signups for the previous month' do
+      expect(subject.fetch_stats[:month_before]).to eq(2)
+    end
+  end
 end
