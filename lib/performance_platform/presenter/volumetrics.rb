@@ -10,10 +10,10 @@ class PerformancePlatform::Presenter::Volumetrics
     {
       metric_name: stats[:metric_name],
       payload: [
-        as_hash(stats[:day_before], stats[:cumulative], 'all-sign-ups'),
-        as_hash(stats[:sms_day_before], stats[:sms_cumulative], 'sms-sign-ups'),
-        as_hash(stats[:email_day_before], stats[:email_cumulative], 'email-sign-ups'),
-        as_hash(stats[:sponsored_day_before], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
+        as_hash(stats[:period_before], stats[:cumulative], 'all-sign-ups'),
+        as_hash(stats[:sms_period_before], stats[:sms_cumulative], 'sms-sign-ups'),
+        as_hash(stats[:email_period_before], stats[:email_cumulative], 'email-sign-ups'),
+        as_hash(stats[:sponsored_period_before], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
       ]
     }
   end

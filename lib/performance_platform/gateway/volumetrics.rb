@@ -10,13 +10,13 @@ class PerformancePlatform::Gateway::Volumetrics
     {
       period: period,
       metric_name: 'volumetrics',
-      "#{period}_before": signups_period_before.count,
+      period_before: signups_period_before.count,
       cumulative: signups_cumulative.count,
-      "sms_#{period}_before": sms_signups_period_before.count,
+      sms_period_before: sms_signups_period_before.count,
       sms_cumulative: sms_signups_cumulative.count,
-      "email_#{period}_before": email_signups_period_before.count,
+      email_period_before: email_signups_period_before.count,
       email_cumulative: email_signups_cumulative.count,
-      "sponsored_#{period}_before": sponsored_signups_period_before.count,
+      sponsored_period_before: sponsored_signups_period_before.count,
       sponsored_cumulative: sponsored_signups_cumulative.count
     }
   end
