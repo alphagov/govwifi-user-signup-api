@@ -13,13 +13,13 @@ describe PerformancePlatform::Presenter::Volumetrics do
     {
       period: 'day',
       metric_name: 'volumetrics',
-      day_before: 0,
+      period_before: 0,
       cumulative: 0,
-      sms_day_before: 0,
+      sms_period_before: 0,
       sms_cumulative: 0,
-      email_day_before: 0,
+      email_period_before: 0,
       email_cumulative: 0,
-      sponsored_day_before: 0,
+      sponsored_period_before: 0,
       sponsored_cumulative: 0
     }
   end

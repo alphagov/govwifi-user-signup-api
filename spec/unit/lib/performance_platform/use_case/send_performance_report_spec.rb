@@ -41,67 +41,135 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
     let(:bearer_token) { 'foobarbaz' }
     let(:dataset) { 'gov-wifi' }
     let(:presenter) { PerformancePlatform::Presenter::Volumetrics.new }
-    let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new }
-    let(:stats_gateway_response) {
-      {
-        metric_name: 'volumetrics',
-        period: 'day',
-        day_before: 12,
-        cumulative: 24,
-        sms_day_before: 2,
-        sms_cumulative: 3,
-        email_day_before: 10,
-        email_cumulative: 21,
-        sponsored_day_before: 7,
-        sponsored_cumulative: 9
-      }
-    }
-    let(:data) {
-      {
-        metric_name: 'volumetrics',
-        payload: [
-          {
-            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NhbGwtc2lnbi11cHM=',
-            _timestamp: '2018-07-16T00:00:00+00:00',
-            dataType: 'volumetrics',
-            period: 'day',
-            channel: 'all-sign-ups',
-            count: 12,
-            cumulative_count: 24
-          },
-          {
-            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzbXMtc2lnbi11cHM=',
-            _timestamp: '2018-07-16T00:00:00+00:00',
-            dataType: 'volumetrics',
-            period: 'day',
-            channel: 'sms-sign-ups',
-            count: 2,
-            cumulative_count: 3
-          },
-          {
-            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NlbWFpbC1zaWduLXVwcw==',
-            _timestamp: '2018-07-16T00:00:00+00:00',
-            dataType: 'volumetrics',
-            period: 'day',
-            channel: 'email-sign-ups',
-            count: 10,
-            cumulative_count: 21
-          },
-          {
-            _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzcG9uc29yLXNpZ24tdXBz',
-            _timestamp: '2018-07-16T00:00:00+00:00',
-            dataType: 'volumetrics',
-            period: 'day',
-            channel: 'sponsor-sign-ups',
-            count: 7,
-            cumulative_count: 9
-          }
-        ]
-      }
-    }
 
-    it 'fetches stats and sends them to Performance service' do
-      expect(subject.execute(presenter: presenter)['status']).to eq('ok')
+    context 'daily' do
+      let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new(period: 'day') }
+      let(:stats_gateway_response) {
+        {
+          metric_name: 'volumetrics',
+          period: 'day',
+          period_before: 12,
+          cumulative: 24,
+          sms_period_before: 2,
+          sms_cumulative: 3,
+          email_period_before: 10,
+          email_cumulative: 21,
+          sponsored_period_before: 7,
+          sponsored_cumulative: 9
+        }
+      }
+      let(:data) {
+        {
+          metric_name: 'volumetrics',
+          payload: [
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NhbGwtc2lnbi11cHM=',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'day',
+              channel: 'all-sign-ups',
+              count: 12,
+              cumulative_count: 24
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzbXMtc2lnbi11cHM=',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'day',
+              channel: 'sms-sign-ups',
+              count: 2,
+              cumulative_count: 3
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NlbWFpbC1zaWduLXVwcw==',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'day',
+              channel: 'email-sign-ups',
+              count: 10,
+              cumulative_count: 21
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzcG9uc29yLXNpZ24tdXBz',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'day',
+              channel: 'sponsor-sign-ups',
+              count: 7,
+              cumulative_count: 9
+            }
+          ]
+        }
+      }
+
+      it 'fetches stats and sends them to Performance service' do
+        expect(subject.execute(presenter: presenter)['status']).to eq('ok')
+      end
+    end
+
+    context 'monthly' do
+      let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new(period: 'month') }
+      let(:stats_gateway_response) {
+        {
+          metric_name: 'volumetrics',
+          period: 'month',
+          period_before: 12,
+          cumulative: 24,
+          sms_period_before: 2,
+          sms_cumulative: 3,
+          email_period_before: 10,
+          email_cumulative: 21,
+          sponsored_period_before: 7,
+          sponsored_cumulative: 9
+        }
+      }
+      let(:data) {
+        {
+          metric_name: 'volumetrics',
+          payload: [
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc2FsbC1zaWduLXVwcw==',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'month',
+              channel: 'all-sign-ups',
+              count: 12,
+              cumulative_count: 24
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc3Ntcy1zaWduLXVwcw==',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'month',
+              channel: 'sms-sign-ups',
+              count: 2,
+              cumulative_count: 3
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc2VtYWlsLXNpZ24tdXBz',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'month',
+              channel: 'email-sign-ups',
+              count: 10,
+              cumulative_count: 21
+            },
+            {
+              _id: 'MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc3Nwb25zb3Itc2lnbi11cHM=',
+              _timestamp: '2018-07-16T00:00:00+00:00',
+              dataType: 'volumetrics',
+              period: 'month',
+              channel: 'sponsor-sign-ups',
+              count: 7,
+              cumulative_count: 9
+            }
+          ]
+        }
+      }
+
+      it 'fetches stats and sends them to Performance service' do
+        expect(subject.execute(presenter: presenter)['status']).to eq('ok')
+      end
     end
   end
 
