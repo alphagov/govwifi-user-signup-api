@@ -44,7 +44,7 @@ GEM
     jaro_winkler (1.5.3)
     jmespath (1.4.0)
     json (2.2.0)
-    jwt (2.1.0)
+    jwt (2.2.1)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     mini_mime (1.0.1)
@@ -56,7 +56,7 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
-    notifications-ruby-client (3.1.0)
+    notifications-ruby-client (5.1.1)
       jwt (>= 1.5, < 3)
     parallel (1.17.0)
     parser (2.6.3.0)
@@ -146,7 +146,7 @@ DEPENDENCIES
   mail (~> 2.7)
   mysql2
   nokogiri (~> 1.10)
-  notifications-ruby-client (~> 3.1.0)
+  notifications-ruby-client (~> 5.1.1)
   puma
   rack-test
   rake (~> 12.3)
