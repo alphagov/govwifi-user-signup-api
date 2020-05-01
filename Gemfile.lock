@@ -32,7 +32,7 @@ GEM
     docile (1.3.2)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.11.1)
+    ffi (1.12.2)
     govuk-lint (3.11.5)
       rubocop (~> 0.72)
       rubocop-rails (~> 2)
@@ -70,9 +70,9 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rainbow (3.0.0)
-    rake (12.3.3)
-    rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
+    rake (13.0.1)
+    rb-fsevent (0.10.4)
+    rb-inotify (0.10.1)
       ffi (~> 1.0)
     require_all (2.0.0)
     rspec (3.9.0)
@@ -108,8 +108,7 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    scss_lint (0.58.0)
-      rake (>= 0.9, < 13)
+    scss_lint (0.59.0)
       sass (~> 3.5, >= 3.5.5)
     sensible_logging (0.4.1)
       activesupport (~> 5.2)
@@ -149,7 +148,7 @@ DEPENDENCIES
   notifications-ruby-client (~> 3.1.0)
   puma
   rack-test
-  rake (~> 12.3)
+  rake (~> 13.0)
   require_all
   rspec
   sensible_logging (~> 0.4.1)
