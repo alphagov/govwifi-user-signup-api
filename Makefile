@@ -33,7 +33,7 @@ serve:
 
 lint:
 	$(MAKE) build
-	$(DOCKER_COMPOSE) run --rm app bundle exec govuk-lint-ruby
+	$(DOCKER_COMPOSE) run --rm app bundle exec rubocop
 
 test:
 	$(MAKE) serve

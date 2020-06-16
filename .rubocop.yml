@@ -1,3 +1,8 @@
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - "spec/**/*"
+inherit_gem:
+  rubocop-govuk:
+    - config/default.yml
+    - config/rails.yml # add this line for Rails projects
+
+inherit_mode:
+  merge:
+    - Exclude
