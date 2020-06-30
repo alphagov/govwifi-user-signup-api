@@ -44,7 +44,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
 
     context "daily" do
       let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new(period: "day") }
-      let(:stats_gateway_response) {
+      let(:stats_gateway_response) do
         {
           metric_name: "volumetrics",
           period: "day",
@@ -57,8 +57,8 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           sponsored_period_before: 7,
           sponsored_cumulative: 9,
         }
-      }
-      let(:data) {
+      end
+      let(:data) do
         {
           metric_name: "volumetrics",
           payload: [
@@ -100,7 +100,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
             },
           ],
         }
-      }
+      end
 
       it "fetches stats and sends them to Performance service" do
         expect(subject.execute(presenter: presenter)["status"]).to eq("ok")
@@ -109,7 +109,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
 
     context "monthly" do
       let(:stats_gateway) { PerformancePlatform::Gateway::Volumetrics.new(period: "month") }
-      let(:stats_gateway_response) {
+      let(:stats_gateway_response) do
         {
           metric_name: "volumetrics",
           period: "month",
@@ -122,8 +122,8 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           sponsored_period_before: 7,
           sponsored_cumulative: 9,
         }
-      }
-      let(:data) {
+      end
+      let(:data) do
         {
           metric_name: "volumetrics",
           payload: [
@@ -165,7 +165,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
             },
           ],
         }
-      }
+      end
 
       it "fetches stats and sends them to Performance service" do
         expect(subject.execute(presenter: presenter)["status"]).to eq("ok")
@@ -179,7 +179,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
     let(:dataset) { "gov-wifi" }
     let(:presenter) { PerformancePlatform::Presenter::CompletionRate.new }
     let(:stats_gateway) { PerformancePlatform::Gateway::CompletionRate.new }
-    let(:stats_gateway_response) {
+    let(:stats_gateway_response) do
       {
         metric_name: "completion-rate",
         period: "week",
@@ -190,9 +190,9 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
         sponsor_registered: 2,
         sponsor_logged_in: 1,
       }
-    }
+    end
 
-    let(:data) {
+    let(:data) do
       {
         metric_name: "completion-rate",
         payload: [
@@ -253,7 +253,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           },
         ],
       }
-    }
+    end
 
     it "fetches stats and sends them to Performance service" do
       expect(subject.execute(presenter: presenter)["status"]).to eq("ok")
