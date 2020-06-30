@@ -20,7 +20,7 @@ describe PerformancePlatform::Presenter::Volumetrics do
       email_period_before: 0,
       email_cumulative: 0,
       sponsored_period_before: 0,
-      sponsored_cumulative: 0
+      sponsored_cumulative: 0,
     }
   end
 

@@ -19,7 +19,7 @@ describe WifiUser::UseCase::EmailSignup do
           username: username,
           password: password,
         },
-        email_reply_to_id: do_not_reply_id
+        email_reply_to_id: do_not_reply_id,
       }
     end
 

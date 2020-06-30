@@ -47,7 +47,7 @@ describe WifiUser::UseCase::SponsorUsers do
           email_address: "chris@gov.uk",
           template_id: "30ab6bc5-20bf-45af-b78d-34cacc0027cd",
           template_parameters: {
-            contact: "adrian@example.com"
+            contact: "adrian@example.com",
           },
           reply_to_id: do_not_reply_id
         )
@@ -131,9 +131,9 @@ describe WifiUser::UseCase::SponsorUsers do
         template_id: plural_sponsor_confirmation_template_id,
         template_parameters: {
           number_of_accounts: 2,
-          contacts: "steve@example.com\r\n+447700900004"
+          contacts: "steve@example.com\r\n+447700900004",
         },
-        reply_to_id: do_not_reply_id
+        reply_to_id: do_not_reply_id,
       }
     end
   end
@@ -153,7 +153,7 @@ describe WifiUser::UseCase::SponsorUsers do
           email_address: "cassandra@gov.uk",
           template_id: "52c19b68-4d8b-497a-b6ae-ee27d49439c3",
           template_parameters: {
-            failedSponsees: ""
+            failedSponsees: "",
           },
           reply_to_id: do_not_reply_id
         )
@@ -231,8 +231,8 @@ describe WifiUser::UseCase::SponsorUsers do
         template_id: "52c19b68-4d8b-497a-b6ae-ee27d49439c3",
         reply_to_id: do_not_reply_id,
         template_parameters: {
-          failedSponsees: formatted_failed_sponsees
-        }
+          failedSponsees: formatted_failed_sponsees,
+        },
       }
     end
 
@@ -277,8 +277,8 @@ describe WifiUser::UseCase::SponsorUsers do
       template_id: "3a4b1ca8-7b26-4266-8b5f-e05fdbd11879",
       template_parameters: {
         login: username,
-        pass: password
-      }
+        pass: password,
+      },
     }
   end
 
@@ -289,9 +289,9 @@ describe WifiUser::UseCase::SponsorUsers do
       template_parameters: {
         username: username,
         password: password,
-        sponsor: sponsor
+        sponsor: sponsor,
       },
-      reply_to_id: do_not_reply_id
+      reply_to_id: do_not_reply_id,
     }
   end
 end

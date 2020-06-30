@@ -14,7 +14,7 @@ class PerformancePlatform::Presenter::Volumetrics
         as_hash(stats[:sms_period_before], stats[:sms_cumulative], "sms-sign-ups"),
         as_hash(stats[:email_period_before], stats[:email_cumulative], "email-sign-ups"),
         as_hash(stats[:sponsored_period_before], stats[:sponsored_cumulative], "sponsor-sign-ups"),
-      ]
+      ],
     }
   end
 
@@ -34,7 +34,7 @@ private
       period: stats[:period],
       channel: channel,
       count: count,
-      cumulative_count: cumulative_count
+      cumulative_count: cumulative_count,
     }
   end
 

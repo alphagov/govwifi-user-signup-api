@@ -12,7 +12,7 @@ describe PerformancePlatform::Gateway::PerformanceReport do
       body: data[:payload].to_json,
       headers: {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer foobarbaz"
+        "Authorization" => "Bearer foobarbaz",
       }
     )
     .to_return(

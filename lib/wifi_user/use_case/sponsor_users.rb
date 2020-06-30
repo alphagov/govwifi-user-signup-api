@@ -39,7 +39,7 @@ private
     end
     {
       success: (sponsees.to_set - failed_sponsees.to_set).to_a,
-      failed: failed_sponsees
+      failed: failed_sponsees,
     }
   end
 
@@ -50,7 +50,7 @@ private
       template_id: config["notify_sms_template_ids"]["credentials"],
       template_parameters: {
         login: login_details[:username],
-        pass: login_details[:password]
+        pass: login_details[:password],
       }
     ).success
   end
@@ -82,7 +82,7 @@ private
       template_id: sponsor_confirmation_template["plural"],
       template_parameters: {
         number_of_accounts: sponsees.length,
-        contacts: sponsees.join("\r\n")
+        contacts: sponsees.join("\r\n"),
       },
       reply_to_id: do_not_reply_email_address_id
     )
@@ -93,7 +93,7 @@ private
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template["singular"],
       template_parameters: {
-        contact: sponsees.first
+        contact: sponsees.first,
       },
       reply_to_id: do_not_reply_email_address_id
     )
@@ -104,7 +104,7 @@ private
       email_address: sponsor_address,
       template_id: sponsor_confirmation_template["failed"],
       template_parameters: {
-        failedSponsees: format_failed_sponsees(failed_sponsees)
+        failedSponsees: format_failed_sponsees(failed_sponsees),
       },
       reply_to_id: do_not_reply_email_address_id
     )

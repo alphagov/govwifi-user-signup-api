@@ -16,7 +16,7 @@ class PerformancePlatform::Presenter::CompletionRate
         as_hash(stats[:email_logged_in], "email", "complete"),
         as_hash(stats[:sponsor_registered], "sponsor", "start"),
         as_hash(stats[:sponsor_logged_in], "sponsor", "complete")
-      ]
+      ],
     }
   end
 

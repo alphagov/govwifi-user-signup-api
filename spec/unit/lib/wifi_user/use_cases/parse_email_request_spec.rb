@@ -12,7 +12,7 @@ describe WifiUser::UseCase::ParseEmailRequest do
         from_address: "bob@gov.uk",
         to_address: "sally@gov.uk",
         s3_object_key: "some-object-key",
-        s3_bucket_name: "some-bucket-name"
+        s3_bucket_name: "some-bucket-name",
       }
 
       expect(subject.execute(request)).to eq(expected_result)

@@ -14,7 +14,7 @@ class WifiUser::UseCase::ParseEmailRequest
       from_address: from_address(parsed_message),
       to_address: to_address(parsed_message),
       s3_object_key: s3_object_key(parsed_message),
-      s3_bucket_name: s3_bucket_name(parsed_message)
+      s3_bucket_name: s3_bucket_name(parsed_message),
     }
   end
 

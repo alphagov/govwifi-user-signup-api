@@ -32,7 +32,7 @@ describe WifiUser::Gateway::GovNotifySMS do
       body: {
         phone_number: phone_number,
         template_id: template_id,
-        personalisation: parameters
+        personalisation: parameters,
       }
     )
   end
@@ -52,7 +52,7 @@ describe WifiUser::Gateway::GovNotifySMS do
         { errors: [
           {
             error: "BadRequestError",
-            message: "..."
+            message: "...",
           }
         ] }
       end
@@ -65,7 +65,7 @@ describe WifiUser::Gateway::GovNotifySMS do
         { errors: [
           {
             error: "ValidationError",
-            message: "..."
+            message: "...",
           }
         ] }
       end
