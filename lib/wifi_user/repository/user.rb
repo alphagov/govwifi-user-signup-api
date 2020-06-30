@@ -38,7 +38,7 @@ private
       username: random_username,
       password: password_from_word_list,
       contact: contact,
-      sponsor: sponsor
+      sponsor: sponsor,
     )
   end
 

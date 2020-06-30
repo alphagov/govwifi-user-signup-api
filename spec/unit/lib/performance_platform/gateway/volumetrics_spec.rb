@@ -17,7 +17,7 @@ describe PerformancePlatform::Gateway::Volumetrics do
         email_period_before: 0,
         email_cumulative: 0,
         sponsored_cumulative: 0,
-        sponsored_period_before: 0
+        sponsored_period_before: 0,
       )
     end
   end
@@ -88,21 +88,21 @@ describe PerformancePlatform::Gateway::Volumetrics do
         username: "Email 1",
         contact: "foo@bar.com",
         sponsor: "foo@bar.com",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
 
       user_repository.create(
         username: "Email 2",
         contact: "foo@baz.com",
         sponsor: "foo@baz.com",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
 
       user_repository.create(
         username: "SMS",
         contact: "+0123456789",
         sponsor: "+0123456789",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
     end
 
@@ -137,14 +137,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         username: "SMS old",
         created_at: Date.today - 6,
         contact: "+1123456789",
-        sponsor: "+1123456789"
+        sponsor: "+1123456789",
         )
 
       user_repository.create(
         username: "SMS new",
         contact: "+0123456789",
         sponsor: "+0123456789",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
     end
 
@@ -171,14 +171,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         username: "Email old",
         created_at: Date.today - 5,
         contact: "foo@bar.com",
-        sponsor: "foo@bar.com"
+        sponsor: "foo@bar.com",
         )
 
       user_repository.create(
         username: "Email new",
         contact: "foo@baz.com",
         sponsor: "foo@baz.com",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
     end
 
@@ -205,14 +205,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         username: "Email",
         contact: "foo@bar.com",
         sponsor: "sponsor@bar.com",
-        created_at: Date.today - 1
+        created_at: Date.today - 1,
         )
 
       user_repository.create(
         username: "SMS",
         contact: "foo@baz.com",
         sponsor: "sponsor@baz.com",
-        created_at: Date.today - 2
+        created_at: Date.today - 2,
         )
     end
 
@@ -233,14 +233,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         username: "Email",
         contact: "foo@bar.com",
         sponsor: "sponsor@bar.com",
-        created_at: "2018-08-09"
+        created_at: "2018-08-09",
         )
 
       user_repository.create(
         username: "SMS",
         contact: "foo@baz.com",
         sponsor: "sponsor@baz.com",
-        created_at: "2018-08-29"
+        created_at: "2018-08-29",
         )
     end
 

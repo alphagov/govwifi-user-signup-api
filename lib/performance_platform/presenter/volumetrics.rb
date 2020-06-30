@@ -46,7 +46,7 @@ private
         stats[:period],
         stats[:metric_name],
         channel,
-      ]
+      ],
     )
   end
 

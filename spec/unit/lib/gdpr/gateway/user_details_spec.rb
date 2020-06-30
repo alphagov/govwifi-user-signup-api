@@ -119,7 +119,7 @@ describe Gdpr::Gateway::Userdetails do
           username: "sally",
           contact: "sally@gov.uk",
           sponsor: "user@gov.uk",
-          updated_at: Date.today
+          updated_at: Date.today,
         )
 
         expect {

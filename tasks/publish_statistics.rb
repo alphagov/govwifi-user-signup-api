@@ -10,7 +10,7 @@ task :publish_daily_statistics, :date do |_, args|
 
   PerformancePlatform::UseCase::SendPerformanceReport.new(
     stats_gateway: volumetrics_gateway,
-    performance_gateway: performance_gateway
+    performance_gateway: performance_gateway,
   ).execute(presenter: volumetrics_presenter)
 end
 
@@ -23,7 +23,7 @@ task :publish_monthly_statistics, :date do |_, args|
 
   PerformancePlatform::UseCase::SendPerformanceReport.new(
     stats_gateway: volumetrics_gateway,
-    performance_gateway: performance_gateway
+    performance_gateway: performance_gateway,
   ).execute(presenter: volumetrics_presenter)
 end
 
@@ -37,6 +37,6 @@ task :publish_weekly_statistics, :date do |_, args|
 
   PerformancePlatform::UseCase::SendPerformanceReport.new(
     stats_gateway: completion_rate_gateway,
-    performance_gateway: performance_gateway
+    performance_gateway: performance_gateway,
   ).execute(presenter: completion_rate_presenter)
 end

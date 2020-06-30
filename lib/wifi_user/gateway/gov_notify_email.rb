@@ -11,7 +11,7 @@ class WifiUser::Gateway::GovNotifyEmail
         email_address: email_address,
         template_id: template_id,
         personalisation: template_parameters,
-        email_reply_to_id: reply_to_id
+        email_reply_to_id: reply_to_id,
       )
       success = true
     rescue Notifications::Client::RequestError => e

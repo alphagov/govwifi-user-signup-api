@@ -49,7 +49,7 @@ private
         stats[:metric_name],
         stage,
         channel,
-      ]
+      ],
     )
   end
 

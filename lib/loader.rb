@@ -13,7 +13,7 @@ DB = Sequel.connect(
   host: ENV.fetch("DB_HOSTNAME"),
   database: ENV.fetch("DB_NAME"),
   user: ENV.fetch("DB_USER"),
-  password: ENV.fetch("DB_PASS")
+  password: ENV.fetch("DB_PASS"),
 )
 
 module Common;

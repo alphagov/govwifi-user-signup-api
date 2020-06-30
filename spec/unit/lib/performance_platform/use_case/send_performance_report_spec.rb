@@ -20,11 +20,11 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
       headers: {
         "Content-Type" => "application/json",
         "Authorization" => "Bearer #{bearer_token}",
-      }
+      },
     )
     .to_return(
       body: response.to_json,
-      status: 200
+      status: 200,
     )
   end
 
@@ -32,7 +32,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
     described_class.new(
       stats_gateway: stats_gateway,
       performance_gateway: performance_gateway,
-      logger: double(info: "")
+      logger: double(info: ""),
     )
   end
 

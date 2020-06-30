@@ -54,11 +54,11 @@ private
 
     email_fetcher = Common::Gateway::S3ObjectFetcher.new(
       bucket: payload.fetch(:s3_bucket_name),
-      key: payload.fetch(:s3_object_key)
+      key: payload.fetch(:s3_object_key),
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
       email_fetcher: email_fetcher,
-      exclude_addresses: [from_address]
+      exclude_addresses: [from_address],
     )
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)

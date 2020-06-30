@@ -28,7 +28,7 @@ describe PerformancePlatform::Presenter::Volumetrics do
     expected_id = "MjAxOC0wNC0wM1QwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NhbGwtc2lnbi11cHM="
     expect(subject.present(stats: stats)[:payload].first).to include(
       _id: expected_id,
-      _timestamp: "2018-04-03T00:00:00+00:00"
+      _timestamp: "2018-04-03T00:00:00+00:00",
     )
   end
 
@@ -40,7 +40,7 @@ describe PerformancePlatform::Presenter::Volumetrics do
         expected_id = "MjAxOC0wNC0wM1QwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NhbGwtc2lnbi11cHM="
         expect(subject.present(stats: stats)[:payload].first).to include(
           _id: expected_id,
-          _timestamp: "2018-04-03T00:00:00+00:00"
+          _timestamp: "2018-04-03T00:00:00+00:00",
         )
       end
     end
@@ -52,7 +52,7 @@ describe PerformancePlatform::Presenter::Volumetrics do
         expected_id = "MjAxOC0wNC0wNFQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NhbGwtc2lnbi11cHM="
         expect(subject.present(stats: stats)[:payload].first).to include(
           _id: expected_id,
-          _timestamp: "2018-04-04T00:00:00+00:00"
+          _timestamp: "2018-04-04T00:00:00+00:00",
         )
       end
     end

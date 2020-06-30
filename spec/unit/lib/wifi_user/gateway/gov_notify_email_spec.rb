@@ -24,7 +24,7 @@ describe WifiUser::Gateway::GovNotifyEmail do
       email_address: email_address,
       template_id: template_id,
       template_parameters: parameters,
-      reply_to_id: reply_to_id
+      reply_to_id: reply_to_id,
     )
   end
 
@@ -39,7 +39,7 @@ describe WifiUser::Gateway::GovNotifyEmail do
         template_id: template_id,
         personalisation: parameters,
         email_reply_to_id: reply_to_id,
-      }
+      },
     )
   end
 
