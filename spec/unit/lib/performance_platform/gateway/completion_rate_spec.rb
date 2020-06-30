@@ -6,92 +6,92 @@ describe PerformancePlatform::Gateway::CompletionRate do
 
     # Outside of date scope
     user_repo.create(
-      username: '1',
+      username: "1",
       created_at: Date.today - 1,
-      contact: '+1234567890',
-      sponsor: '+1234567890'
+      contact: "+1234567890",
+      sponsor: "+1234567890"
     )
 
     # Outside of date scope
     # and logged in
     user_repo.create(
-      username: '2',
+      username: "2",
       created_at: Date.today - 1,
-      contact: '+1234567890',
-      sponsor: '+1234567890',
+      contact: "+1234567890",
+      sponsor: "+1234567890",
       last_login: Date.today
     )
 
     # SMS self-registered within date scope
     user_repo.create(
-      username: '3',
+      username: "3",
       created_at: Date.today - 8,
-      contact: '+2345678901',
-      sponsor: '+2345678901'
+      contact: "+2345678901",
+      sponsor: "+2345678901"
     )
 
     # SMS self-registered within date scope
     # and logged in
     user_repo.create(
-      username: '4',
+      username: "4",
       created_at: Date.today - 8,
-      contact: '+2345678901',
-      sponsor: '+2345678901',
+      contact: "+2345678901",
+      sponsor: "+2345678901",
       last_login: Date.today
     )
 
     # SMS sponsor-registered within date scope
     user_repo.create(
-      username: '5',
+      username: "5",
       created_at: Date.today - 8,
-      contact: '+2345678901',
-      sponsor: 'sponsor@example.com'
+      contact: "+2345678901",
+      sponsor: "sponsor@example.com"
     )
 
     # SMS sponsor-registered within date scope
     # and logged in
     user_repo.create(
-      username: '6',
+      username: "6",
       created_at: Date.today - 8,
-      contact: '+2345678901',
-      sponsor: 'sponsor@example.com',
+      contact: "+2345678901",
+      sponsor: "sponsor@example.com",
       last_login: Date.today
     )
 
     # email self-registered within scope
     user_repo.create(
-      username: '7',
+      username: "7",
       created_at: Date.today - 10,
-      contact: 'me@example.com',
-      sponsor: 'me@example.com'
+      contact: "me@example.com",
+      sponsor: "me@example.com"
     )
 
     # Email self-registered within scope
     # and logged in
     user_repo.create(
-      username: '8',
+      username: "8",
       created_at: Date.today - 10,
-      contact: 'me@example.com',
-      sponsor: 'me@example.com',
+      contact: "me@example.com",
+      sponsor: "me@example.com",
       last_login: Date.today
     )
 
     # Email sponsored
     # and logged in
     user_repo.create(
-      username: '9',
+      username: "9",
       created_at: Date.today - 10,
-      contact: 'me@example.com',
-      sponsor: 'sponsor@example.com',
+      contact: "me@example.com",
+      sponsor: "sponsor@example.com",
       last_login: Date.today
     )
   end
 
-  context 'given completed signups and logins' do
-    it 'returns stats for completion rate' do
+  context "given completed signups and logins" do
+    it "returns stats for completion rate" do
       expect(subject.fetch_stats).to eq(
-        metric_name: 'completion-rate',
-        period: 'week',
+        metric_name: "completion-rate",
+        period: "week",
         sms_registered: 2,
         sms_logged_in: 1,
         email_registered: 2,

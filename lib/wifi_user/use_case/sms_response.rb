@@ -19,7 +19,7 @@ private
   attr_reader :user_model, :template_finder, :logger
 
   def send_signup_instructions(phone_number, login_details, sms_content)
-    client = Notifications::Client.new(ENV.fetch('NOTIFY_API_KEY'))
+    client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
 
     client.send_sms(
       phone_number: phone_number,

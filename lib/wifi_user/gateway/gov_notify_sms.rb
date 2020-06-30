@@ -1,4 +1,4 @@
-require 'notifications/client'
+require "notifications/client"
 
 class WifiUser::Gateway::GovNotifySMS
   def initialize(api_key)
@@ -26,6 +26,6 @@ private
   attr_accessor :client
 
   def is_validation_error?(error)
-    error.message.dig(0, 'error') == 'ValidationError'
+    error.message.dig(0, "error") == "ValidationError"
   end
 end
