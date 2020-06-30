@@ -233,7 +233,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
              count: 1,
           },
           {
-             _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c3BvbnNvcg==",
+            _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c3BvbnNvcg==",
              _timestamp: "2018-07-16T00:00:00+00:00",
               dataType: "completion-rate",
               period: "week",
@@ -243,16 +243,16 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           },
           {
 
-              _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZWNvbXBsZXRlc3BvbnNvcg==",
+            _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZWNvbXBsZXRlc3BvbnNvcg==",
               _timestamp: "2018-07-16T00:00:00+00:00",
               dataType: "completion-rate",
               period: "week",
               channel: "sponsor",
               stage: "complete",
               count: 1,
-           },
+          },
          ],
-       }
+      }
     }
 
     it "fetches stats and sends them to Performance service" do
