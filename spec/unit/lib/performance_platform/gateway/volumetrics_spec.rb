@@ -89,21 +89,21 @@ describe PerformancePlatform::Gateway::Volumetrics do
         contact: "foo@bar.com",
         sponsor: "foo@bar.com",
         created_at: Date.today - 1,
-        )
+      )
 
       user_repository.create(
         username: "Email 2",
         contact: "foo@baz.com",
         sponsor: "foo@baz.com",
         created_at: Date.today - 1,
-        )
+      )
 
       user_repository.create(
         username: "SMS",
         contact: "+0123456789",
         sponsor: "+0123456789",
         created_at: Date.today - 1,
-        )
+      )
     end
 
     it "counts all of them against cumulative singups" do
@@ -138,14 +138,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         created_at: Date.today - 6,
         contact: "+1123456789",
         sponsor: "+1123456789",
-        )
+      )
 
       user_repository.create(
         username: "SMS new",
         contact: "+0123456789",
         sponsor: "+0123456789",
         created_at: Date.today - 1,
-        )
+      )
     end
 
     it "counts them against cumulative singups" do
@@ -172,14 +172,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         created_at: Date.today - 5,
         contact: "foo@bar.com",
         sponsor: "foo@bar.com",
-        )
+      )
 
       user_repository.create(
         username: "Email new",
         contact: "foo@baz.com",
         sponsor: "foo@baz.com",
         created_at: Date.today - 1,
-        )
+      )
     end
 
     it "counts them against cumulative singups" do
@@ -206,14 +206,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         contact: "foo@bar.com",
         sponsor: "sponsor@bar.com",
         created_at: Date.today - 1,
-        )
+      )
 
       user_repository.create(
         username: "SMS",
         contact: "foo@baz.com",
         sponsor: "sponsor@baz.com",
         created_at: Date.today - 2,
-        )
+      )
     end
 
     it "counts both of them to cumulative number of sponsored sign ups" do
@@ -234,14 +234,14 @@ describe PerformancePlatform::Gateway::Volumetrics do
         contact: "foo@bar.com",
         sponsor: "sponsor@bar.com",
         created_at: "2018-08-09",
-        )
+      )
 
       user_repository.create(
         username: "SMS",
         contact: "foo@baz.com",
         sponsor: "sponsor@baz.com",
         created_at: "2018-08-29",
-        )
+      )
     end
 
     it "counts both of them to cumulative number of sponsored sign ups" do
