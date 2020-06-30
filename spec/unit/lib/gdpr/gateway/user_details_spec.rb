@@ -24,7 +24,7 @@ describe Gdpr::Gateway::Userdetails do
 
         it "does deletes only the old user record" do
           subject.delete_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w(bob))
+          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob])
         end
       end
 
@@ -74,7 +74,7 @@ describe Gdpr::Gateway::Userdetails do
 
         it "does deletes only the old user record" do
           subject.delete_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w(bob))
+          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob])
         end
       end
 

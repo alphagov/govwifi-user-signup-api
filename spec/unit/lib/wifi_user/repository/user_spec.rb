@@ -4,7 +4,7 @@ describe WifiUser::Repository::User do
   end
 
   describe "#generate" do
-    CHARACTER_LIST = %w(b c d f g h j k m n p q r s t v w x y z).freeze
+    CHARACTER_LIST = %w[b c d f g h j k m n p q r s t v w x y z].freeze
 
     let(:word_list) { %w[These Are Words] }
 
