@@ -12,28 +12,28 @@ RSpec.describe App do
           messageId: message_id,
           commonHeaders: {
             from: [from_address],
-            to: [to_address]
-          }
+            to: [to_address],
+          },
         },
         receipt: {
           action: {
             bucketName: bucket_name,
-            objectKey: object_key
-          }
-        }
+            objectKey: object_key,
+          },
+        },
       }
     end
 
     let(:sns_headers) do
       {
-        "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification"
+        "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification",
       }
     end
 
     def post_notification
       post "/user-signup/email-notification", {
         Type: "Notification",
-        Message: ses_notification.to_json
+        Message: ses_notification.to_json,
       }.to_json, sns_headers
     end
 

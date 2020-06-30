@@ -13,7 +13,7 @@ describe App do
       {
         source_number: from_phone_number,
         destination_number: to_phone_number,
-        message: message
+        message: message,
       }.to_json
     end
 
@@ -33,13 +33,13 @@ describe App do
           "template_id": notify_template_id,
           "personalisation": {
             "login": created_user.username,
-            "pass": created_user.password
-          }
+            "pass": created_user.password,
+          },
         },
         headers: {
           "Accept" => "*/*",
           "Content-Type" => "application/json",
-        }
+        },
       }
 
       expect(a_request(:post, notify_sms_url).with(expected_request)).to have_been_made.once

@@ -19,7 +19,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
       body: data[:payload].to_json,
       headers: {
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{bearer_token}"
+        "Authorization" => "Bearer #{bearer_token}",
       }
     )
     .to_return(
@@ -55,7 +55,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           email_period_before: 10,
           email_cumulative: 21,
           sponsored_period_before: 7,
-          sponsored_cumulative: 9
+          sponsored_cumulative: 9,
         }
       }
       let(:data) {
@@ -69,7 +69,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "day",
               channel: "all-sign-ups",
               count: 12,
-              cumulative_count: 24
+              cumulative_count: 24,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzbXMtc2lnbi11cHM=",
@@ -78,7 +78,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "day",
               channel: "sms-sign-ups",
               count: 2,
-              cumulative_count: 3
+              cumulative_count: 3,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NlbWFpbC1zaWduLXVwcw==",
@@ -87,7 +87,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "day",
               channel: "email-sign-ups",
               count: 10,
-              cumulative_count: 21
+              cumulative_count: 21,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpZGF5dm9sdW1ldHJpY3NzcG9uc29yLXNpZ24tdXBz",
@@ -96,9 +96,9 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "day",
               channel: "sponsor-sign-ups",
               count: 7,
-              cumulative_count: 9
+              cumulative_count: 9,
             }
-          ]
+          ],
         }
       }
 
@@ -120,7 +120,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
           email_period_before: 10,
           email_cumulative: 21,
           sponsored_period_before: 7,
-          sponsored_cumulative: 9
+          sponsored_cumulative: 9,
         }
       }
       let(:data) {
@@ -134,7 +134,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "month",
               channel: "all-sign-ups",
               count: 12,
-              cumulative_count: 24
+              cumulative_count: 24,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc3Ntcy1zaWduLXVwcw==",
@@ -143,7 +143,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "month",
               channel: "sms-sign-ups",
               count: 2,
-              cumulative_count: 3
+              cumulative_count: 3,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc2VtYWlsLXNpZ24tdXBz",
@@ -152,7 +152,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "month",
               channel: "email-sign-ups",
               count: 10,
-              cumulative_count: 21
+              cumulative_count: 21,
             },
             {
               _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpbW9udGh2b2x1bWV0cmljc3Nwb25zb3Itc2lnbi11cHM=",
@@ -161,9 +161,9 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "month",
               channel: "sponsor-sign-ups",
               count: 7,
-              cumulative_count: 9
+              cumulative_count: 9,
             }
-          ]
+          ],
         }
       }
 
@@ -203,7 +203,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
             period: "week",
             channel: "sms",
             stage: "start",
-            count: 4
+            count: 4,
           },
           {
             _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZWNvbXBsZXRlc21z",
@@ -212,7 +212,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
              period: "week",
              channel: "sms",
              stage: "complete",
-             count: 2
+             count: 2,
           },
           {
             _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0ZW1haWw=",
@@ -221,7 +221,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
             period: "week",
             channel: "email",
             stage: "start",
-            count: 2
+            count: 2,
           },
           {
             _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZWNvbXBsZXRlZW1haWw=",
@@ -230,7 +230,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
              period: "week",
              channel: "email",
              stage: "complete",
-             count: 1
+             count: 1,
           },
           {
              _id: "MjAxOC0wNy0xNlQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c3BvbnNvcg==",
@@ -239,7 +239,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "week",
               channel: "sponsor",
               stage: "start",
-              count: 2
+              count: 2,
           },
           {
 
@@ -249,9 +249,9 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               period: "week",
               channel: "sponsor",
               stage: "complete",
-              count: 1
+              count: 1,
            }
-         ]
+         ],
        }
     }
 

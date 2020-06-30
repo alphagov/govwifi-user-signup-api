@@ -17,7 +17,7 @@ class PerformancePlatform::Gateway::Volumetrics
       email_period_before: email_signups_period_before.count,
       email_cumulative: email_signups_cumulative.count,
       sponsored_period_before: sponsored_signups_period_before.count,
-      sponsored_cumulative: sponsored_signups_cumulative.count
+      sponsored_cumulative: sponsored_signups_cumulative.count,
     }
   end
 

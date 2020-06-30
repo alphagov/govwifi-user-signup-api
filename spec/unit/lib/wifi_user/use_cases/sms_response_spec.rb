@@ -36,7 +36,7 @@ describe WifiUser::UseCase::SmsResponse do
         personalisation: {
           login: username,
           pass: password,
-        }
+        },
       }
     end
     let!(:notify_sms_stub) do

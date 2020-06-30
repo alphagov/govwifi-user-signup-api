@@ -18,7 +18,7 @@ describe PerformancePlatform::Presenter::CompletionRate do
       email_registered: 0,
       email_logged_in: 0,
       sponsor_registered: 0,
-      sponsor_logged_in: 0
+      sponsor_logged_in: 0,
     }
   end
 

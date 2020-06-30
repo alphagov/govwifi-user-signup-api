@@ -6,7 +6,7 @@ RSpec.describe App do
       {
         source_number: from_phone_number,
         destination_number: "",
-        message: "Go"
+        message: "Go",
       }.to_json
     end
 
