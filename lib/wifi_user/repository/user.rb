@@ -13,7 +13,7 @@ class WifiUser::Repository::User < Sequel::Model(:userdetails)
 
 private
 
-  CHARACTER_LIST = %w(b c d f g h j k m n p q r s t v w x y z).freeze
+  CHARACTER_LIST = %w[b c d f g h j k m n p q r s t v w x y z].freeze
 
   def random_username
     username = generate_username

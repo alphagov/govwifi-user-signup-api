@@ -140,7 +140,7 @@ describe WifiUser::UseCase::SponsorUsers do
 
   context "Sponsoring invalid contact details" do
     let(:sponsor) { "Cassandra <cassandra@gov.uk>" }
-    let(:sponsees) { %w(Peter Paul 07invalid700900004) }
+    let(:sponsees) { %w[Peter Paul 07invalid700900004] }
     let(:do_not_reply_id) { production_do_not_reply_id }
 
     it "Does not call user_model#generate" do
@@ -174,7 +174,7 @@ describe WifiUser::UseCase::SponsorUsers do
   context "on failing to send to sponsees" do
     let(:sponsor) { "Cassandra <cassandra@gov.uk>" }
     let(:success_sponsees) { [] }
-    let(:failed_sponsees) { %w(+447770000666 hello@example.org) }
+    let(:failed_sponsees) { %w[+447770000666 hello@example.org] }
     let(:sponsees) { success_sponsees + failed_sponsees }
     let(:do_not_reply_id) { production_do_not_reply_id }
     let(:formatted_failed_sponsees) { "* +447770000666\n* hello@example.org" }
@@ -241,8 +241,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     context "With one success and one fail" do
-      let(:success_sponsees) { %w(+447770000111 one@example.org) }
-      let(:failed_sponsees) { %w(+447770000222 two@example.org) }
+      let(:success_sponsees) { %w[+447770000111 one@example.org] }
+      let(:failed_sponsees) { %w[+447770000222 two@example.org] }
       let(:formatted_failed_sponsees) { "* +447770000222\n* two@example.org" }
 
       it "sends a sponsorship failed email to the sponsor" do
@@ -251,8 +251,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     context "With one success and two fail" do
-      let(:success_sponsees) { %w(+447770000111) }
-      let(:failed_sponsees) { %w(+447770000222 +447770000333 one@example.org two@example.org) }
+      let(:success_sponsees) { %w[+447770000111] }
+      let(:failed_sponsees) { %w[+447770000222 +447770000333 one@example.org two@example.org] }
       let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333\n* one@example.org\n* two@example.org" }
 
       it "sends a sponsorship failed email to the sponsor" do
@@ -261,8 +261,8 @@ describe WifiUser::UseCase::SponsorUsers do
     end
 
     context "With two success and one fail" do
-      let(:success_sponsees) { %w(+447770000111 +447770000444 three@example.org four@example.org) }
-      let(:failed_sponsees) { %w(+447770000222 +447770000333 five@example.org six@example.org) }
+      let(:success_sponsees) { %w[+447770000111 +447770000444 three@example.org four@example.org] }
+      let(:failed_sponsees) { %w[+447770000222 +447770000333 five@example.org six@example.org] }
       let(:formatted_failed_sponsees) { "* +447770000222\n* +447770000333\n* five@example.org\n* six@example.org" }
 
       it "sends a sponsorship failed email to the sponsor" do

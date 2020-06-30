@@ -67,7 +67,7 @@ describe App do
       end
 
       context "with both the same number" do
-        NUMBERS = %w(07900000001 447900000001 +447900000001).freeze
+        NUMBERS = %w[07900000001 447900000001 +447900000001].freeze
         NUMBERS.each do |from_number|
           NUMBERS.each do |to_number|
             context "with #{from_number} to #{to_number}" do
