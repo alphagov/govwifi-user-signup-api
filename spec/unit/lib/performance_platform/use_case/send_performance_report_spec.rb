@@ -251,7 +251,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               stage: "complete",
               count: 1,
           },
-         ],
+        ],
       }
     }
 
