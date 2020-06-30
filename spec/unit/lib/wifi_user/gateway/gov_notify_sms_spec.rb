@@ -53,7 +53,7 @@ describe WifiUser::Gateway::GovNotifySMS do
           {
             error: "BadRequestError",
             message: "...",
-          }
+          },
         ] }
       end
 
@@ -66,7 +66,7 @@ describe WifiUser::Gateway::GovNotifySMS do
           {
             error: "ValidationError",
             message: "...",
-          }
+          },
         ] }
       end
 

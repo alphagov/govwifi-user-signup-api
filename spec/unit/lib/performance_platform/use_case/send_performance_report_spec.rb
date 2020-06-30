@@ -97,7 +97,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               channel: "sponsor-sign-ups",
               count: 7,
               cumulative_count: 9,
-            }
+            },
           ],
         }
       }
@@ -162,7 +162,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               channel: "sponsor-sign-ups",
               count: 7,
               cumulative_count: 9,
-            }
+            },
           ],
         }
       }
@@ -250,7 +250,7 @@ describe PerformancePlatform::UseCase::SendPerformanceReport do
               channel: "sponsor",
               stage: "complete",
               count: 1,
-           }
+           },
          ],
        }
     }
