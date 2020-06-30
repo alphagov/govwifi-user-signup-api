@@ -5,8 +5,8 @@ class PerformancePlatform::Gateway::CompletionRate
 
   def fetch_stats
     {
-      period: 'week',
-      metric_name: 'completion-rate',
+      period: "week",
+      metric_name: "completion-rate",
       sms_registered: sms_registered.count,
       sms_logged_in: sms_logged_in.count,
       email_registered: email_registered.count,

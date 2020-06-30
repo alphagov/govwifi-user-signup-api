@@ -1,4 +1,4 @@
-require './lib/loader'
+require "./lib/loader"
 
-require './tasks/publish_statistics'
-require './tasks/gdpr/user_deletion'
+require "./tasks/publish_statistics"
+require "./tasks/gdpr/user_deletion"

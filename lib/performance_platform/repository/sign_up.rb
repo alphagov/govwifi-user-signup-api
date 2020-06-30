@@ -18,11 +18,11 @@ class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
     end
 
     def with_sms
-      where(Sequel.like(:contact, '+%'))
+      where(Sequel.like(:contact, "+%"))
     end
 
     def with_email
-      where(Sequel.like(:contact, '%@%'))
+      where(Sequel.like(:contact, "%@%"))
     end
 
     def week_before(date)

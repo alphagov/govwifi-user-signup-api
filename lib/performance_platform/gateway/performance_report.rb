@@ -11,30 +11,30 @@ private
 
   def post(uri, data)
     request = Net::HTTP::Post.new(uri)
-    request['Authorization'] = build_bearer_token(data)
-    request['Content-Type'] = 'application/json'
+    request["Authorization"] = build_bearer_token(data)
+    request["Content-Type"] = "application/json"
     request.body = data[:payload].to_json
 
     Net::HTTP.start(uri.hostname, 443, use_ssl: true) do |http|
       response = http.request(request)
 
       raise PerformancePlatform::Gateway::HttpError, "#{response.code} - #{response.body}" \
-        unless response.code == '200'
+        unless response.code == "200"
 
       JSON.parse(response.body)
     end
   end
 
   def build_url(data)
-    performance_url = ENV.fetch('PERFORMANCE_URL')
-    dataset_name = ENV.fetch('PERFORMANCE_DATASET')
+    performance_url = ENV.fetch("PERFORMANCE_URL")
+    dataset_name = ENV.fetch("PERFORMANCE_DATASET")
     metric_name = data[:metric_name]
 
     URI("#{performance_url}data/#{dataset_name}/#{metric_name}")
   end
 
   def build_bearer_token(data)
-    bearer_const_name = data[:metric_name].tr('-', '_').upcase
+    bearer_const_name = data[:metric_name].tr("-", "_").upcase
 
     "Bearer #{ENV.fetch('PERFORMANCE_BEARER_' + bearer_const_name)}"
   end

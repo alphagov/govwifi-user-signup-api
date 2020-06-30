@@ -1,7 +1,7 @@
-require 'aws-sdk-s3'
+require "aws-sdk-s3"
 
 class Common::Gateway::S3ObjectFetcher
-  def initialize(bucket:, key:, region: 'eu-west-1')
+  def initialize(bucket:, key:, region: "eu-west-1")
     @bucket = bucket
     @key = key
     @region = region

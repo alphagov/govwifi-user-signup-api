@@ -1,4 +1,4 @@
-require 'logger'
+require "logger"
 
 class PerformancePlatform::UseCase::SendPerformanceReport
   def initialize(stats_gateway:, performance_gateway:, logger: Logger.new(STDOUT))

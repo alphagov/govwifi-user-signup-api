@@ -10,10 +10,10 @@ class PerformancePlatform::Presenter::Volumetrics
     {
       metric_name: stats[:metric_name],
       payload: [
-        as_hash(stats[:period_before], stats[:cumulative], 'all-sign-ups'),
-        as_hash(stats[:sms_period_before], stats[:sms_cumulative], 'sms-sign-ups'),
-        as_hash(stats[:email_period_before], stats[:email_cumulative], 'email-sign-ups'),
-        as_hash(stats[:sponsored_period_before], stats[:sponsored_cumulative], 'sponsor-sign-ups'),
+        as_hash(stats[:period_before], stats[:cumulative], "all-sign-ups"),
+        as_hash(stats[:sms_period_before], stats[:sms_cumulative], "sms-sign-ups"),
+        as_hash(stats[:email_period_before], stats[:email_cumulative], "email-sign-ups"),
+        as_hash(stats[:sponsored_period_before], stats[:sponsored_cumulative], "sponsor-sign-ups"),
       ]
     }
   end
@@ -42,7 +42,7 @@ private
     Common::Base64.encode_array(
       [
         timestamp,
-        ENV.fetch('PERFORMANCE_DATASET'),
+        ENV.fetch("PERFORMANCE_DATASET"),
         stats[:period],
         stats[:metric_name],
         channel
