@@ -10,7 +10,7 @@ class WifiUser::Gateway::GovNotifySMS
       client.send_sms(
         phone_number: phone_number,
         template_id: template_id,
-        personalisation: template_parameters
+        personalisation: template_parameters,
       )
       success = true
     rescue Notifications::Client::RequestError => e

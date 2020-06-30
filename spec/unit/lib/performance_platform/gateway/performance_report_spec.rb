@@ -13,11 +13,11 @@ describe PerformancePlatform::Gateway::PerformanceReport do
       headers: {
         "Content-Type" => "application/json",
         "Authorization" => "Bearer foobarbaz",
-      }
+      },
     )
     .to_return(
       body: response.to_json,
-      status: response_code
+      status: response_code,
     )
   end
 

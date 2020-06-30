@@ -14,7 +14,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
       email_parser: email_parser,
-      logger: logger
+      logger: logger,
     )
   end
 
@@ -25,7 +25,7 @@ describe WifiUser::UseCase::SnsNotificationHandler do
       to_address: to_address,
       from_address: "sally@something.gov.uk",
       s3_object_key: "some-s3-object-key",
-      s3_bucket_name: "some-s3-bucket-name"
+      s3_bucket_name: "some-s3-bucket-name",
     )
 
     allow_any_instance_of(Common::Gateway::S3ObjectFetcher).to receive(:fetch) # This will go away once injected

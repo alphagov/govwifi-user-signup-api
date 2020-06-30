@@ -26,7 +26,7 @@ describe PerformancePlatform::Presenter::CompletionRate do
     expected_id = "MjAxOC0wNC0wNFQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c21z"
     expect(subject.present(stats: stats)[:payload].first).to include(
       _id: expected_id,
-      _timestamp: "2018-04-04T00:00:00+00:00"
+      _timestamp: "2018-04-04T00:00:00+00:00",
     )
   end
 
@@ -38,7 +38,7 @@ describe PerformancePlatform::Presenter::CompletionRate do
         expected_id = "MjAxOC0wNC0wNFQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c21z"
         expect(subject.present(stats: stats)[:payload].first).to include(
           _id: expected_id,
-          _timestamp: "2018-04-04T00:00:00+00:00"
+          _timestamp: "2018-04-04T00:00:00+00:00",
         )
       end
     end
@@ -50,7 +50,7 @@ describe PerformancePlatform::Presenter::CompletionRate do
         expected_id = "MjAxOC0wNC0wNVQwMDowMDowMCswMDowMGdvdi13aWZpd2Vla2NvbXBsZXRpb24tcmF0ZXN0YXJ0c21z"
         expect(subject.present(stats: stats)[:payload].first).to include(
           _id: expected_id,
-          _timestamp: "2018-04-05T00:00:00+00:00"
+          _timestamp: "2018-04-05T00:00:00+00:00",
         )
       end
     end

@@ -33,7 +33,7 @@ describe WifiUser::Gateway::GovNotifySMS do
         phone_number: phone_number,
         template_id: template_id,
         personalisation: parameters,
-      }
+      },
     )
   end
 

@@ -5,7 +5,7 @@ class WifiUser::UseCase::ContactSanitiser
     first_match(
       email_match(contact) ||
       internationalize(phone_match(contact.delete(" "))) ||
-      NO_MATCH
+      NO_MATCH,
     )
   end
 

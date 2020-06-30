@@ -17,7 +17,7 @@ describe WifiUser::UseCase::SponsorUsers do
       user_model: user_model,
       whitelist_checker: whitelist_checker,
       send_sms_gateway: send_sms_gateway,
-      send_email_gateway: send_email_gateway
+      send_email_gateway: send_email_gateway,
     )
   end
 
@@ -49,7 +49,7 @@ describe WifiUser::UseCase::SponsorUsers do
           template_parameters: {
             contact: "adrian@example.com",
           },
-          reply_to_id: do_not_reply_id
+          reply_to_id: do_not_reply_id,
         )
     end
   end
@@ -155,7 +155,7 @@ describe WifiUser::UseCase::SponsorUsers do
           template_parameters: {
             failedSponsees: "",
           },
-          reply_to_id: do_not_reply_id
+          reply_to_id: do_not_reply_id,
         )
     end
   end
@@ -183,7 +183,7 @@ describe WifiUser::UseCase::SponsorUsers do
       set_send_sms_gateway_execution_branches(
         double,
         successful_numbers: success_sponsees,
-        unsucessful_numbers: failed_sponsees
+        unsucessful_numbers: failed_sponsees,
       )
     end
 
@@ -191,7 +191,7 @@ describe WifiUser::UseCase::SponsorUsers do
       set_send_email_gateway_execution_branches(
         double,
         successful_emails: success_sponsees,
-        unsucessful_emails: failed_sponsees
+        unsucessful_emails: failed_sponsees,
       )
     end
 

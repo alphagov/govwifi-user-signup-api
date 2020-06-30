@@ -9,7 +9,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       username: "1",
       created_at: Date.today - 1,
       contact: "+1234567890",
-      sponsor: "+1234567890"
+      sponsor: "+1234567890",
     )
 
     # Outside of date scope
@@ -19,7 +19,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       created_at: Date.today - 1,
       contact: "+1234567890",
       sponsor: "+1234567890",
-      last_login: Date.today
+      last_login: Date.today,
     )
 
     # SMS self-registered within date scope
@@ -27,7 +27,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       username: "3",
       created_at: Date.today - 8,
       contact: "+2345678901",
-      sponsor: "+2345678901"
+      sponsor: "+2345678901",
     )
 
     # SMS self-registered within date scope
@@ -37,7 +37,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       created_at: Date.today - 8,
       contact: "+2345678901",
       sponsor: "+2345678901",
-      last_login: Date.today
+      last_login: Date.today,
     )
 
     # SMS sponsor-registered within date scope
@@ -45,7 +45,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       username: "5",
       created_at: Date.today - 8,
       contact: "+2345678901",
-      sponsor: "sponsor@example.com"
+      sponsor: "sponsor@example.com",
     )
 
     # SMS sponsor-registered within date scope
@@ -55,7 +55,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       created_at: Date.today - 8,
       contact: "+2345678901",
       sponsor: "sponsor@example.com",
-      last_login: Date.today
+      last_login: Date.today,
     )
 
     # email self-registered within scope
@@ -63,7 +63,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       username: "7",
       created_at: Date.today - 10,
       contact: "me@example.com",
-      sponsor: "me@example.com"
+      sponsor: "me@example.com",
     )
 
     # Email self-registered within scope
@@ -73,7 +73,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       created_at: Date.today - 10,
       contact: "me@example.com",
       sponsor: "me@example.com",
-      last_login: Date.today
+      last_login: Date.today,
     )
 
     # Email sponsored
@@ -83,7 +83,7 @@ describe PerformancePlatform::Gateway::CompletionRate do
       created_at: Date.today - 10,
       contact: "me@example.com",
       sponsor: "sponsor@example.com",
-      last_login: Date.today
+      last_login: Date.today,
     )
   end
 

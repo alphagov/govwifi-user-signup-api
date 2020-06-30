@@ -51,7 +51,7 @@ private
       template_parameters: {
         login: login_details[:username],
         pass: login_details[:password],
-      }
+      },
     ).success
   end
 
@@ -61,7 +61,7 @@ private
       email_address: sponsee_address,
       template_id: config["notify_email_template_ids"]["sponsored_credentials"],
       template_parameters: login_details.merge(sponsor: sponsor),
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     ).success
   end
 
@@ -84,7 +84,7 @@ private
         number_of_accounts: sponsees.length,
         contacts: sponsees.join("\r\n"),
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 
@@ -95,7 +95,7 @@ private
       template_parameters: {
         contact: sponsees.first,
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 
@@ -106,7 +106,7 @@ private
       template_parameters: {
         failedSponsees: format_failed_sponsees(failed_sponsees),
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 

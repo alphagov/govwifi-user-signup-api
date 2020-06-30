@@ -5,7 +5,7 @@ describe WifiUser::UseCase::EmailSignup do
   subject do
     described_class.new(
       user_model: user_model,
-      whitelist_checker: whitelist_checker
+      whitelist_checker: whitelist_checker,
     )
   end
 

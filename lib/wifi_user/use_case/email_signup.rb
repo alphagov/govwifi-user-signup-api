@@ -29,7 +29,7 @@ private
       email_address: email_address,
       template_id: credentials_template_id,
       personalisation: user_model.generate(contact: email_address),
-      email_reply_to_id: do_not_reply_email_address_id
+      email_reply_to_id: do_not_reply_email_address_id,
     )
   end
 

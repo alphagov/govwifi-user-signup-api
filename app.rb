@@ -9,7 +9,7 @@ class App < Sinatra::Base
   register Sinatra::SensibleLogging
 
   sensible_logging(
-    logger: Logger.new(STDOUT)
+    logger: Logger.new(STDOUT),
   )
 
   configure do
@@ -35,14 +35,14 @@ class App < Sinatra::Base
       gateway: Common::Gateway::S3ObjectFetcher.new(
         bucket: ENV.fetch("S3_SIGNUP_WHITELIST_BUCKET"),
         key: ENV.fetch("S3_SIGNUP_WHITELIST_OBJECT_KEY"),
-        region: "eu-west-2"
-      )
+        region: "eu-west-2",
+      ),
     )
 
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
-      logger: logger
+      logger: logger,
     )
 
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
@@ -50,18 +50,18 @@ class App < Sinatra::Base
       whitelist_checker: whitelist_checker,
       send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch("NOTIFY_API_KEY")),
       send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new(ENV.fetch("NOTIFY_API_KEY")),
-      logger: logger
+      logger: logger,
     )
 
     email_parser = WifiUser::UseCase::ParseEmailRequest.new(
-      logger: logger
+      logger: logger,
     )
 
     WifiUser::UseCase::SnsNotificationHandler.new(
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
       email_parser: email_parser,
-      logger: logger
+      logger: logger,
     ).handle(request)
   end
   # rubocop:enable Metrics/BlockLength
@@ -85,10 +85,10 @@ class App < Sinatra::Base
     WifiUser::UseCase::SmsResponse.new(
       user_model: WifiUser::Repository::User.new,
       template_finder: template_finder,
-      logger: logger
+      logger: logger,
     ).execute(
       contact: source,
-      sms_content: message
+      sms_content: message,
     )
     ""
   end

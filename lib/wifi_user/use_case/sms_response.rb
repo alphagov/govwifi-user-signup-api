@@ -24,7 +24,7 @@ private
     client.send_sms(
       phone_number: phone_number,
       template_id: template_finder.execute(message_content: sms_content),
-      personalisation: login_details
+      personalisation: login_details,
     )
   end
 end
