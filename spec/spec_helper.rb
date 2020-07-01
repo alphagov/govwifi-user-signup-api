@@ -10,7 +10,7 @@ require File.expand_path "../app.rb", __dir__
 
 module RSpecMixin
   include Rack::Test::Methods
-  def app()
+  def app
     described_class
   end
 end
