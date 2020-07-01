@@ -10,8 +10,8 @@ RSpec.describe App do
     end
 
     before do
-      stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/sms").
-        with(headers: { "Content-Type" => "application/json" })
+      stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/sms")
+        .with(headers: { "Content-Type" => "application/json" })
         .to_return(status: 200, body: '{"foo":"bar"}')
     end
 
