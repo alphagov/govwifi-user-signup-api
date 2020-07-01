@@ -39,7 +39,7 @@ private
     end
     {
       success: (sponsees.to_set - failed_sponsees.to_set).to_a,
-      failed: failed_sponsees
+      failed: failed_sponsees,
     }
   end
 
@@ -47,11 +47,11 @@ private
     login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
     send_sms_gateway.execute(
       phone_number: sponsee,
-      template_id: config['notify_sms_template_ids']['credentials'],
+      template_id: config["notify_sms_template_ids"]["credentials"],
       template_parameters: {
         login: login_details[:username],
-        pass: login_details[:password]
-      }
+        pass: login_details[:password],
+      },
     ).success
   end
 
@@ -59,9 +59,9 @@ private
     login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)
     send_email_gateway.execute(
       email_address: sponsee_address,
-      template_id: config['notify_email_template_ids']['sponsored_credentials'],
+      template_id: config["notify_email_template_ids"]["sponsored_credentials"],
       template_parameters: login_details.merge(sponsor: sponsor),
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     ).success
   end
 
@@ -79,51 +79,49 @@ private
   def send_confirmation_plural(sponsor_address, sponsees)
     send_email_gateway.execute(
       email_address: sponsor_address,
-      template_id: sponsor_confirmation_template['plural'],
+      template_id: sponsor_confirmation_template["plural"],
       template_parameters: {
         number_of_accounts: sponsees.length,
-        contacts: sponsees.join("\r\n")
+        contacts: sponsees.join("\r\n"),
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 
   def send_confirmation_singular(sponsor_address, sponsees)
     send_email_gateway.execute(
       email_address: sponsor_address,
-      template_id: sponsor_confirmation_template['singular'],
+      template_id: sponsor_confirmation_template["singular"],
       template_parameters: {
-        contact: sponsees.first
+        contact: sponsees.first,
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 
   def send_failed_sponsoring_email(sponsor_address, failed_sponsees: [])
     send_email_gateway.execute(
       email_address: sponsor_address,
-      template_id: sponsor_confirmation_template['failed'],
+      template_id: sponsor_confirmation_template["failed"],
       template_parameters: {
-        failedSponsees: format_failed_sponsees(failed_sponsees)
+        failedSponsees: format_failed_sponsees(failed_sponsees),
       },
-      reply_to_id: do_not_reply_email_address_id
+      reply_to_id: do_not_reply_email_address_id,
     )
   end
 
   def sponsor_confirmation_template
-    config['notify_email_template_ids']['sponsor_confirmation']
+    config["notify_email_template_ids"]["sponsor_confirmation"]
   end
 
   def email?(sponsee)
-    begin
-      Mail::Address.new(sponsee).address.match?(URI::MailTo::EMAIL_REGEXP)
-    rescue Mail::Field::ParseError
-      false
-    end
+    Mail::Address.new(sponsee).address.match?(URI::MailTo::EMAIL_REGEXP)
+  rescue Mail::Field::ParseError
+    false
   end
 
   def do_not_reply_email_address_id
-    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch('do_not_reply_email_id')
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("do_not_reply_email_id")
   end
 
   def format_failed_sponsees(failed_sponsees)

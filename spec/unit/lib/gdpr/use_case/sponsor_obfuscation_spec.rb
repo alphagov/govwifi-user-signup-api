@@ -3,8 +3,8 @@ describe Gdpr::UseCase::ObfuscateSponsors do
 
   let(:user_details_gateway) { double(obfuscate_sponsors: nil) }
 
-  context 'Given a user gateway' do
-    it 'calls obfuscate sponsors method on the gateway' do
+  context "Given a user gateway" do
+    it "calls obfuscate sponsors method on the gateway" do
       subject.execute
       expect(user_details_gateway).to have_received(:obfuscate_sponsors)
     end

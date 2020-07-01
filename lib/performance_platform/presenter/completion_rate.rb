@@ -10,13 +10,13 @@ class PerformancePlatform::Presenter::CompletionRate
     {
       metric_name: stats[:metric_name],
       payload: [
-        as_hash(stats[:sms_registered], 'sms', 'start'),
-        as_hash(stats[:sms_logged_in], 'sms', 'complete'),
-        as_hash(stats[:email_registered], 'email', 'start'),
-        as_hash(stats[:email_logged_in], 'email', 'complete'),
-        as_hash(stats[:sponsor_registered], 'sponsor', 'start'),
-        as_hash(stats[:sponsor_logged_in], 'sponsor', 'complete')
-      ]
+        as_hash(stats[:sms_registered], "sms", "start"),
+        as_hash(stats[:sms_logged_in], "sms", "complete"),
+        as_hash(stats[:email_registered], "email", "start"),
+        as_hash(stats[:email_logged_in], "email", "complete"),
+        as_hash(stats[:sponsor_registered], "sponsor", "start"),
+        as_hash(stats[:sponsor_logged_in], "sponsor", "complete"),
+      ],
     }
   end
 
@@ -44,12 +44,12 @@ private
     Common::Base64.encode_array(
       [
         timestamp,
-        ENV.fetch('PERFORMANCE_DATASET'),
+        ENV.fetch("PERFORMANCE_DATASET"),
         stats[:period],
         stats[:metric_name],
         stage,
-        channel
-      ]
+        channel,
+      ],
     )
   end
 

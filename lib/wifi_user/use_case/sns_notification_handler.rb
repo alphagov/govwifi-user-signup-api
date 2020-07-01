@@ -20,9 +20,9 @@ class WifiUser::UseCase::SnsNotificationHandler
       return
     end
 
-    logger.info(payload) if payload.fetch(:type) == 'SubscriptionConfirmation'
-    handle_email_notification(payload) if payload.fetch(:type) == 'Notification'
-    ''
+    logger.info(payload) if payload.fetch(:type) == "SubscriptionConfirmation"
+    handle_email_notification(payload) if payload.fetch(:type) == "Notification"
+    ""
   end
 
 private
@@ -30,7 +30,7 @@ private
   attr_reader :logger, :email_signup_handler, :sponsor_signup_handler, :email_parser
 
   def handle_email_notification(payload)
-    return if payload.fetch(:message_id) == 'AMAZON_SES_SETUP_NOTIFICATION'
+    return if payload.fetch(:message_id) == "AMAZON_SES_SETUP_NOTIFICATION"
 
     if sponsor_request?(payload)
       handle_sponsor_request(payload)
@@ -54,11 +54,11 @@ private
 
     email_fetcher = Common::Gateway::S3ObjectFetcher.new(
       bucket: payload.fetch(:s3_bucket_name),
-      key: payload.fetch(:s3_object_key)
+      key: payload.fetch(:s3_object_key),
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
       email_fetcher: email_fetcher,
-      exclude_addresses: [from_address]
+      exclude_addresses: [from_address],
     )
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)
@@ -73,7 +73,7 @@ private
     # actually dealing with a notification.
     # There is much more that should be in here.
 
-    request.has_header?('HTTP_X_AMZ_SNS_MESSAGE_TYPE') \
-    && request.get_header('HTTP_X_AMZ_SNS_MESSAGE_TYPE') == 'Notification'
+    request.has_header?("HTTP_X_AMZ_SNS_MESSAGE_TYPE") \
+    && request.get_header("HTTP_X_AMZ_SNS_MESSAGE_TYPE") == "Notification"
   end
 end

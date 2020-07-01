@@ -1,4 +1,4 @@
-require 'nokogiri'
+require "nokogiri"
 
 class WifiUser::UseCase::EmailSponseesExtractor
   def initialize(email_fetcher:, exclude_addresses:)
@@ -33,7 +33,7 @@ private
 
   def lines_from_html(mail)
     Nokogiri::HTML(mail.html_part.decoded).xpath("//text()[not(ancestor::style)]").map do |node|
-      node.xpath('normalize-space()')
+      node.xpath("normalize-space()")
     end
   end
 end

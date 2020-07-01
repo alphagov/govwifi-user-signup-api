@@ -1,20 +1,20 @@
-require 'sensible_logging'
-require 'sinatra/base'
-require 'net/http'
-require 'logger'
-require './lib/loader'
+require "sensible_logging"
+require "sinatra/base"
+require "net/http"
+require "logger"
+require "./lib/loader"
 
 class App < Sinatra::Base
   use Raven::Rack if defined? Raven
   register Sinatra::SensibleLogging
 
   sensible_logging(
-    logger: Logger.new(STDOUT)
+    logger: Logger.new(STDOUT),
   )
 
   configure do
     set :log_level, Logger::DEBUG
-    set :govnotify_token, ENV['GOVNOTIFY_BEARER_TOKEN']
+    set :govnotify_token, ENV["GOVNOTIFY_BEARER_TOKEN"]
   end
 
   configure :production, :staging do
@@ -25,49 +25,49 @@ class App < Sinatra::Base
     set :log_level, Logger::INFO
   end
 
-  get '/healthcheck' do
-    'Healthy'
+  get "/healthcheck" do
+    "Healthy"
   end
 
   # rubocop:disable Metrics/BlockLength
-  post '/user-signup/email-notification' do
+  post "/user-signup/email-notification" do
     whitelist_checker = WifiUser::UseCases::CheckIfWhitelistedEmail.new(
       gateway: Common::Gateway::S3ObjectFetcher.new(
-        bucket: ENV.fetch('S3_SIGNUP_WHITELIST_BUCKET'),
-        key: ENV.fetch('S3_SIGNUP_WHITELIST_OBJECT_KEY'),
-        region: 'eu-west-2'
-      )
+        bucket: ENV.fetch("S3_SIGNUP_WHITELIST_BUCKET"),
+        key: ENV.fetch("S3_SIGNUP_WHITELIST_OBJECT_KEY"),
+        region: "eu-west-2",
+      ),
     )
 
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
-      logger: logger
+      logger: logger,
     )
 
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
       whitelist_checker: whitelist_checker,
-      send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch('NOTIFY_API_KEY')),
-      send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new(ENV.fetch('NOTIFY_API_KEY')),
-      logger: logger
+      send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch("NOTIFY_API_KEY")),
+      send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new(ENV.fetch("NOTIFY_API_KEY")),
+      logger: logger,
     )
 
     email_parser = WifiUser::UseCase::ParseEmailRequest.new(
-      logger: logger
+      logger: logger,
     )
 
     WifiUser::UseCase::SnsNotificationHandler.new(
       email_signup_handler: email_signup_handler,
       sponsor_signup_handler: sponsor_signup_handler,
       email_parser: email_parser,
-      logger: logger
+      logger: logger,
     ).handle(request)
   end
   # rubocop:enable Metrics/BlockLength
 
-  post '/user-signup/sms-notification/notify' do
-    halt(401, '') if !is_govnotify_token_valid?
+  post "/user-signup/sms-notification/notify" do
+    halt(401, "") unless is_govnotify_token_valid?
 
     payload = JSON.parse(request.body.read)
     source = payload["source_number"]
@@ -77,20 +77,20 @@ class App < Sinatra::Base
 
     if numbers_are_equal?(source, destination)
       logger.warn("SMS loop detected: #{destination}")
-      return ''
+      return ""
     end
 
-    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch('RACK_ENV'))
+    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
 
     WifiUser::UseCase::SmsResponse.new(
       user_model: WifiUser::Repository::User.new,
       template_finder: template_finder,
-      logger: logger
+      logger: logger,
     ).execute(
       contact: source,
-      sms_content: message
+      sms_content: message,
     )
-    ''
+    ""
   end
 
   def numbers_are_equal?(number1, number2)
@@ -99,6 +99,6 @@ class App < Sinatra::Base
   end
 
   def is_govnotify_token_valid?
-    env.fetch('HTTP_AUTHORIZATION') == "Bearer #{options.govnotify_token}"
+    env.fetch("HTTP_AUTHORIZATION") == "Bearer #{options.govnotify_token}"
   end
 end

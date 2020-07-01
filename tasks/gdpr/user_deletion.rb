@@ -1,4 +1,4 @@
-require 'logger'
+require "logger"
 logger = Logger.new(STDOUT)
 
 task :delete_inactive_users do
@@ -7,5 +7,5 @@ task :delete_inactive_users do
   Gdpr::UseCase::DeleteInactiveUsers.new(user_details_gateway: user_details_gateway).execute
   Gdpr::UseCase::ObfuscateSponsors.new(user_details_gateway: user_details_gateway).execute
 
-  logger.info('Daily User Cleanup Ran')
+  logger.info("Daily User Cleanup Ran")
 end

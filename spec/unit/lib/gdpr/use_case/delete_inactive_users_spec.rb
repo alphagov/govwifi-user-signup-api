@@ -3,8 +3,8 @@ describe Gdpr::UseCase::DeleteInactiveUsers do
 
   let(:user_details_gateway) { double(delete_users: nil) }
 
-  context 'Given a user gateway' do
-    it 'calls delete_users on the gateway' do
+  context "Given a user gateway" do
+    it "calls delete_users on the gateway" do
       subject.execute
       expect(user_details_gateway).to have_received(:delete_users)
     end

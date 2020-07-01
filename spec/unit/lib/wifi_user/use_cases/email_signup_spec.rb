@@ -5,12 +5,12 @@ describe WifiUser::UseCase::EmailSignup do
   subject do
     described_class.new(
       user_model: user_model,
-      whitelist_checker: whitelist_checker
+      whitelist_checker: whitelist_checker,
     )
   end
 
-  describe 'Using an authorised email domain' do
-    let(:notify_email_url) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
+  describe "Using an authorised email domain" do
+    let(:notify_email_url) { "https://api.notifications.service.gov.uk/v2/notifications/email" }
     let(:notify_email_request) do
       {
         email_address: created_contact,
@@ -19,7 +19,7 @@ describe WifiUser::UseCase::EmailSignup do
           username: username,
           password: password,
         },
-        email_reply_to_id: do_not_reply_id
+        email_reply_to_id: do_not_reply_id,
       }
     end
 
@@ -30,7 +30,7 @@ describe WifiUser::UseCase::EmailSignup do
     end
 
     before do
-      ENV['RACK_ENV'] = environment
+      ENV["RACK_ENV"] = environment
 
       notify_email_stub
 
@@ -39,63 +39,63 @@ describe WifiUser::UseCase::EmailSignup do
         .and_return(username: username, password: password)
     end
 
-    context 'in the production environment' do
-      let(:environment) { 'production' }
-      let(:notify_template_id) { 'f18708c0-e857-4f62-b5f3-8f0c75fc2fdb' }
-      let(:do_not_reply_id) { '0d22d71f-afa3-4c72-8cd4-7716678dbd43' }
+    context "in the production environment" do
+      let(:environment) { "production" }
+      let(:notify_template_id) { "f18708c0-e857-4f62-b5f3-8f0c75fc2fdb" }
+      let(:do_not_reply_id) { "0d22d71f-afa3-4c72-8cd4-7716678dbd43" }
 
-      context 'given an email address without a name part' do
-        let(:created_contact) { 'adrian@gov.uk' }
-        let(:username) { 'MockUsername' }
-        let(:password) { 'MockPassword' }
+      context "given an email address without a name part" do
+        let(:created_contact) { "adrian@gov.uk" }
+        let(:username) { "MockUsername" }
+        let(:password) { "MockPassword" }
 
-        it 'sends email to Notify with the new credentials' do
+        it "sends email to Notify with the new credentials" do
           subject.execute(contact: created_contact)
           expect(notify_email_stub).to have_been_requested.times(1)
         end
       end
     end
 
-    context 'in the staging environment' do
-      let(:environment) { 'staging' }
-      let(:notify_template_id) { '96d1f5ac-2ebe-41a7-878f-9a569e0bb55c' }
-      let(:do_not_reply_id) { '45d6b6c4-6a36-47df-b34d-256b8c0d1511' }
+    context "in the staging environment" do
+      let(:environment) { "staging" }
+      let(:notify_template_id) { "96d1f5ac-2ebe-41a7-878f-9a569e0bb55c" }
+      let(:do_not_reply_id) { "45d6b6c4-6a36-47df-b34d-256b8c0d1511" }
 
-      context 'given an email address with a name part' do
-        let(:created_contact) { 'ryan@gov.uk' }
-        let(:username) { 'MockUsername2' }
-        let(:password) { 'MockPassword2' }
+      context "given an email address with a name part" do
+        let(:created_contact) { "ryan@gov.uk" }
+        let(:username) { "MockUsername2" }
+        let(:password) { "MockPassword2" }
 
-        it 'sends email to Notify with the new credentials' do
-          subject.execute(contact: 'Ryan <ryan@gov.uk>')
+        it "sends email to Notify with the new credentials" do
+          subject.execute(contact: "Ryan <ryan@gov.uk>")
           expect(notify_email_stub).to have_been_requested.times(1)
         end
       end
 
-      context 'given an email address with a capitalised domain' do
-        let(:created_contact) { 'name@GOV.uk' }
-        let(:username) { 'qwert' }
-        let(:password) { 'qwertpass' }
+      context "given an email address with a capitalised domain" do
+        let(:created_contact) { "name@GOV.uk" }
+        let(:username) { "qwert" }
+        let(:password) { "qwertpass" }
 
-        it 'sends email to Notify with the new credentials' do
-          subject.execute(contact: 'Name <name@GOV.uk>')
+        it "sends email to Notify with the new credentials" do
+          subject.execute(contact: "Name <name@GOV.uk>")
           expect(notify_email_stub).to have_been_requested.times(1)
         end
       end
 
-      context 'given an email address with a non-gov domain' do
+      context "given an email address with a non-gov domain" do
         let(:whitelist_checker) { double(execute: { success: false }) }
-        let(:created_contact) { 'irrelevant@somewhere.uk' }
-        let(:username) { 'irrelevant' }
-        let(:password) { 'irrelephant' }
+        let(:created_contact) { "irrelevant@somewhere.uk" }
+        let(:username) { "irrelevant" }
+        let(:password) { "irrelephant" }
 
-        before { subject.execute(contact: 'Ryan <ryan@example.com>') }
+        before { subject.execute(contact: "Ryan <ryan@example.com>") }
 
-        it 'does not create a user' do
+        it "does not create a user" do
           expect(user_model).not_to receive(:generate)
         end
 
-        it 'does not send an email to Notify' do
+        it "does not send an email to Notify" do
           expect(notify_email_stub).to_not have_been_requested
         end
       end

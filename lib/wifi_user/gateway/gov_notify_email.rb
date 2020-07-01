@@ -1,4 +1,4 @@
-require 'notifications/client'
+require "notifications/client"
 
 class WifiUser::Gateway::GovNotifyEmail
   def initialize(api_key)
@@ -11,11 +11,11 @@ class WifiUser::Gateway::GovNotifyEmail
         email_address: email_address,
         template_id: template_id,
         personalisation: template_parameters,
-        email_reply_to_id: reply_to_id
+        email_reply_to_id: reply_to_id,
       )
       success = true
     rescue Notifications::Client::RequestError => e
-      raise if !is_validation_error?(e)
+      raise unless is_validation_error?(e)
 
       success = false
     end
@@ -27,6 +27,6 @@ private
   attr_accessor :client
 
   def is_validation_error?(error)
-    error.message.dig(0, 'error') == 'ValidationError'
+    error.message.dig(0, "error") == "ValidationError"
   end
 end
