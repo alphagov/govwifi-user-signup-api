@@ -24,7 +24,7 @@ describe PerformancePlatform::Gateway::Volumetrics do
 
   context "with user sign up date being a full timestamp" do
     before do
-      user_repository.create(username: "full", created_at: Time.at(Time.now.to_i - 86400))
+      user_repository.create(username: "full", created_at: Time.at(Time.now.to_i - 86_400))
     end
 
     it "compares sign up creation date by date only" do
