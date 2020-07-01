@@ -115,11 +115,9 @@ private
   end
 
   def email?(sponsee)
-    begin
-      Mail::Address.new(sponsee).address.match?(URI::MailTo::EMAIL_REGEXP)
-    rescue Mail::Field::ParseError
-      false
-    end
+    Mail::Address.new(sponsee).address.match?(URI::MailTo::EMAIL_REGEXP)
+  rescue Mail::Field::ParseError
+    false
   end
 
   def do_not_reply_email_address_id
