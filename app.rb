@@ -29,7 +29,6 @@ class App < Sinatra::Base
     "Healthy"
   end
 
-  # rubocop:disable Metrics/BlockLength
   post "/user-signup/email-notification" do
     whitelist_checker = WifiUser::UseCases::CheckIfWhitelistedEmail.new(
       gateway: Common::Gateway::S3ObjectFetcher.new(
@@ -64,7 +63,6 @@ class App < Sinatra::Base
       logger: logger,
     ).handle(request)
   end
-  # rubocop:enable Metrics/BlockLength
 
   post "/user-signup/sms-notification/notify" do
     halt(401, "") unless is_govnotify_token_valid?
