@@ -18,9 +18,7 @@ private
   def random_username
     username = generate_username
 
-    while self.class.find(username: username)
-      username = generate_username
-    end
+    username = generate_username while self.class.find(username: username)
 
     username
   end
