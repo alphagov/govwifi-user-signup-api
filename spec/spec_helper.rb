@@ -10,7 +10,9 @@ require File.expand_path "../app.rb", __dir__
 
 module RSpecMixin
   include Rack::Test::Methods
-  def app() described_class end
+  def app()
+    described_class
+  end
 end
 
 SimpleCov.start
