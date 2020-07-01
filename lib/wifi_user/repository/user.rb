@@ -1,5 +1,5 @@
 class WifiUser::Repository::User < Sequel::Model(:userdetails)
-  self.unrestrict_primary_key
+  unrestrict_primary_key
 
   WORD_LIST = File.readlines(ENV["WORD_LIST_FILE"]).map(&:strip)
 
