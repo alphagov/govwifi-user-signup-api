@@ -27,7 +27,6 @@ task :publish_monthly_statistics, :date do |_, args|
   ).execute(presenter: volumetrics_presenter)
 end
 
-
 task :publish_weekly_statistics, :date do |_, args|
   args.with_defaults(date: Date.today.to_s)
   logger.info("publishing weekly statistics #{args}")
