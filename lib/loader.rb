@@ -16,7 +16,7 @@ DB = Sequel.connect(
   password: ENV.fetch("DB_PASS"),
 )
 
-module Common;
+module Common
   module Gateway; end
 end
 
