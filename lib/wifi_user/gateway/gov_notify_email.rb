@@ -15,7 +15,7 @@ class WifiUser::Gateway::GovNotifyEmail
       )
       success = true
     rescue Notifications::Client::RequestError => e
-      raise if !is_validation_error?(e)
+      raise unless is_validation_error?(e)
 
       success = false
     end

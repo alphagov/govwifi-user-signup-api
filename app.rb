@@ -67,7 +67,7 @@ class App < Sinatra::Base
   # rubocop:enable Metrics/BlockLength
 
   post "/user-signup/sms-notification/notify" do
-    halt(401, "") if !is_govnotify_token_valid?
+    halt(401, "") unless is_govnotify_token_valid?
 
     payload = JSON.parse(request.body.read)
     source = payload["source_number"]
