@@ -25,7 +25,6 @@ describe WifiUser::UseCase::SmsTemplateFinder do
     end
   end
 
-
   context "Given there is a Go message" do
     let(:credentials_template) { "3a4b1ca8-7b26-4266-8b5f-e05fdbd11879" }
     it "returns the credentials template id" do
