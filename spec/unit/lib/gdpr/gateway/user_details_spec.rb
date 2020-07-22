@@ -12,7 +12,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "does not delete any users" do
-          expect { subject.delete_users }.to_not change { user_details.count }
+          expect { subject.delete_users }.not_to(change { user_details.count })
         end
       end
 
@@ -62,7 +62,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "does not delete any user details" do
-          expect { subject.delete_users }.to_not change { user_details.count }
+          expect { subject.delete_users }.not_to(change { user_details.count })
         end
       end
 
@@ -124,7 +124,7 @@ describe Gdpr::Gateway::Userdetails do
 
         expect {
           subject.obfuscate_sponsors
-        }.to_not change { user_details.where(username: "sally").get(:updated_at) }
+        }.not_to(change { user_details.where(username: "sally").get(:updated_at) })
       end
     end
 
