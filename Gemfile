@@ -15,9 +15,9 @@ gem "sequel", "~> 5.34"
 gem "sinatra"
 
 group :test do
-  gem "govuk-lint"
   gem "rack-test"
   gem "rspec"
+  gem "rubocop-govuk"
   gem "simplecov", require: false
   gem "timecop"
   gem "webmock"
