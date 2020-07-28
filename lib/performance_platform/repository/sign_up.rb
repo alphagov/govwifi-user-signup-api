@@ -1,5 +1,4 @@
 class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
-  # rubocop:disable Metrics/BlockLength
   dataset_module do
     def all(date)
       where(Sequel.lit("date(created_at) <= '#{date - 1}'"))
@@ -38,5 +37,4 @@ class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
       exclude(last_login: nil)
     end
   end
-  # rubocop:enable Metrics/BlockLength
 end
