@@ -1,11 +1,12 @@
 class PerformancePlatform::Gateway::CompletionRate
-  def initialize(date: Date.today.to_s)
+  def initialize(date: Date.today.to_s, period: "week")
     @date = Date.parse(date)
+    @period = period
   end
 
   def fetch_stats
     {
-      period: "week",
+      period: @period,
       metric_name: "completion-rate",
       sms_registered: sms_registered.count,
       sms_logged_in: sms_logged_in.count,
@@ -25,15 +26,15 @@ private
   end
 
   def sms_registered
-    repository.self_sign.with_sms.week_before(date)
+    repository.self_sign.with_sms.send("#{@period}_before", date)
   end
 
   def email_registered
-    repository.self_sign.with_email.week_before(date)
+    repository.self_sign.with_email.send("#{@period}_before", date)
   end
 
   def sponsor_registered
-    repository.sponsored.week_before(date)
+    repository.sponsored.send("#{@period}_before", date)
   end
 
   def sms_logged_in

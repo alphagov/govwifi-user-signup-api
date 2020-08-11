@@ -1,41 +1,36 @@
 require "logger"
 logger = Logger.new(STDOUT)
 
-task :publish_daily_statistics, :date do |_, args|
-  args.with_defaults(date: Date.today.to_s)
-  logger.info("publishing daily statistics with #{args}")
-  performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
-  volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new(date: args[:date])
-  volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new(date: args[:date])
+PERIODS = {
+  daily: "day",
+  weekly: "week",
+  monthly: "month",
+}.freeze
 
-  PerformancePlatform::UseCase::SendPerformanceReport.new(
-    stats_gateway: volumetrics_gateway,
-    performance_gateway: performance_gateway,
-  ).execute(presenter: volumetrics_presenter)
-end
+PERIODS.each do |adverbial, period|
+  name = "publish_#{adverbial}_statistics".to_sym
 
-task :publish_monthly_statistics, :date do |_, args|
-  args.with_defaults(date: Date.today.to_s)
-  logger.info("publishing monthly statistics with #{args}")
-  performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
-  volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new(date: args[:date], period: "month")
-  volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new(date: args[:date])
+  task name, [:date] do |_, args|
+    args.with_defaults(date: Date.today.to_s)
+    logger.info("Publishing #{adverbial} statistics with #{args[:date]}")
+    performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
 
-  PerformancePlatform::UseCase::SendPerformanceReport.new(
-    stats_gateway: volumetrics_gateway,
-    performance_gateway: performance_gateway,
-  ).execute(presenter: volumetrics_presenter)
-end
+    if period != "week"
+      volumetrics_gateway = PerformancePlatform::Gateway::Volumetrics.new(date: args[:date], period: period)
+      volumetrics_presenter = PerformancePlatform::Presenter::Volumetrics.new(date: args[:date])
 
-task :publish_weekly_statistics, :date do |_, args|
-  args.with_defaults(date: Date.today.to_s)
-  logger.info("publishing weekly statistics #{args}")
-  performance_gateway = PerformancePlatform::Gateway::PerformanceReport.new
-  completion_rate_gateway = PerformancePlatform::Gateway::CompletionRate.new(date: args[:date])
-  completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new(date: args[:date])
+      PerformancePlatform::UseCase::SendPerformanceReport.new(
+        stats_gateway: volumetrics_gateway,
+        performance_gateway: performance_gateway,
+      ).execute(presenter: volumetrics_presenter)
+    end
 
-  PerformancePlatform::UseCase::SendPerformanceReport.new(
-    stats_gateway: completion_rate_gateway,
-    performance_gateway: performance_gateway,
-  ).execute(presenter: completion_rate_presenter)
+    completion_rate_gateway = PerformancePlatform::Gateway::CompletionRate.new(date: args[:date], period: period)
+    completion_rate_presenter = PerformancePlatform::Presenter::CompletionRate.new(date: args[:date])
+
+    PerformancePlatform::UseCase::SendPerformanceReport.new(
+      stats_gateway: completion_rate_gateway,
+      performance_gateway: performance_gateway,
+    ).execute(presenter: completion_rate_presenter)
+  end
 end
