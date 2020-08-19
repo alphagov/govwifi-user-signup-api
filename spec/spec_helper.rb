@@ -1,3 +1,4 @@
+require "factory_bot"
 require "rack/test"
 require "rspec"
 require "simplecov"
@@ -17,4 +18,9 @@ end
 
 SimpleCov.start
 
-RSpec.configure { |c| c.include RSpecMixin }
+RSpec.configure do |c|
+  c.include RSpecMixin
+  c.before(:suite) do
+    FactoryBot.find_definitions
+  end
+end

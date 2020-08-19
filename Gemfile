@@ -15,6 +15,7 @@ gem "sequel", "~> 5.35"
 gem "sinatra"
 
 group :test do
+  gem "factory_bot"
   gem "rack-test"
   gem "rspec"
   gem "rubocop-govuk"
