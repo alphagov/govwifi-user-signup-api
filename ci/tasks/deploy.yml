@@ -10,6 +10,8 @@ params:
   # These are set for deploy.sh and migrate.sh
   SERVICE_NAME: "user-signup-api-service"
   CLUSTER_NAME: "api-cluster"
+  TASK_NAME: "user-signup-api"
+  CONTAINER_NAME: "user-signup"
 
 inputs:
   - name: src
@@ -20,4 +22,5 @@ run:
   args:
     - '-exc'
     - |
+      src/ci/tasks/scripts/migrate.sh
       src/ci/tasks/scripts/deploy.sh
