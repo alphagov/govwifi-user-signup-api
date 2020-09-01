@@ -30,6 +30,7 @@ serve:
 	$(DOCKER_COMPOSE) up -d db
 	./mysql/bin/wait_for_mysql
 	$(DOCKER_COMPOSE) up -d
+	$(DOCKER_COMPOSE) run --rm app bundle exec rake db:migrate
 
 lint:
 	$(MAKE) build
@@ -37,12 +38,10 @@ lint:
 
 test:
 	$(MAKE) serve
-	./mysql/bin/wait_for_mysql
 	$(DOCKER_COMPOSE) run --rm app rspec
 	$(MAKE) stop
 
 shell: serve
-	./mysql/bin/wait_for_mysql
 	$(DOCKER_COMPOSE) run --rm app ash
 
 stop:

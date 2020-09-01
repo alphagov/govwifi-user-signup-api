@@ -2,6 +2,7 @@ require "logger"
 logger = Logger.new(STDOUT)
 
 task :delete_inactive_users do
+  require "./lib/loader"
   user_details_gateway = Gdpr::Gateway::Userdetails.new
 
   Gdpr::UseCase::DeleteInactiveUsers.new(user_details_gateway: user_details_gateway).execute
