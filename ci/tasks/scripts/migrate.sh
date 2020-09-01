@@ -10,7 +10,7 @@ function migrate() {
   local cluster_name service_name task_definition docker_service_name deploy_stage
 
   deploy_stage="$(stage_name)"
-  cluster_name="${deploy_stage}-${CLUSTER_NAME}-cluster"
+  cluster_name="${deploy_stage}-${CLUSTER_NAME}"
   service_name="${SERVICE_NAME}-${deploy_stage}"
   task_definition="${TASK_NAME}-task-${deploy_stage}"
 
