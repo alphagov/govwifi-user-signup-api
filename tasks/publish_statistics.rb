@@ -36,3 +36,23 @@ PERIODS.each do |adverbial, period|
     ).execute(presenter: completion_rate_presenter)
   end
 end
+
+PERIODS.each do |adverbial, period|
+  name = "publish_#{adverbial}_metrics".to_sym
+
+  task name, [:date] do |_, args|
+    require "./lib/loader"
+
+    args.with_defaults(date: Date.today.to_s)
+
+    logger.info("Creating #{adverbial} metrics for S3 with #{args[:date]}")
+
+    metrics = Metrics::Volumetrics.new(period: period, date: args[:date])
+
+    logger.info("[#{metrics.key}] Fetching and uploading metrics...")
+
+    metrics.execute
+
+    logger.info("[#{metrics.key}] Done.")
+  end
+end
