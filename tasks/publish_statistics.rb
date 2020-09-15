@@ -47,12 +47,15 @@ PERIODS.each do |adverbial, period|
 
     logger.info("Creating #{adverbial} metrics for S3 with #{args[:date]}")
 
-    metrics = Metrics::Volumetrics.new(period: period, date: args[:date])
+    metrics_list = [Metrics::Volumetrics.new(period: period, date: args[:date]),
+                    Metrics::CompletionRate.new(period: period, date: args[:date])]
 
-    logger.info("[#{metrics.key}] Fetching and uploading metrics...")
+    metrics_list.each do |metrics|
+      logger.info("[#{metrics.key}] Fetching and uploading metrics...")
 
-    metrics.execute
+      metrics.execute
 
-    logger.info("[#{metrics.key}] Done.")
+      logger.info("[#{metrics.key}] Done.")
+    end
   end
 end

@@ -29,6 +29,10 @@ FactoryBot.define do
       sponsor { email_address }
     end
 
+    trait :not_logged_in do
+      last_login { nil }
+    end
+
     trait :sms do
       transient do
         random_sms_no { "+4477#{SecureRandom.random_number(100_000_000)}" }
