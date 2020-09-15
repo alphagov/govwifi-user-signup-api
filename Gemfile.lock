@@ -112,7 +112,7 @@ GEM
     sensible_logging (0.4.1)
       activesupport (~> 5.2)
       rack (~> 2.0)
-    sentry-raven (3.0.0)
+    sentry-raven (3.0.4)
       faraday (>= 1.0)
     sequel (5.35.0)
     simplecov (0.19.0)
