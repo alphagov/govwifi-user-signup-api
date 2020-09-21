@@ -1,4 +1,4 @@
-class PerformancePlatform::Gateway::Volumetrics
+class Metrics::Gateway::Volumetrics
   attr_reader :period
 
   def initialize(date: Date.today.to_s, period: "day")
@@ -26,7 +26,7 @@ private
   attr_reader :date
 
   def repository
-    PerformancePlatform::Repository::SignUp
+    Metrics::Repository::SignUp
   end
 
   def signups_period_before

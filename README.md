@@ -25,9 +25,9 @@ These get stored and sent to the user.
 - `POST /user-signup/email-notification` - AWS SES incoming email notifications
 - `POST /user-signup/sms-notification/notify` - Notify incoming SMS notifications
 
-## Performance Platform
+## Recording statistics
 
-This application sends statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task. This Rake task is triggered by an ECS scheduled task.
+This application sends statistics to the S3 for volumetrics and completion rates via a Rake task. This Rake task is triggered by an ECS scheduled task.
 
 ### Send statistics manually
 
@@ -100,6 +100,5 @@ two steps:
 This codebase is released under [the MIT License][mit].
 
 [mit]: LICENCE
-[performance-platform]: https://www.gov.uk/performance/govwifi
 [notify]: https://www.notifications.service.gov.uk/
 [build-repo]: https://github.com/alphagov/govwifi-build

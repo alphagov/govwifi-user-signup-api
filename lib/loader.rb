@@ -20,11 +20,9 @@ module Common
   module Gateway; end
 end
 
-module PerformancePlatform
+module Metrics
   module Gateway; end
-  module Presenter; end
   module Repository; end
-  module UseCase; end
 end
 
 module WifiUser
