@@ -1,4 +1,4 @@
-class Metrics::Gateway::CompletionRate
+class PerformancePlatform::Gateway::CompletionRate
   def initialize(date: Date.today.to_s, period: "week")
     @date = Date.parse(date)
     @period = period
@@ -22,7 +22,7 @@ private
   attr_reader :date
 
   def repository
-    Metrics::Repository::SignUp
+    PerformancePlatform::Repository::SignUp
   end
 
   def sms_registered

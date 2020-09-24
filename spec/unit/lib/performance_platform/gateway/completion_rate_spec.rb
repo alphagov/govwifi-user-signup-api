@@ -1,4 +1,4 @@
-describe Metrics::Gateway::CompletionRate do
+describe PerformancePlatform::Gateway::CompletionRate do
   let(:user_repo) { WifiUser::Repository::User }
 
   before do

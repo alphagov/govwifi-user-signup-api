@@ -1,4 +1,4 @@
-describe Metrics::Gateway::Volumetrics do
+describe PerformancePlatform::Gateway::Volumetrics do
   let(:user_repository) { WifiUser::Repository::User }
 
   before do
