@@ -20,7 +20,7 @@ module Metrics
   private
 
     def stats
-      gateway = PerformancePlatform::Gateway::CompletionRate.new(
+      gateway = Metrics::Gateway::CompletionRate.new(
         period: @period,
         date: @date,
       )

@@ -20,7 +20,7 @@ module Metrics
   private
 
     def stats
-      gateway = PerformancePlatform::Gateway::Volumetrics.new(
+      gateway = Metrics::Gateway::Volumetrics.new(
         period: @period,
         date: @date,
       )

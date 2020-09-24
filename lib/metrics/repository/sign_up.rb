@@ -1,4 +1,4 @@
-class PerformancePlatform::Repository::SignUp < Sequel::Model(:userdetails)
+class Metrics::Repository::SignUp < Sequel::Model(:userdetails)
   dataset_module do
     def all(date)
       where(Sequel.lit("date(created_at) <= '#{date - 1}'"))
