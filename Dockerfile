@@ -1,4 +1,4 @@
-FROM ruby:2.6.3-alpine
+FROM ruby:2.7.2-alpine
 ARG BUNDLE_INSTALL_CMD
 ENV RACK_ENV=development
 ENV WORD_LIST_FILE='./tmp/wordlist'
