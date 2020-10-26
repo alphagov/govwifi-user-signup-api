@@ -43,7 +43,7 @@ resources:
     type: registry-image
     source:
       repository: ruby
-      tag: '2.5.1-alpine'
+      tag: '2.7.2-alpine'
 
   - name: mysql-image
     # set these to align with docker-compose.yml files, to prefetch + cache docker images

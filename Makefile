@@ -29,8 +29,8 @@ serve:
 	$(MAKE) build
 	$(DOCKER_COMPOSE) up -d db
 	./mysql/bin/wait_for_mysql
-	$(DOCKER_COMPOSE) up -d
 	$(DOCKER_COMPOSE) run --rm app bundle exec rake db:migrate
+	$(DOCKER_COMPOSE) up -d
 
 lint:
 	$(MAKE) build
