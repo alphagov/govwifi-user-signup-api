@@ -23,4 +23,5 @@ RSpec.configure do |c|
   c.before(:suite) do
     FactoryBot.find_definitions
   end
+  c.filter_run focus: true
 end

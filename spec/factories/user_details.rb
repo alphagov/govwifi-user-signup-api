@@ -40,5 +40,10 @@ FactoryBot.define do
       contact { random_sms_no }
       sponsor { random_sms_no }
     end
+
+    trait :signup_survey_sent do
+      signup_survey_sent_at { Date.today }
+    end
+
   end
 end
