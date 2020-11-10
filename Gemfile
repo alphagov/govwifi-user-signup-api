@@ -16,6 +16,7 @@ gem "sinatra"
 
 group :test do
   gem "factory_bot"
+  gem "guard-rspec"
   gem "rack-test"
   gem "rspec"
   gem "rubocop-govuk"
