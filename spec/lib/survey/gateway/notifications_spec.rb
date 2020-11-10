@@ -34,24 +34,20 @@ describe Survey::Gateway::Notifications do
       notify_email_stub
     end
 
-    let(:gateway) { Survey::Gateway::Notifications.new(user) }
-
     it "sends an email to them" do
-      gateway.execute
+      subject.execute(user)
 
       expect(notify_email_stub).to have_been_requested.times(1)
     end
   end
 
   context "when the user signed up via mobile" do
-    let(:gateway) { Survey::Gateway::Notifications.new(mobile_user) }
-
     before do
       notify_mobile_stub
     end
 
     it "sends a text to them" do
-      gateway.execute
+      subject.execute(mobile_user)
 
       expect(notify_mobile_stub).to have_been_requested.once
     end
