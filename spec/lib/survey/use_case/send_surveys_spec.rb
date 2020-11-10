@@ -1,13 +1,13 @@
 describe Survey::UseCase::SendSurveys do
-  let(:user_details_gateway) { double("gateway double", fetch: [:user1, :user2]) }
+  let(:user_details_gateway) { double("gateway double", fetch: %i[user1 user2]) }
   let(:notifications_gateway) { double("notifications gateway", execute: :success) }
 
-  subject {
+  subject do
     described_class.new(
       user_details_gateway: user_details_gateway,
       notifications_gateway: notifications_gateway,
     )
-  }
+  end
 
   it "calls the user_details_gateway's fetch method" do
     subject.execute
