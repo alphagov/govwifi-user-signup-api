@@ -8,12 +8,14 @@ describe Survey::Gateway::Notifications do
   let(:notify_email_request) do
     {
       email_address: user.contact,
+      template_id: "email-mock-template",
     }
   end
 
   let(:notify_mobile_request) do
     {
       phone_number: mobile_user.contact,
+      template_id: "mobile-mock-template",
     }
   end
 

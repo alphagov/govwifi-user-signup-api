@@ -8,6 +8,7 @@ notify_sms_template_ids:
     mac: fff
     iphone: ggg
     windows: hhh
+  active_users_signup_survey: mobile-mock-template
 
 notify_email_template_ids:
   self_signup_credentials: iii
@@ -16,5 +17,6 @@ notify_email_template_ids:
     plural: kkk
     singular: lll
     failed: mmm
+  active_users_signup_survey: email-mock-template
 
 do_not_reply_email_id: nnn

@@ -3,6 +3,12 @@ require "notifications/client"
 class Survey::Gateway::Notifications
   def initialize
     @client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
+
+    config = YAML.load_file("config/#{ENV['RACK_ENV']}.yml")
+    key = "active_users_signup_survey"
+
+    @email_template_id = config["notify_email_template_ids"][key]
+    @mobile_template_id = config["notify_sms_template_ids"][key]
   end
 
   def execute(user)
@@ -22,12 +28,14 @@ private
   def send_email(user)
     @client.send_email(
       email_address: user.contact,
+      template_id: @email_template_id,
     )
   end
 
   def send_text(user)
     @client.send_sms(
       phone_number: user.contact,
+      template_id: @mobile_template_id,
     )
   end
 
