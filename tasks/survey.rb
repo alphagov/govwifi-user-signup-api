@@ -1,12 +1,18 @@
 require "logger"
 logger = Logger.new(STDOUT)
 
-task :send do
+task :send_active_users_signup_survey do
   require "./lib/loader"
-  #   user_details_gateway = Gdpr::Gateway::Userdetails.new
-  #
-  #   Gdpr::UseCase::DeleteInactiveUsers.new(user_details_gateway: user_details_gateway).execute
-  #   Gdpr::UseCase::ObfuscateSponsors.new(user_details_gateway: user_details_gateway).execute
 
-  logger.info("Daily User Cleanup Ran")
+  logger.info("[active-users-signup-survey] starting email signup task...")
+
+  user_details_gateway = Survey::Gateway::UserDetails.new
+  notifications_gateway = Survey::Gateway::Notifications.new
+
+  Survey::UseCase::SendSurveys.new(
+    user_details_gateway: user_details_gateway,
+    notifications_gateway: notifications_gateway
+  ).execute
+
+  logger.info("[active-users-signup-survey] done.")
 end
