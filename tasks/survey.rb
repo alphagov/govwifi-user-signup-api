@@ -11,7 +11,7 @@ task :send_active_users_signup_survey do
 
   Survey::UseCase::SendSurveys.new(
     user_details_gateway: user_details_gateway,
-    notifications_gateway: notifications_gateway
+    notifications_gateway: notifications_gateway,
   ).execute
 
   logger.info("[active-users-signup-survey] done.")
