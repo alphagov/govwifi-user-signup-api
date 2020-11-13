@@ -98,9 +98,8 @@ describe Survey::Gateway::UserDetails do
     end
 
     it "updates the survey_sent_at attribute" do
-      expect { subject.mark_as_sent(@query) }.to change {
-        user.reload.signup_survey_sent_at
-      }
+      expect { subject.mark_as_sent(@query) }
+        .to(change(user.reload.signup_survey_sent_at))
     end
   end
 end

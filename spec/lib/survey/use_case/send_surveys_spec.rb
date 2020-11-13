@@ -28,6 +28,6 @@ describe Survey::UseCase::SendSurveys do
   it "calls the user_details_gateway's mark_as_sent method" do
     subject.execute
 
-    expect(user_details_gateway).to have_received(:mark_as_sent).with([:user1, :user2])
+    expect(user_details_gateway).to have_received(:mark_as_sent).with(%i[user1 user2])
   end
 end
