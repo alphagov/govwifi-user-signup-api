@@ -23,7 +23,7 @@ describe Survey::Gateway::UserDetails do
       end
 
       context "and has logged in" do
-        let(:recent_user) do
+        let!(:recent_user) do
           FactoryBot.create(
             :user_details,
             :self_signed,
@@ -35,11 +35,23 @@ describe Survey::Gateway::UserDetails do
         it "includes them" do
           expect(subject.fetch).to include(recent_user)
         end
+
+        it "only returns 25% of users" do
+          FactoryBot.create_list(
+            :user_details,
+            100,
+            :self_signed,
+            :recent,
+            :active,
+          )
+
+          expect(subject.fetch.count).to eq 26 # 25 + the :recent_user
+        end
       end
     end
 
     context "when the user was created more than 24 hours ago" do
-      let(:old_user) do
+      let!(:old_user) do
         FactoryBot.create(
           :user_details,
           :self_signed,
@@ -54,7 +66,7 @@ describe Survey::Gateway::UserDetails do
     end
 
     context "when the user has already been sent the survey" do
-      let(:surveyed_user) do
+      let!(:surveyed_user) do
         FactoryBot.create(
           :user_details,
           :signup_survey_sent,
@@ -70,7 +82,7 @@ describe Survey::Gateway::UserDetails do
 
     context "when the user is sponsored" do
       # FIXME: the default user factory is a sponsored user, an explicit trait would be nice
-      let(:sponsored_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
+      let!(:sponsored_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
 
       it "does not include them" do
         expect(subject.fetch).to_not include(sponsored_user)
@@ -79,7 +91,7 @@ describe Survey::Gateway::UserDetails do
   end
 
   describe "#mark_as_sent" do
-    let(:user) { FactoryBot.create(:user_details, :self_signed, :active) }
+    let!(:user) { FactoryBot.create(:user_details, :self_signed, :active) }
 
     before do
       @query = subject.fetch
