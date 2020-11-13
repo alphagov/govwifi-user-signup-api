@@ -45,18 +45,30 @@ RSpec.describe App do
       end
 
       context "production" do
-        it "uses the rack environment variable" do
+        before do
           ENV["RACK_ENV"] = "production"
+        end
 
+        after do
+          ENV["RACK_ENV"] = "test"
+        end
+
+        it "uses the rack environment variable" do
           expect(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).with(environment: "production")
           post_sms_notification
         end
       end
 
       context "staging" do
-        it "uses the rack environment variable" do
+        before do
           ENV["RACK_ENV"] = "staging"
+        end
 
+        after do
+          ENV["RACK_ENV"] = "test"
+        end
+
+        it "uses the rack environment variable" do
           expect(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).with(environment: "staging")
           post_sms_notification
         end
