@@ -43,7 +43,7 @@ describe Survey::Gateway::UserDetails do
         :user_details,
         :self_signed,
         :active,
-        created_at: Time.now - 42,
+        created_at: Time.now - 42 * 3600 * 24,
       )
     end
 
