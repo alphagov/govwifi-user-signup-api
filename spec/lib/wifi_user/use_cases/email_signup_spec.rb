@@ -39,6 +39,10 @@ describe WifiUser::UseCase::EmailSignup do
         .and_return(username: username, password: password)
     end
 
+    after do
+      ENV["RACK_ENV"] = "test"
+    end
+
     context "in the production environment" do
       let(:environment) { "production" }
       let(:notify_template_id) { "f18708c0-e857-4f62-b5f3-8f0c75fc2fdb" }

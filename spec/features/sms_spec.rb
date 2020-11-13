@@ -22,6 +22,10 @@ describe App do
       stub_request(:post, notify_sms_url).to_return(status: 200, body: {}.to_json)
     end
 
+    after do
+      ENV["RACK_ENV"] = "test"
+    end
+
     it "sends an SMS containing login details back to the user" do
       post "/user-signup/sms-notification/notify",
            payload,
