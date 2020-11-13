@@ -8,4 +8,8 @@ class Survey::Gateway::UserDetails
       .exclude(last_login: nil)
       .where(signup_survey_sent_at: nil)
   end
+
+  def mark_as_sent(query)
+    query.update(signup_survey_sent_at: Time.now)
+  end
 end

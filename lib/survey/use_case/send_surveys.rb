@@ -15,6 +15,8 @@ class Survey::UseCase::SendSurveys
     users.each do |user|
       @notifications_gateway.execute(user)
     end
+
+    user_details_gateway.mark_as_sent(users)
   end
 
   attr_reader :user_details_gateway, :notifications_gateway
