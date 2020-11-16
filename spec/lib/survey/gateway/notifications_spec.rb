@@ -19,12 +19,6 @@ describe Survey::Gateway::Notifications do
     }
   end
 
-  let(:notify_mobile_stub) do
-    stub_request(:post, notify_mobile_url)
-      .with(body: notify_mobile_request)
-      .to_return(status: 200, body: {}.to_json)
-  end
-
   context "when the user signed up via email" do
     let(:notify_email_stub) do
       stub_request(:post, notify_email_url)
@@ -44,6 +38,12 @@ describe Survey::Gateway::Notifications do
   end
 
   context "when the user signed up via mobile" do
+    let(:notify_mobile_stub) do
+      stub_request(:post, notify_mobile_url)
+        .with(body: notify_mobile_request)
+        .to_return(status: 200, body: {}.to_json)
+    end
+
     before do
       notify_mobile_stub
     end
