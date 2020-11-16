@@ -39,6 +39,11 @@ module Gdpr
   module Gateway; end
 end
 
+module Survey
+  module UseCase; end
+  module Gateway; end
+end
+
 require "require_all"
 
 require_all "lib"

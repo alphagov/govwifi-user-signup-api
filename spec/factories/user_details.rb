@@ -29,6 +29,16 @@ FactoryBot.define do
       sponsor { email_address }
     end
 
+    trait :sponsored do
+      transient do
+        sequence :sponsor_address, 1 do |n|
+          "sponsor_address#{n}@domain.uk"
+        end
+      end
+
+      sponsor { sponsor_address }
+    end
+
     trait :not_logged_in do
       last_login { nil }
     end
@@ -39,6 +49,22 @@ FactoryBot.define do
       end
       contact { random_sms_no }
       sponsor { random_sms_no }
+    end
+
+    trait :signup_survey_sent do
+      signup_survey_sent_at { Date.today }
+    end
+
+    trait :recent do
+      created_at { Date.today }
+    end
+
+    trait :active do
+      last_login { Date.today }
+    end
+
+    trait :inactive do
+      last_login { nil }
     end
   end
 end

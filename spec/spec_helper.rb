@@ -19,6 +19,8 @@ end
 SimpleCov.start
 
 RSpec.configure do |c|
+  c.filter_run_when_matching focus: true
+
   c.include RSpecMixin
   c.before(:suite) do
     FactoryBot.find_definitions
