@@ -1,18 +1,36 @@
 require "logger"
 logger = Logger.new(STDOUT)
 
-task :send_active_users_signup_survey do
-  require "./lib/loader"
+namespace :users_signup_survey do
+  task :send_active do
+    require "./lib/loader"
 
-  logger.info("[active-users-signup-survey] starting email signup task...")
+    logger.info("[active-users-signup-survey] starting email signup task...")
 
-  user_details_gateway = Survey::Gateway::UserDetails.new
-  notifications_gateway = Survey::Gateway::Notifications.new
+    user_details_gateway = Survey::Gateway::UserDetails.new
+    notifications_gateway = Survey::Gateway::Notifications.new('active_users_signup_survey')
 
-  Survey::UseCase::SendSurveys.new(
-    user_details_gateway: user_details_gateway,
-    notifications_gateway: notifications_gateway,
-  ).execute
+    Survey::UseCase::SendActiveUserSurveys.new(
+      user_details_gateway: user_details_gateway,
+      notifications_gateway: notifications_gateway,
+    ).execute
 
-  logger.info("[active-users-signup-survey] done.")
+    logger.info("[active-users-signup-survey] done.")
+  end
+
+  task :send_inactive do
+    require "./lib/loader"
+
+    logger.info("[inactive-users-signup-survey] starting email signup task...")
+
+    user_details_gateway = Survey::Gateway::UserDetails.new
+    notifications_gateway = Survey::Gateway::Notifications.new
+
+    Survey::UseCase::SendInactiveUserSurveys.new(
+      user_details_gateway: user_details_gateway,
+      notifications_gateway: notifications_gateway,
+    ).execute
+
+    logger.info("[inactive-users-signup-survey] done.")
+  end
 end
