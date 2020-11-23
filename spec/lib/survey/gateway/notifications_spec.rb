@@ -1,4 +1,4 @@
-describe Survey::Gateway::Notifications, :focus do
+describe Survey::Gateway::Notifications do
   let(:notify_email_url) { "https://api.notifications.service.gov.uk/v2/notifications/email" }
   let(:notify_mobile_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
 

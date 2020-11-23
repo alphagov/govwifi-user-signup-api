@@ -12,8 +12,8 @@ class Survey::Gateway::UserDetails
 
   def fetch_inactive
     limit WifiUser::Repository::User
-      .where { created_at > (Date.today - 14).to_time }
-      .where { created_at <= (Date.today - 13).to_time }
+      .where { created_at >= (Date.today - 14).to_time }
+      .where { created_at < (Date.today - 13).to_time }
       .where { contact =~ sponsor }
       .where(last_login: nil)
       .where(signup_survey_sent_at: nil)
