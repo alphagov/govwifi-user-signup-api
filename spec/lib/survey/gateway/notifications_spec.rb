@@ -3,7 +3,7 @@ describe Survey::Gateway::Notifications, :focus do
   let(:notify_mobile_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
 
   context "active user survey" do
-    let(:subject) { Survey::Gateway::Notifications.new('active_users_signup_survey') }
+    let(:subject) { Survey::Gateway::Notifications.new("active_users_signup_survey") }
 
     let(:user) { FactoryBot.create(:user_details) }
     let(:mobile_user) { FactoryBot.create(:user_details, :sms) }
@@ -57,11 +57,10 @@ describe Survey::Gateway::Notifications, :focus do
         expect(notify_mobile_stub).to have_been_requested.once
       end
     end
-
   end
 
   context "inactive user survey" do
-    let(:subject) { Survey::Gateway::Notifications.new('inactive_users_signup_survey') }
+    let(:subject) { Survey::Gateway::Notifications.new("inactive_users_signup_survey") }
 
     let(:user) { FactoryBot.create(:user_details) }
     let(:mobile_user) { FactoryBot.create(:user_details, :sms) }
@@ -115,6 +114,5 @@ describe Survey::Gateway::Notifications, :focus do
         expect(notify_mobile_stub).to have_been_requested.once
       end
     end
-
   end
 end

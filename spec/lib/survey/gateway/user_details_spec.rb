@@ -151,7 +151,6 @@ describe Survey::Gateway::UserDetails do
         end
       end
     end
-
   end
 
   describe "#mark_as_sent" do
