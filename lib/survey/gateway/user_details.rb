@@ -10,6 +10,13 @@ class Survey::Gateway::UserDetails
       .where(signup_survey_sent_at: nil)
   end
 
+  def fetch_for_inactive
+    fetch WifiUser::Repository::User
+      .where { created_at > (Date.today - 14).to_time }
+      .where { created_at <= (Date.today - 13).to_time }
+      .where { contact =~ sponsor }
+      .where(last_login: nil)
+      .where(signup_survey_sent_at: nil)
 
   end
 

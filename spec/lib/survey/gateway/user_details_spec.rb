@@ -90,6 +90,70 @@ describe Survey::Gateway::UserDetails do
     end
   end
 
+  describe "#fetch_for_inactive" do
+    context "when the user has been created less than 14 days ago" do
+      context "but has not logged in" do
+        let(:recent_inactive_user) do
+          FactoryBot.create(
+            :user_details,
+            :self_signed,
+            :recent,
+            :inactive,
+          )
+        end
+
+        it "does not include them" do
+          expect(subject.fetch_for_inactive).to_not include(recent_inactive_user)
+        end
+      end
+    end
+
+    context "when the user has been created 14 days ago" do
+      context "and has not logged in" do
+        let!(:idle_user) do
+          FactoryBot.create(
+            :user_details,
+            :self_signed,
+            :inactive,
+            :idle_survey_target,
+          )
+        end
+
+        it "includes them" do
+          expect(subject.fetch_for_inactive).to include(idle_user)
+        end
+
+        it "only returns 25% of users" do
+          FactoryBot.create_list(
+            :user_details,
+            100,
+            :self_signed,
+            :inactive,
+            :idle_survey_target,
+          )
+
+          expect(subject.fetch_for_inactive.count).to eq 26 # 25 + the :idle_user
+        end
+      end
+
+      context "and has logged in" do
+        let!(:idle_user) do
+          FactoryBot.create(
+            :user_details,
+            :self_signed,
+            :active,
+            :idle_survey_target,
+          )
+        end
+
+        it "does not include them" do
+          expect(subject.fetch_for_inactive).to_not include(idle_user)
+        end
+      end
+    end
+
+  end
+
   describe "#mark_as_sent" do
     let!(:user) { FactoryBot.create(:user_details, :self_signed, :active) }
 
