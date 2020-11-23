@@ -1,6 +1,6 @@
 require "logger"
 
-class Survey::UseCase::SendSurveys
+class Survey::UseCase::SendActiveUserSurveys
   def initialize(user_details_gateway:, notifications_gateway:)
     @user_details_gateway = user_details_gateway
     @notifications_gateway = notifications_gateway
@@ -8,7 +8,7 @@ class Survey::UseCase::SendSurveys
   end
 
   def execute
-    users = user_details_gateway.fetch
+    users = user_details_gateway.fetch_for_active
 
     @logger.info("[active-users-signup-survey] sending email to #{users.count} users.")
 

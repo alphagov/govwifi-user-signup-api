@@ -1,23 +1,31 @@
 require "logger"
 
 class Survey::Gateway::UserDetails
-  def fetch
-    all = WifiUser::Repository::User
-            .where { created_at > Time.now - 1 * 3600 * 24 }
-            .where { contact =~ sponsor }
-            .exclude(last_login: nil)
-            .where(signup_survey_sent_at: nil)
+  def fetch_for_active
+    fetch WifiUser::Repository::User
+      .where { created_at > (Date.today - 1).to_time }
+      .where { created_at <= (Date.today).to_time }
+      .where { contact =~ sponsor }
+      .exclude(last_login: nil)
+      .where(signup_survey_sent_at: nil)
+  end
 
-    total = all.count
 
-    if total.zero?
-      all
-    else
-      all.limit((total * 0.25).ceil)
-    end
   end
 
   def mark_as_sent(query)
     query.update(signup_survey_sent_at: Time.now)
+  end
+
+  private
+
+  def fetch(query)
+    total = query.count
+
+    if total.zero?
+      query
+    else
+      query.limit((total * 0.25).ceil)
+    end
   end
 end
