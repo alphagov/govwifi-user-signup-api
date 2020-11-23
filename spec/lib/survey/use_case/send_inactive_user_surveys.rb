@@ -1,5 +1,5 @@
 describe Survey::UseCase::SendInactiveUserSurveys do
-  let(:user_details_gateway) { double("gateway double", fetch_for_inactive: %i[user1 user2], mark_as_sent: nil) }
+  let(:user_details_gateway) { double("gateway double", fetch_inactive: %i[user1 user2], mark_as_sent: nil) }
   let(:notifications_gateway) { double("notifications gateway", execute: :success) }
 
   subject do
@@ -12,7 +12,7 @@ describe Survey::UseCase::SendInactiveUserSurveys do
   it "calls the user_details_gateway's fetch method" do
     subject.execute
 
-    expect(user_details_gateway).to have_received(:fetch_for_inactive)
+    expect(user_details_gateway).to have_received(:fetch_inactive)
   end
 
   it "calls the notifications gateway with each value received" do

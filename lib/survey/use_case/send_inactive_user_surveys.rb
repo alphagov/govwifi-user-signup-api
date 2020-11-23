@@ -8,7 +8,7 @@ class Survey::UseCase::SendInactiveUserSurveys
   end
 
   def execute
-    users = user_details_gateway.fetch_for_inactive
+    users = user_details_gateway.fetch_inactive
 
     @logger.info("[inactive-users-signup-survey] sending email to #{users.count} users.")
 

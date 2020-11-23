@@ -5,7 +5,7 @@ describe Survey::Gateway::UserDetails do
     user_details.delete
   end
 
-  describe "#fetch_for_active" do
+  describe "#fetch_active" do
     context "when the user has been created in the last 24 hours" do
       context "but has not logged in" do
         let(:recent_inactive_user) do
@@ -18,7 +18,7 @@ describe Survey::Gateway::UserDetails do
         end
 
         it "does not include them" do
-          expect(subject.fetch_for_active).to_not include(recent_inactive_user)
+          expect(subject.fetch_active).to_not include(recent_inactive_user)
         end
       end
 
@@ -33,7 +33,7 @@ describe Survey::Gateway::UserDetails do
         end
 
         it "includes them" do
-          expect(subject.fetch_for_active).to include(recent_user)
+          expect(subject.fetch_active).to include(recent_user)
         end
 
         it "only returns 25% of users" do
@@ -45,7 +45,7 @@ describe Survey::Gateway::UserDetails do
             :active,
           )
 
-          expect(subject.fetch_for_active.count).to eq 26 # 25 + the :recent_user
+          expect(subject.fetch_active.count).to eq 26 # 25 + the :recent_user
         end
       end
     end
@@ -61,7 +61,7 @@ describe Survey::Gateway::UserDetails do
       end
 
       it "does not include them" do
-        expect(subject.fetch_for_active).to_not include(idle_user)
+        expect(subject.fetch_active).to_not include(idle_user)
       end
     end
 
@@ -76,7 +76,7 @@ describe Survey::Gateway::UserDetails do
       end
 
       it "does not include them" do
-        expect(subject.fetch_for_active).to_not include(surveyed_user)
+        expect(subject.fetch_active).to_not include(surveyed_user)
       end
     end
 
@@ -85,12 +85,12 @@ describe Survey::Gateway::UserDetails do
       let!(:sponsored_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
 
       it "does not include them" do
-        expect(subject.fetch_for_active).to_not include(sponsored_user)
+        expect(subject.fetch_active).to_not include(sponsored_user)
       end
     end
   end
 
-  describe "#fetch_for_inactive" do
+  describe "#fetch_inactive" do
     context "when the user has been created less than 14 days ago" do
       context "but has not logged in" do
         let(:recent_inactive_user) do
@@ -103,7 +103,7 @@ describe Survey::Gateway::UserDetails do
         end
 
         it "does not include them" do
-          expect(subject.fetch_for_inactive).to_not include(recent_inactive_user)
+          expect(subject.fetch_inactive).to_not include(recent_inactive_user)
         end
       end
     end
@@ -120,7 +120,7 @@ describe Survey::Gateway::UserDetails do
         end
 
         it "includes them" do
-          expect(subject.fetch_for_inactive).to include(idle_user)
+          expect(subject.fetch_inactive).to include(idle_user)
         end
 
         it "only returns 25% of users" do
@@ -132,7 +132,7 @@ describe Survey::Gateway::UserDetails do
             :idle_survey_target,
           )
 
-          expect(subject.fetch_for_inactive.count).to eq 26 # 25 + the :idle_user
+          expect(subject.fetch_inactive.count).to eq 26 # 25 + the :idle_user
         end
       end
 
@@ -147,7 +147,7 @@ describe Survey::Gateway::UserDetails do
         end
 
         it "does not include them" do
-          expect(subject.fetch_for_inactive).to_not include(idle_user)
+          expect(subject.fetch_inactive).to_not include(idle_user)
         end
       end
     end
@@ -158,7 +158,7 @@ describe Survey::Gateway::UserDetails do
     let!(:user) { FactoryBot.create(:user_details, :self_signed, :active) }
 
     before do
-      @query = subject.fetch_for_active
+      @query = subject.fetch_active
     end
 
     it "updates the survey_sent_at attribute" do
