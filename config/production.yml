@@ -9,6 +9,7 @@ notify_sms_template_ids:
     iphone: ab535538-dc2e-4410-8b40-50fcc852f8bd
     windows: 801d5deb-6480-4fc6-91e1-da9f5f290c0b
   active_users_signup_survey: 43134a22-4a00-4546-bf52-965fea3d2beb
+  inactive_users_signup_survey: 1550f29b-471c-4e96-be61-97748e07729a
 
 notify_email_template_ids:
   self_signup_credentials: f18708c0-e857-4f62-b5f3-8f0c75fc2fdb
@@ -18,5 +19,6 @@ notify_email_template_ids:
     singular: 30ab6bc5-20bf-45af-b78d-34cacc0027cd
     failed: 52c19b68-4d8b-497a-b6ae-ee27d49439c3
   active_users_signup_survey: 7eb89dbc-2b17-4ea5-8400-5c265d3757cf
+  inactive_users_signup_survey: ceb8a0a4-c507-48c8-94be-66ff0b4874bf
 
 do_not_reply_email_id: 0d22d71f-afa3-4c72-8cd4-7716678dbd43
