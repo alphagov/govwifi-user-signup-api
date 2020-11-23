@@ -1,4 +1,6 @@
-describe Survey::Gateway::Notifications do
+describe Survey::Gateway::Notifications, :focus do
+  let(:subject) { Survey::Gateway::Notifications.new('active_users_signup_survey') }
+
   let(:user) { FactoryBot.create(:user_details) }
   let(:mobile_user) { FactoryBot.create(:user_details, :sms) }
 
