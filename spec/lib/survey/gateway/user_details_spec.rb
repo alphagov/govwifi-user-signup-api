@@ -108,6 +108,22 @@ describe Survey::Gateway::UserDetails do
       end
     end
 
+    context "when the user has been created more than 14 days ago" do
+      let(:old_user) do
+        FactoryBot.create(
+          :user_details,
+          :self_signed,
+          :inactive,
+          :idle_survey_target,
+          created_at: Date.today - 15,
+        )
+      end
+
+      it "does not include them" do
+        expect(subject.fetch_inactive).to_not include(old_user)
+      end
+    end
+
     context "when the user has been created 14 days ago" do
       context "and has not logged in" do
         let!(:idle_user) do

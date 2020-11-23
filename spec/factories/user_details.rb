@@ -68,11 +68,7 @@ FactoryBot.define do
     end
 
     trait :idle_survey_target do
-      created_at { (Date.today - 14).to_time + 12 * 3600 }
-    end
-
-    trait :old do
-      created_at { (Date.today - 15).to_time + 12 * 3600 }
+      created_at { (Date.today - 14).to_time }
     end
   end
 end
