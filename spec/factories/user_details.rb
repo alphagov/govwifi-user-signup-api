@@ -66,5 +66,9 @@ FactoryBot.define do
     trait :inactive do
       last_login { nil }
     end
+
+    trait :idle_survey_target do
+      created_at { (Date.today - 14).to_time + 12 * 3600 }
+    end
   end
 end
