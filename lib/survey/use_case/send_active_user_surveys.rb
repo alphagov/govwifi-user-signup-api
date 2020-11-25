@@ -10,7 +10,7 @@ class Survey::UseCase::SendActiveUserSurveys
   def execute
     users = user_details_gateway.fetch_active
 
-    @logger.info("[active-users-signup-survey] sending email to #{users.count} users.")
+    @logger.info("[active-users-signup-survey] sending survey to #{users.count} users.")
 
     users.each do |user|
       @notifications_gateway.execute(user)
