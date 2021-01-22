@@ -44,6 +44,11 @@ module Survey
   module Gateway; end
 end
 
+module SmokeTests
+  module UseCase; end
+  module Gateway; end
+end
+
 require "require_all"
 
 require_all "lib"
