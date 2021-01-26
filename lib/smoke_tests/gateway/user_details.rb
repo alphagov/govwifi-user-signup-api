@@ -7,20 +7,19 @@ class SmokeTests::Gateway::UserDetails
     logger.info("Starting daily smoke test user deletion")
 
     total = 0
-    loop do
-      deleted_rows = DB[:userdetails].with_sql_delete("
-        DELETE FROM userdetails
-        WHERE contact LIKE 'govwifi-tests+%@digital.cabinet-office.gov.uk'
-        AND created_at < NOW() - INTERVAL 10 MINUTE
-        LIMIT #{SESSION_BATCH_SIZE}
-      ")
-      total += deleted_rows
-
-      if deleted_rows.zero?
-        break
-      end
-
-      logger.info("Finished daily smoke test user deletion, #{total} rows affected")
+    while (rows_to_delete = get_batch).count.positive?
+      total += rows_to_delete.delete
     end
+
+    logger.info("Finished daily smoke test user deletion, #{total} rows affected")
+  end
+
+private
+
+  def get_batch
+    WifiUser::Repository::User
+      .where { contact.like "govwifi-tests+%@digital.cabinet-office.gov.uk" }
+      .where { created_at < Time.now - (10 * 60) }
+      .limit(SESSION_BATCH_SIZE)
   end
 end
