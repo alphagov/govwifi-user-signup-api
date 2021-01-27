@@ -86,7 +86,7 @@ describe Gdpr::Gateway::Userdetails do
 
         it "deletes all the inactive users" do
           subject.delete_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to be_empty
+          expect(user_details.all).to be_empty
         end
 
         context "Given the HEALTH user with an inactive created_at" do
