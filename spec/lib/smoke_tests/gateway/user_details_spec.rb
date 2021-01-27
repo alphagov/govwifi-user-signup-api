@@ -22,7 +22,7 @@ describe SmokeTests::Gateway::UserDetails do
         user_details.insert(username: "baz", contact: "govwifi-tests+baz@digital.cabinet-office.gov.uk", created_at: Date.today - 1)
       end
 
-      it "does deletes only the old user record" do
+      it "deletes only the old test user record" do
         subject.delete_users
         expect(user_details.all.map { |s| s.fetch(:username) }).not_to include("baz")
       end
