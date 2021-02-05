@@ -8,11 +8,11 @@ class WifiUser::UseCase::SmsTemplateFinder
       return device_instruction_config.fetch(device_name) if message_content.match?(matcher)
     end
 
-    template_name = "generic_help"
+    # template_name = "generic_help"
     template_name = "credentials" if message_content.match?(/^\s*$/) || message_content.match(/go/i)
     template_name = "help_menu" if message_content.match?(/help/i)
 
-    config[template_name]
+    config[template_name] if template_name
   end
 
 private
