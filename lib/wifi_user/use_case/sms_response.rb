@@ -21,7 +21,7 @@ private
   def send_signup_instructions(phone_number, login_details, sms_content)
     client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
 
-    if template_id = template_finder.execute(message_content: sms_content)
+    if (template_id = template_finder.execute(message_content: sms_content))
       client.send_sms(
         phone_number: phone_number,
         template_id: template_id,
