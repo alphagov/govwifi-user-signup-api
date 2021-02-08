@@ -10,6 +10,10 @@ RSpec.describe App do
       }.to_json
     end
 
+    before(:each) do
+      DB[:smslog].truncate
+    end
+
     def post_sms_notification
       post "/user-signup/sms-notification/notify", payload, "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
     end
