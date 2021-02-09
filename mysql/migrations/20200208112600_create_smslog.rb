@@ -5,7 +5,7 @@ Sequel.migration do
       String :number, size: 100, default: "", null: false
       String :message, size: 918, default: "", null: false
       Timestamp :created_at, default: Sequel.lit("now()"), index: true
-      index [:created_at, :number]
+      index %i[created_at number]
     end
   end
 end

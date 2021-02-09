@@ -1,4 +1,6 @@
 describe WifiUser::UseCase::RepetitiveSmsChecker do
+  subject { described_class.new(smslog_model: WifiUser::Repository::Smslog.new) }
+
   let(:number) { "NUMBER" }
   let(:message) { "Lorem ipsum dolor sit amet" }
 

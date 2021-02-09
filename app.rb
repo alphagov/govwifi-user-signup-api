@@ -103,7 +103,9 @@ class App < Sinatra::Base
 
   def sender_is_repetitive?(source, message)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
-    repetitive_sms_checker = WifiUser::UseCase::RepetitiveSmsChecker.new
+    repetitive_sms_checker = WifiUser::UseCase::RepetitiveSmsChecker.new(
+      smslog_model: WifiUser::Repository::Smslog.new,
+    )
 
     sanitised_source = contact_sanitiser.execute(source)
 

@@ -7,10 +7,14 @@ class WifiUser::UseCase::RepetitiveSmsChecker
 
   CLEANUP_AFTER_MINUTES = 30
 
+  def initialize(smslog_model:)
+    @smslog_model = smslog_model
+  end
+
   def execute(number, message)
     cleanup
 
-    DB[:smslog].insert number: number, message: message
+    @smslog_model.create_log(number, message)
 
     repetitive_number_and_message?(number, message) || repetitive_number?(number)
   end
@@ -18,22 +22,18 @@ class WifiUser::UseCase::RepetitiveSmsChecker
 private
 
   def repetitive_number_and_message?(number, message)
-    history = DB[:smslog].where { created_at > Time.now - (NUMBER_AND_MESSAGE_MINUTES * 60) }
-                         .where(number: number)
-                         .where(message: message)
+    history = @smslog_model.get_matching(number: number, message: message, within_minutes: NUMBER_AND_MESSAGE_MINUTES)
 
     history.count >= NUMBER_AND_MESSAGE_THRESHOLD
   end
 
   def repetitive_number?(number)
-    history = DB[:smslog].where { created_at > Time.now - (NUMBER_MINUTES * 60) }
-                         .where(number: number)
+    history = @smslog_model.get_matching(number: number, within_minutes: NUMBER_MINUTES)
 
     history.count >= NUMBER_THRESHOLD
   end
 
   def cleanup
-    DB[:smslog].where { created_at < Time.now - (CLEANUP_AFTER_MINUTES * 60) }
-               .delete
+    @smslog_model.cleanup(after_minutes: CLEANUP_AFTER_MINUTES)
   end
 end
