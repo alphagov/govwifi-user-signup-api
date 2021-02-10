@@ -78,6 +78,11 @@ class App < Sinatra::Base
       return ""
     end
 
+    if sender_is_repetitive?(source, message)
+      logger.warn("Too many messages received from #{source} - (possible bot loop)")
+      return ""
+    end
+
     template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
 
     WifiUser::UseCase::SmsResponse.new(
@@ -94,6 +99,17 @@ class App < Sinatra::Base
   def numbers_are_equal?(number1, number2)
     contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
+  end
+
+  def sender_is_repetitive?(source, message)
+    contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
+    repetitive_sms_checker = WifiUser::UseCase::RepetitiveSmsChecker.new(
+      smslog_model: WifiUser::Repository::Smslog.new,
+    )
+
+    sanitised_source = contact_sanitiser.execute(source)
+
+    repetitive_sms_checker.execute(sanitised_source, message)
   end
 
   def is_govnotify_token_valid?
