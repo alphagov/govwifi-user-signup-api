@@ -79,7 +79,7 @@ class App < Sinatra::Base
     end
 
     if sender_is_repetitive?(source, message)
-      logger.warn("Possible bot-number detected: #{source}")
+      logger.warn("Too many messages received from #{source} - (possible bot loop)")
       return ""
     end
 
