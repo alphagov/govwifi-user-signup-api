@@ -14,38 +14,44 @@ describe WifiUser::UseCase::RepetitiveSmsChecker do
     end
   end
 
-  context "when the same message received three times in 15 minutes" do
+  context "when the same message received NUMBER_AND_MESSAGE_THRESHOLD times in NUMBER_AND_MESSAGE_MINUTES minutes" do
     it "returns true" do
-      subject.execute(number, message)
-      subject.execute(number, message)
+      (described_class::NUMBER_AND_MESSAGE_THRESHOLD - 1).times do
+        subject.execute(number, message)
+      end
 
       expect(subject.execute(number, message)).to be true
     end
   end
 
-  context "when the same message received three times but not within 15 minutes" do
+  context "when the same message received NUMBER_THRESHOLD times but not within NUMBER_AND_MESSAGE_MINUTES minutes" do
     it "returns false" do
-      subject.execute(number, message)
-      DB[:smslog].update(created_at: Time.now - (16 * 60))
+      (described_class::NUMBER_THRESHOLD - 2).times do
+        subject.execute(number, message)
+      end
+      DB[:smslog].update(created_at: Time.now - ((described_class::NUMBER_AND_MESSAGE_MINUTES + 1) * 60))
       subject.execute(number, message)
 
       expect(subject.execute(number, message)).to be false
     end
   end
 
-  context "when any message received three times in 5 minutes" do
+  context "when any message received NUMBER_THRESHOLD times in NUMBER_MINUTES minutes" do
     it "returns true" do
-      subject.execute(number, "foo")
-      subject.execute(number, "bar")
+      (described_class::NUMBER_THRESHOLD - 1).times do |count|
+        subject.execute(number, "#{message} #{count}")
+      end
 
       expect(subject.execute(number, "baz")).to be true
     end
   end
 
-  context "when any message received three times but not within 5 minutes" do
+  context "when any message received NUMBER_THRESHOLD times but not within NUMBER_MINUTES minutes" do
     it "returns false" do
-      subject.execute(number, "foo")
-      DB[:smslog].update(created_at: Time.now - (6 * 60))
+      (described_class::NUMBER_THRESHOLD - 2).times do |count|
+        subject.execute(number, "#{message} #{count}")
+      end
+      DB[:smslog].update(created_at: Time.now - ((described_class::NUMBER_MINUTES + 1) * 60))
       subject.execute(number, "bar")
 
       expect(subject.execute(number, "baz")).to be false
@@ -57,7 +63,7 @@ describe WifiUser::UseCase::RepetitiveSmsChecker do
       subject.execute(number, "foo")
       subject.execute(number, "bar")
       subject.execute(number, "baz")
-      DB[:smslog].update(created_at: Time.now - (35 * 60))
+      DB[:smslog].update(created_at: Time.now - ((described_class::CLEANUP_AFTER_MINUTES + 5) * 60))
       subject.execute(number, "qux")
 
       expect(DB[:smslog].count).to be(1)
