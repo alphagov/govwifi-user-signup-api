@@ -91,4 +91,72 @@ describe WifiUser::UseCase::SmsResponse do
       end
     end
   end
+
+  context "With Notifications::Client::BadRequestError" do
+    let(:username) { "hello" }
+    let(:password) { "password" }
+    let(:phone_number) { "+447700900003" }
+    let(:notify_sms_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
+    let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
+    let(:notify_sms_request) do
+      {
+        phone_number: phone_number,
+        template_id: notify_template_id,
+        personalisation: {
+          login: username,
+          pass: password,
+        },
+      }
+    end
+
+    context "with ValidationError" do
+      let!(:notify_sms_stub) do
+        stub_request(:post, notify_sms_url).with(body: notify_sms_request)
+          .to_return(status: 400, body: {
+            "errors": [
+              {
+                "error": "ValidationError",
+                "message": "foo",
+              },
+            ],
+            "status_code": 400,
+          }.to_json)
+      end
+
+      before do
+        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
+      end
+
+      it "raises Sequel::Rollback" do
+        expect {
+          subject.execute(contact: "447700900003", sms_content: "")
+        }.to raise_error(Sequel::Rollback)
+      end
+    end
+
+    context "with FooError" do
+      let!(:notify_sms_stub) do
+        stub_request(:post, notify_sms_url).with(body: notify_sms_request)
+          .to_return(status: 400, body: {
+            "errors": [
+              {
+                "error": "FooError",
+                "message": "foo",
+              },
+            ],
+            "status_code": 400,
+          }.to_json)
+      end
+
+      before do
+        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
+      end
+
+      it "raises original error" do
+        expect {
+          subject.execute(contact: "447700900003", sms_content: "")
+        }.to raise_error(Notifications::Client::BadRequestError)
+      end
+    end
+  end
 end

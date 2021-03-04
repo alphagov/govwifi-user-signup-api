@@ -9,9 +9,20 @@ class WifiUser::UseCase::SmsResponse
     phone_number = WifiUser::UseCase::ContactSanitiser.new.execute(contact)
     return logger.warn("Unexpected contact detail found #{contact}") if phone_number.nil?
 
-    login_details = user_model.generate(contact: phone_number)
-    notify_params = { login: login_details[:username], pass: login_details[:password] }
-    send_signup_instructions(phone_number, notify_params, sms_content)
+    DB.transaction do
+      login_details = user_model.generate(contact: phone_number)
+      notify_params = { login: login_details[:username], pass: login_details[:password] }
+
+      send_signup_instructions(phone_number, notify_params, sms_content)
+    end
+  rescue Notifications::Client::BadRequestError => e
+    validation_errors = e.message.select { |err| err["error"] == "ValidationError" }
+    raise e if validation_errors.empty?
+
+    message = validation_errors.map { |err| err["message"] }
+                               .join(", ")
+    logger.warn("Failed to send email: #{message}")
+    raise Sequel::Rollback
   end
 
 private
