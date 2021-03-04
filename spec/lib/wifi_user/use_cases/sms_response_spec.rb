@@ -68,6 +68,12 @@ describe WifiUser::UseCase::SmsResponse do
       end
     end
 
+    it "does not raise an error" do
+      expect {
+        subject.execute(contact: "447700900003", sms_content: "Help")
+      }.to_not raise_error
+    end
+
     context "For one set of credentials" do
       let(:username) { "AnExampleUsername" }
       let(:password) { "AnExamplePassword" }
