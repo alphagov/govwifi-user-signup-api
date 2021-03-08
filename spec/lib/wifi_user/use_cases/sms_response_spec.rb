@@ -133,10 +133,10 @@ describe WifiUser::UseCase::SmsResponse do
         expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
       end
 
-      it "raises Sequel::Rollback" do
+      it "doesn't raise error" do
         expect {
           subject.execute(contact: "447700900003", sms_content: "")
-        }.to raise_error(Sequel::Rollback)
+        }.not_to raise_error
       end
     end
 

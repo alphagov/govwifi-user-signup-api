@@ -22,7 +22,6 @@ class WifiUser::UseCase::SmsResponse
     message = validation_errors.map { |err| err["message"] }
                                .join(", ")
     logger.warn("Failed to send email: #{message}")
-    raise Sequel::Rollback
   end
 
 private
