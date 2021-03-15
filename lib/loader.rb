@@ -14,6 +14,7 @@ DB = Sequel.connect(
   database: ENV.fetch("DB_NAME"),
   user: ENV.fetch("DB_USER"),
   password: ENV.fetch("DB_PASS"),
+  encoding: "utf8mb4",
 )
 
 module Common
