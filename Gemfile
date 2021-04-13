@@ -11,7 +11,7 @@ gem "rake", "~> 13.0"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.1"
 gem "sentry-raven"
-gem "sequel", "~> 5.39"
+gem "sequel", "~> 5.43"
 gem "sinatra"
 
 group :test do
