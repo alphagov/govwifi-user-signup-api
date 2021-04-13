@@ -108,7 +108,7 @@ jobs:
   - name: lint & test
     interruptible: true
     plan:
-      - aggregate:
+      - in_parallel:
         - do:
           - get: src
             resource: pull-request
@@ -133,7 +133,7 @@ jobs:
         image: runner
         file: src/ci/tasks/pre-build.yml
 
-      - aggregate:
+      - in_parallel:
         - task: lint
           privileged: true
           image: runner
