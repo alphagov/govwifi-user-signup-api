@@ -43,12 +43,12 @@ describe WifiUser::UseCase::SmsTemplateFinder do
     end
   end
 
-  context "Given a message of 4" do
-    let(:windows_template) { "801d5deb-6480-4fc6-91e1-da9f5f290c0b" }
-    it "returns the device template for Windows" do
-      expect(template_for_message("4")).to eq(windows_template)
-      expect(template_for_message(" 4")).to eq(windows_template)
-      expect(template_for_message("hello 4 steve")).to eq(windows_template)
+  context "Given a message of 0" do
+    context "on production" do
+      it "returns the other device template" do
+        expect(template_for_message("0")).to eq("18859b96-297f-47dd-a579-4e543a83eaa8")
+        expect(template_for_message("other")).to eq("18859b96-297f-47dd-a579-4e543a83eaa8")
+      end
     end
   end
 
@@ -59,9 +59,29 @@ describe WifiUser::UseCase::SmsTemplateFinder do
     end
   end
 
+  context "Given a message of 4" do
+    let(:windows_template) { "801d5deb-6480-4fc6-91e1-da9f5f290c0b" }
+    it "returns the device template for Windows" do
+      expect(template_for_message("4")).to eq(windows_template)
+      expect(template_for_message(" 4")).to eq(windows_template)
+      expect(template_for_message("hello 4 steve")).to eq(windows_template)
+    end
+  end
+
+  context "Given a message of 6" do
+    let(:chromebook_template) { "0e5bbafc-3110-4375-a6e4-4488c503f45a" }
+    it "returns the device template for Chromebook" do
+      expect(template_for_message("6")).to eq(chromebook_template)
+      expect(template_for_message(" 6")).to eq(chromebook_template)
+      expect(template_for_message("hello 6 steve")).to eq(chromebook_template)
+      expect(template_for_message("chromebook")).to eq(chromebook_template)
+      expect(template_for_message("hello chromebook steve")).to eq(chromebook_template)
+    end
+  end
+
   context "Given no template could be derived" do
     it "returns the generic help response" do
-      expect(template_for_message("any unmatched content")).to eq("18859b96-297f-47dd-a579-4e543a83eaa8")
+      expect(template_for_message("any unmatched content")).to eq("299d4f80-59a2-4327-b6c6-0eb5974a242a")
     end
   end
 end
