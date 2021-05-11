@@ -80,7 +80,7 @@ describe WifiUser::UseCase::SmsTemplateFinder do
   end
 
   context "Given no template could be derived" do
-    it "returns the generic help response" do
+    it "returns the recap response" do
       expect(template_for_message("any unmatched content")).to eq("299d4f80-59a2-4327-b6c6-0eb5974a242a")
     end
   end
