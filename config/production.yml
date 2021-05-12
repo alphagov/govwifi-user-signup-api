@@ -1,13 +1,15 @@
 notify_sms_template_ids:
   credentials: 3a4b1ca8-7b26-4266-8b5f-e05fdbd11879
   help_menu: 2598f762-5c2f-4af8-9309-6ab932047010
-  generic_help: 18859b96-297f-47dd-a579-4e543a83eaa8
+  recap: 299d4f80-59a2-4327-b6c6-0eb5974a242a
   device_help:
+    other: 18859b96-297f-47dd-a579-4e543a83eaa8
     android: 5536eee6-5390-42ec-bdf5-3fe4b15f0127
     blackberry: efa0b4cf-54fd-4d07-ac58-40d633b94e66
     mac: 6ef4ca91-7b88-49eb-9b63-90d39aff3c16
     iphone: ab535538-dc2e-4410-8b40-50fcc852f8bd
     windows: 801d5deb-6480-4fc6-91e1-da9f5f290c0b
+    chromebook: 0e5bbafc-3110-4375-a6e4-4488c503f45a
   active_users_signup_survey: 43134a22-4a00-4546-bf52-965fea3d2beb
   inactive_users_signup_survey: 1550f29b-471c-4e96-be61-97748e07729a
 
