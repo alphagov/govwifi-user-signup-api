@@ -4,7 +4,7 @@ ruby File.read(".ruby-version").chomp
 gem "aws-sdk-s3", "~> 1"
 gem "mail", "~> 2.7"
 gem "mysql2"
-gem "nokogiri", "~> 1.10"
+gem "nokogiri", "~> 1.11"
 gem "notifications-ruby-client", "~> 3.1.0"
 gem "puma"
 gem "rake", "~> 13.0"
