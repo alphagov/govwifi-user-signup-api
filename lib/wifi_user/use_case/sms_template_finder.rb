@@ -8,7 +8,7 @@ class WifiUser::UseCase::SmsTemplateFinder
       return device_instruction_config.fetch(device_name) if message_content.match?(matcher)
     end
 
-    template_name = "generic_help"
+    template_name = "recap"
     template_name = "credentials" if message_content.match?(/^\s*$/) || message_content.match(/go/i)
     template_name = "help_menu" if message_content.match?(/help/i)
 
@@ -25,11 +25,13 @@ private
 
   def device_name_matchers
     {
+      /0|other/i => "other",
       /1|android|samsung|galaxy|htc|huawei|sony|motorola|lg|nexus/i => "android",
       /2|ios|ipad|iphone|ipod/i => "iphone",
       /3|mac|OSX|apple/i => "mac",
       /4|win|windows/i => "windows",
       /5|blackberry/i => "blackberry",
+      /6|chromebook/i => "chromebook",
     }
   end
 
