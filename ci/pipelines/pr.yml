@@ -107,6 +107,7 @@ jobs:
 
   - name: lint & test
     interruptible: true
+    max_in_flight: 1
     plan:
       - in_parallel:
         - do:
