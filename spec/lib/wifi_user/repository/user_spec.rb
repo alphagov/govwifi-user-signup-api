@@ -1,11 +1,11 @@
+CHARACTER_LIST = %w[b c d f g h j k m n p q r s t v w x y z].freeze
+
 describe WifiUser::Repository::User do
   after do
     DB[:userdetails].truncate
   end
 
   describe "#generate" do
-    CHARACTER_LIST = %w[b c d f g h j k m n p q r s t v w x y z].freeze
-
     let(:word_list) { %w[These Are Words] }
 
     before do
