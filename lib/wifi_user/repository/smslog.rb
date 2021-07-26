@@ -3,7 +3,7 @@ class WifiUser::Repository::Smslog < Sequel::Model(:smslog)
     self.class.insert number: number, message: message
   end
 
-  def get_matching(number:, message: nil, within_minutes:)
+  def get_matching(number:, within_minutes:, message: nil)
     query = self.class.where { created_at > Time.now - (within_minutes * 60) }
                       .where(number: number)
     query = query.where(message: message) if message
