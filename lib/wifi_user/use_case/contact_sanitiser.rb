@@ -12,7 +12,7 @@ class WifiUser::UseCase::ContactSanitiser
 private
 
   def email_match(contact)
-    contact.match(/[A-Za-z0-9\_\+\.\'\-&]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+/)
+    contact.match(/[A-Za-z0-9_+.'\-&]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+/)
   end
 
   def phone_match(contact)
