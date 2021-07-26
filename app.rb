@@ -9,7 +9,7 @@ class App < Sinatra::Base
   register Sinatra::SensibleLogging
 
   sensible_logging(
-    logger: Logger.new(STDOUT),
+    logger: Logger.new($stdout),
   )
 
   configure do

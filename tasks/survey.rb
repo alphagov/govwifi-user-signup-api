@@ -1,5 +1,5 @@
 require "logger"
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 
 namespace :users_signup_survey do
   task :send_active do

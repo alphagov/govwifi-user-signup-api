@@ -1,5 +1,5 @@
 require "logger"
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 
 task :delete_smoke_test_users do
   require "./lib/loader"

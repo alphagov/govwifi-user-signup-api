@@ -4,7 +4,7 @@ class Survey::UseCase::SendActiveUserSurveys
   def initialize(user_details_gateway:, notifications_gateway:)
     @user_details_gateway = user_details_gateway
     @notifications_gateway = notifications_gateway
-    @logger = Logger.new(STDOUT)
+    @logger = Logger.new($stdout)
   end
 
   def execute
