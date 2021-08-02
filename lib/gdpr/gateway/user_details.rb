@@ -3,7 +3,7 @@ require "logger"
 class Gdpr::Gateway::Userdetails
   SESSION_BATCH_SIZE = 500
   def delete_users
-    logger = Logger.new(STDOUT)
+    logger = Logger.new($stdout)
     logger.info("Starting daily old user deletion")
 
     total = 0

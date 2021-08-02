@@ -12,7 +12,7 @@ class WifiUser::UseCase::ContactSanitiser
 private
 
   def email_match(contact)
-    contact.match(/[A-Za-z0-9\_\+\.\'\-&]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+/)
+    contact.match(/[A-Za-z0-9_+.'\-&]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+/)
   end
 
   def phone_match(contact)
@@ -28,8 +28,8 @@ private
   end
 
   def internationalise_phone_number(phone_number)
-    phone_number = "44" + phone_number[1..-1] if phone_number[0..1] == "07"
-    phone_number = "+" + phone_number unless phone_number[0] == "+"
+    phone_number = "44#{phone_number[1..]}" if phone_number[0..1] == "07"
+    phone_number = "+#{phone_number}" unless phone_number[0] == "+"
     phone_number
   end
 end

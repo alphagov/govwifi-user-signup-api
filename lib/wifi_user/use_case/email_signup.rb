@@ -2,7 +2,7 @@ require "mail"
 require "notifications/client"
 
 class WifiUser::UseCase::EmailSignup
-  def initialize(user_model:, whitelist_checker:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, whitelist_checker:, logger: Logger.new($stdout))
     @user_model = user_model
     @whitelist_checker = whitelist_checker
     @logger = logger

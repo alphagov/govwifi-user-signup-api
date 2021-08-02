@@ -23,23 +23,29 @@ end
 
 module WifiUser
   module Gateway; end
+
   module Repository; end
+
   module UseCase; end
+
   module Domain; end
 end
 
 module Gdpr
   module UseCase; end
+
   module Gateway; end
 end
 
 module Survey
   module UseCase; end
+
   module Gateway; end
 end
 
 module SmokeTests
   module UseCase; end
+
   module Gateway; end
 end
 

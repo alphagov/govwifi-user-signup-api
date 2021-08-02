@@ -1,5 +1,5 @@
 class WifiUser::UseCase::SmsResponse
-  def initialize(user_model:, template_finder:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, template_finder:, logger: Logger.new($stdout))
     @user_model = user_model
     @template_finder = template_finder
     @logger = logger

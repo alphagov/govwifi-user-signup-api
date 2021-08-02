@@ -71,9 +71,9 @@ describe App do
       end
 
       context "with both the same number" do
-        NUMBERS = %w[07900000001 447900000001 +447900000001].freeze
-        NUMBERS.each do |from_number|
-          NUMBERS.each do |to_number|
+        numbers = %w[07900000001 447900000001 +447900000001].freeze
+        numbers.each do |from_number|
+          numbers.each do |to_number|
             context "with #{from_number} to #{to_number}" do
               let(:from_phone_number) { from_number }
               let(:to_phone_number) { to_number }

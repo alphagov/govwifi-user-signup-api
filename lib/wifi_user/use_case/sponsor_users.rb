@@ -1,5 +1,5 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, send_email_gateway:, logger: Logger.new(STDOUT))
+  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, send_email_gateway:, logger: Logger.new($stdout))
     @logger = logger
     @user_model = user_model
     @whitelist_checker = whitelist_checker

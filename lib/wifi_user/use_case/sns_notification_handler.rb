@@ -1,5 +1,5 @@
 class WifiUser::UseCase::SnsNotificationHandler
-  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, logger: Logger.new(STDOUT))
+  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, logger: Logger.new($stdout))
     @email_signup_handler = email_signup_handler
     @sponsor_signup_handler = sponsor_signup_handler
     @logger = logger

@@ -3,7 +3,7 @@ require "logger"
 class SmokeTests::Gateway::UserDetails
   SESSION_BATCH_SIZE = 500
   def delete_users
-    logger = Logger.new(STDOUT)
+    logger = Logger.new($stdout)
     logger.info("Starting daily smoke test user deletion")
 
     total = 0
