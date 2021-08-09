@@ -36,7 +36,7 @@ describe Survey::Gateway::UserDetails do
           expect(subject.fetch_active).to include(recent_user)
         end
 
-        it "only returns 25% of users" do
+        it "returns 100% of users" do
           FactoryBot.create_list(
             :user_details,
             100,
@@ -45,7 +45,7 @@ describe Survey::Gateway::UserDetails do
             :active,
           )
 
-          expect(subject.fetch_active.count).to eq 26 # 25 + the :recent_user
+          expect(subject.fetch_active.count).to eq 101 # 100 + the :recent_user
         end
       end
     end
@@ -139,7 +139,7 @@ describe Survey::Gateway::UserDetails do
           expect(subject.fetch_inactive).to include(idle_user)
         end
 
-        it "only returns 25% of users" do
+        it "returns 100% of users" do
           FactoryBot.create_list(
             :user_details,
             100,
@@ -148,7 +148,7 @@ describe Survey::Gateway::UserDetails do
             :idle_survey_target,
           )
 
-          expect(subject.fetch_inactive.count).to eq 26 # 25 + the :idle_user
+          expect(subject.fetch_inactive.count).to eq 101 # 100 + the :idle_user
         end
       end
 
