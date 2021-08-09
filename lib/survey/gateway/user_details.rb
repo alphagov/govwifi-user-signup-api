@@ -2,7 +2,7 @@ require "logger"
 
 class Survey::Gateway::UserDetails
   def fetch_active
-    limit WifiUser::Repository::User
+    WifiUser::Repository::User
       .where { created_at > (Date.today - 1).to_time }
       .where { created_at <= Date.today.to_time }
       .where { contact =~ sponsor }
@@ -11,7 +11,7 @@ class Survey::Gateway::UserDetails
   end
 
   def fetch_inactive
-    limit WifiUser::Repository::User
+    WifiUser::Repository::User
       .where { created_at >= (Date.today - 14).to_time }
       .where { created_at < (Date.today - 13).to_time }
       .where { contact =~ sponsor }
@@ -21,17 +21,5 @@ class Survey::Gateway::UserDetails
 
   def mark_as_sent(query)
     query.update(signup_survey_sent_at: Time.now)
-  end
-
-private
-
-  def limit(query)
-    total = query.count
-
-    if total.zero?
-      query
-    else
-      query.limit((total * 0.25).ceil)
-    end
   end
 end
