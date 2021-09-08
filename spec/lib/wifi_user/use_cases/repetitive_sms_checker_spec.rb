@@ -69,4 +69,11 @@ describe WifiUser::UseCase::RepetitiveSmsChecker do
       expect(DB[:smslog].count).to be(1)
     end
   end
+
+  context "when a received SMS has no number" do
+    it "does not record a log" do
+      subject.execute(nil, "foo")
+      expect(DB[:smslog].count).to be(0)
+    end
+  end
 end

@@ -14,6 +14,8 @@ class WifiUser::UseCase::RepetitiveSmsChecker
   def execute(number, message)
     cleanup
 
+    return unless number
+
     @smslog_model.create_log(number, message)
 
     repetitive_number_and_message?(number, message) || repetitive_number?(number)
