@@ -11,7 +11,7 @@ The private GovWifi [build repository][build-repo] contains instructions on how 
 With each journey, we generate a unique username and password for GovWifi.
 These get stored and sent to the user.
 
-- SMS signup - Users text a phone number and get a set of credentials.
+- SMS signup:- Users text a phone number and get a set of credentials.
 - SMS help routes - Users can also ask for help from the same phone number and
   are sent some guides based on their selected operating system.
 - Email signup - Users with a government domain email send a blank email to
