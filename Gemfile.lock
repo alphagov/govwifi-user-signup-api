@@ -152,7 +152,7 @@ GEM
       rack (~> 2.0)
     sentry-raven (3.1.2)
       faraday (>= 1.0)
-    sequel (5.51.0)
+    sequel (5.52.0)
     shellany (0.0.1)
     simplecov (0.21.2)
       docile (~> 1.1)
@@ -196,7 +196,7 @@ DEPENDENCIES
   rubocop-govuk
   sensible_logging (~> 0.4.3)
   sentry-raven
-  sequel (~> 5.51)
+  sequel (~> 5.52)
   simplecov
   sinatra
   timecop
