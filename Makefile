@@ -27,14 +27,12 @@ prebuild:
 
 serve:
 	$(MAKE) build
-	$(DOCKER_COMPOSE) up -d db
-	./mysql/bin/wait_for_mysql
 	$(DOCKER_COMPOSE) run --rm app bundle exec rake db:migrate
 	$(DOCKER_COMPOSE) up -d
 
 lint:
 	$(MAKE) build
-	$(DOCKER_COMPOSE) run --rm app bundle exec rubocop
+	$(DOCKER_COMPOSE) run --no-deps --rm app bundle exec rubocop
 
 test:
 	$(MAKE) serve
