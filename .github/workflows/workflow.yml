@@ -1,3 +1,4 @@
+name: user-signup-api lint and test
 on:
   push:
     branches:
