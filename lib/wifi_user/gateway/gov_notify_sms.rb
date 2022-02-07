@@ -26,6 +26,6 @@ private
   attr_accessor :client
 
   def is_validation_error?(error)
-    error.message.match("ValidationError")
+    error.message.include?("ValidationError")
   end
 end
