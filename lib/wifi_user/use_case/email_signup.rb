@@ -16,6 +16,8 @@ class WifiUser::UseCase::EmailSignup
     else
       logger.info("Unsuccessful email signup attempt: #{email_address}")
     end
+  rescue Mail::Field::ParseError => e
+    logger.warn("unable to parse |#{contact}|: #{e}")
   end
 
 private
