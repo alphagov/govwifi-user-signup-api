@@ -105,4 +105,12 @@ describe WifiUser::UseCase::EmailSignup do
       end
     end
   end
+
+  describe "Using a unparsable contact" do
+    it "logs the error" do
+      expect(subject.send(:logger)).to receive(:warn)
+
+      subject.execute(contact: "Ryan <ryan@example.com")
+    end
+  end
 end
