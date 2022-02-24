@@ -57,7 +57,7 @@ private
       key: payload.fetch(:s3_object_key),
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
-      email_fetcher: email_fetcher,
+      email_fetcher:,
       exclude_addresses: [from_address],
     )
 

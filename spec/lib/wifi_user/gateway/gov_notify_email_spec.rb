@@ -21,10 +21,10 @@ describe WifiUser::Gateway::GovNotifyEmail do
 
   let(:subject) do
     described_class.new(api_key).execute(
-      email_address: email_address,
-      template_id: template_id,
+      email_address:,
+      template_id:,
       template_parameters: parameters,
-      reply_to_id: reply_to_id,
+      reply_to_id:,
     )
   end
 
@@ -35,8 +35,8 @@ describe WifiUser::Gateway::GovNotifyEmail do
       api_url,
       times: 1,
       body: {
-        email_address: email_address,
-        template_id: template_id,
+        email_address:,
+        template_id:,
         personalisation: parameters,
         email_reply_to_id: reply_to_id,
       },

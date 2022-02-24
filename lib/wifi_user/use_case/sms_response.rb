@@ -29,7 +29,7 @@ private
     client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
 
     client.send_sms(
-      phone_number: phone_number,
+      phone_number:,
       template_id: template_finder.execute(message_content: sms_content),
       personalisation: login_details,
     )

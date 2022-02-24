@@ -11,8 +11,8 @@ namespace :users_signup_survey do
     notifications_gateway = Survey::Gateway::Notifications.new("active_users_signup_survey")
 
     Survey::UseCase::SendActiveUserSurveys.new(
-      user_details_gateway: user_details_gateway,
-      notifications_gateway: notifications_gateway,
+      user_details_gateway:,
+      notifications_gateway:,
     ).execute
 
     logger.info("[active-users-signup-survey] done.")
@@ -27,8 +27,8 @@ namespace :users_signup_survey do
     notifications_gateway = Survey::Gateway::Notifications.new("inactive_users_signup_survey")
 
     Survey::UseCase::SendInactiveUserSurveys.new(
-      user_details_gateway: user_details_gateway,
-      notifications_gateway: notifications_gateway,
+      user_details_gateway:,
+      notifications_gateway:,
     ).execute
 
     logger.info("[inactive-users-signup-survey] done.")

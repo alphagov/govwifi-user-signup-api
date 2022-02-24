@@ -4,7 +4,7 @@ class WifiUser::Repository::User < Sequel::Model(:userdetails)
   WORD_LIST = File.readlines(ENV["WORD_LIST_FILE"]).map(&:strip)
 
   def generate(contact:, sponsor: contact)
-    existing_user = self.class.find(contact: contact)
+    existing_user = self.class.find(contact:)
     return login_details(existing_user) if existing_user
 
     user = create_user(contact, sponsor)
@@ -18,7 +18,7 @@ private
   def random_username
     username = generate_username
 
-    username = generate_username while self.class.find(username: username)
+    username = generate_username while self.class.find(username:)
 
     username
   end
@@ -35,8 +35,8 @@ private
     self.class.create(
       username: random_username,
       password: password_from_word_list,
-      contact: contact,
-      sponsor: sponsor,
+      contact:,
+      sponsor:,
     )
   end
 

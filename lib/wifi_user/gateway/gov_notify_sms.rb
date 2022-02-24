@@ -8,8 +8,8 @@ class WifiUser::Gateway::GovNotifySMS
   def execute(phone_number:, template_id:, template_parameters: {})
     begin
       client.send_sms(
-        phone_number: phone_number,
-        template_id: template_id,
+        phone_number:,
+        template_id:,
         personalisation: template_parameters,
       )
       success = true
@@ -18,7 +18,7 @@ class WifiUser::Gateway::GovNotifySMS
 
       success = false
     end
-    WifiUser::Domain::SMSResponse.new(success: success)
+    WifiUser::Domain::SMSResponse.new(success:)
   end
 
 private

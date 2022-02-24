@@ -24,13 +24,13 @@ class WifiUser::UseCase::RepetitiveSmsChecker
 private
 
   def repetitive_number_and_message?(number, message)
-    history = @smslog_model.get_matching(number: number, message: message, within_minutes: NUMBER_AND_MESSAGE_MINUTES)
+    history = @smslog_model.get_matching(number:, message:, within_minutes: NUMBER_AND_MESSAGE_MINUTES)
 
     history.count >= NUMBER_AND_MESSAGE_THRESHOLD
   end
 
   def repetitive_number?(number)
-    history = @smslog_model.get_matching(number: number, within_minutes: NUMBER_MINUTES)
+    history = @smslog_model.get_matching(number:, within_minutes: NUMBER_MINUTES)
 
     history.count >= NUMBER_THRESHOLD
   end
