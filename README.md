@@ -1,5 +1,6 @@
 # GovWifi User Signup API
 
+
 This handles incoming sign-up texts and e-mails.
 
 The private GovWifi [build repository][build-repo] contains instructions on how to build GovWifi end-to-end - the sites, services and infrastructure.
