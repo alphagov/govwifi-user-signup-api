@@ -8,7 +8,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given no inactive users" do
         before do
           user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", last_login: Date.today - 730)
+          user_details.insert(username: "sally", last_login: Date.today - 729)
         end
 
         it "does not delete any users" do
@@ -19,7 +19,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given one inactive user" do
         before do
           user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 730)
+          user_details.insert(username: "sally", created_at: Date.today - 729)
           user_details.insert(username: "george", last_login: Date.today - 731)
         end
 
@@ -59,7 +59,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given no inactive users" do
         before do
           user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 730)
+          user_details.insert(username: "sally", created_at: Date.today - 729)
         end
 
         it "does not delete any user details" do
@@ -70,7 +70,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given one inactive user" do
         before do
           user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 730)
+          user_details.insert(username: "sally", created_at: Date.today - 729)
           user_details.insert(username: "george", created_at: Date.today - 731)
         end
 
