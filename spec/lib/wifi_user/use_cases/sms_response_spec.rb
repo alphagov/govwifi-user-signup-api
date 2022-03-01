@@ -1,7 +1,7 @@
 describe WifiUser::UseCase::SmsResponse do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
   let(:template_finder) { double(execute: notify_template_id) }
-  subject { described_class.new(user_model: user_model, template_finder: template_finder) }
+  subject { described_class.new(user_model:, template_finder:) }
 
   context "With named number" do
     let(:phone_number) { "HIDDENNUMBER" }
@@ -21,7 +21,7 @@ describe WifiUser::UseCase::SmsResponse do
 
   context "With valid phone number" do
     before do
-      expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
+      expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
     end
 
     let(:username) { "hello" }
@@ -130,7 +130,7 @@ describe WifiUser::UseCase::SmsResponse do
       end
 
       before do
-        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
+        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
       end
 
       it "doesn't raise error" do
@@ -155,7 +155,7 @@ describe WifiUser::UseCase::SmsResponse do
       end
 
       before do
-        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username: username, password: password)
+        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
       end
 
       it "raises original error" do

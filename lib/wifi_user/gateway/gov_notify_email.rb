@@ -8,8 +8,8 @@ class WifiUser::Gateway::GovNotifyEmail
   def execute(email_address:, template_id:, template_parameters: {}, reply_to_id: nil)
     begin
       client.send_email(
-        email_address: email_address,
-        template_id: template_id,
+        email_address:,
+        template_id:,
         personalisation: template_parameters,
         email_reply_to_id: reply_to_id,
       )
@@ -19,7 +19,7 @@ class WifiUser::Gateway::GovNotifyEmail
 
       success = false
     end
-    WifiUser::Domain::EmailResponse.new(success: success)
+    WifiUser::Domain::EmailResponse.new(success:)
   end
 
 private

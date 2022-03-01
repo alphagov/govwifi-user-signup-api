@@ -7,17 +7,17 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:production_do_not_reply_id) { "0d22d71f-afa3-4c72-8cd4-7716678dbd43" }
   let(:staging_do_not_reply_id) { "45d6b6c4-6a36-47df-b34d-256b8c0d1511" }
 
-  let(:user_model) { double(generate: { username: username, password: password }) }
+  let(:user_model) { double(generate: { username:, password: }) }
   let(:whitelist_checker) { double(execute: { success: true }) }
   let(:send_sms_gateway) { double(execute: double(success: true)) }
   let(:send_email_gateway) { double(execute: double(success: true)) }
 
   subject do
     described_class.new(
-      user_model: user_model,
-      whitelist_checker: whitelist_checker,
-      send_sms_gateway: send_sms_gateway,
-      send_email_gateway: send_email_gateway,
+      user_model:,
+      whitelist_checker:,
+      send_sms_gateway:,
+      send_email_gateway:,
     )
   end
 
@@ -287,9 +287,9 @@ describe WifiUser::UseCase::SponsorUsers do
       email_address: email,
       template_id: "fd536b81-bdd7-4b55-98aa-720173718642",
       template_parameters: {
-        username: username,
-        password: password,
-        sponsor: sponsor,
+        username:,
+        password:,
+        sponsor:,
       },
       reply_to_id: do_not_reply_id,
     }

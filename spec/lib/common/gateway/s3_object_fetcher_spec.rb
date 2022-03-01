@@ -5,7 +5,7 @@ describe Common::Gateway::S3ObjectFetcher do
   let(:key) { "StubKey" }
   let(:object_content) { "StubResponse" }
 
-  subject { described_class.new(bucket: bucket, key: key) }
+  subject { described_class.new(bucket:, key:) }
 
   before do
     ENV["AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"] = "/stubUri"

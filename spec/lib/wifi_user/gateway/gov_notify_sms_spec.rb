@@ -20,7 +20,7 @@ describe WifiUser::Gateway::GovNotifySMS do
 
   let(:subject) do
     described_class.new(api_key)
-      .execute(phone_number: phone_number, template_id: template_id, template_parameters: parameters)
+      .execute(phone_number:, template_id:, template_parameters: parameters)
   end
 
   it "sends an SMS request" do
@@ -30,8 +30,8 @@ describe WifiUser::Gateway::GovNotifySMS do
       api_url,
       times: 1,
       body: {
-        phone_number: phone_number,
-        template_id: template_id,
+        phone_number:,
+        template_id:,
         personalisation: parameters,
       },
     )

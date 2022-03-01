@@ -14,7 +14,7 @@ class WifiUser::UseCase::SponsorUsers
     if whitelist_checker.execute(sponsor_address)[:success]
       sponsees = sanitise_sponsees(unsanitised_sponsees)
       failed_sponsees = invite_sponsees(sponsor, sponsor_address, sponsees)[:failed]
-      send_confirmation_email(sponsor_address, sponsees, failed_sponsees: failed_sponsees)
+      send_confirmation_email(sponsor_address, sponsees, failed_sponsees:)
     else
       logger.info("Unsuccessful sponsor signup attempt: #{sponsor_address}")
     end
@@ -60,7 +60,7 @@ private
     send_email_gateway.execute(
       email_address: sponsee_address,
       template_id: config["notify_email_template_ids"]["sponsored_credentials"],
-      template_parameters: login_details.merge(sponsor: sponsor),
+      template_parameters: login_details.merge(sponsor:),
       reply_to_id: do_not_reply_email_address_id,
     ).success
   end
@@ -70,7 +70,7 @@ private
   end
 
   def send_confirmation_email(sponsor, sponsees, failed_sponsees: [])
-    return send_failed_sponsoring_email(sponsor, failed_sponsees: failed_sponsees) if sponsees.empty? || !failed_sponsees.empty?
+    return send_failed_sponsoring_email(sponsor, failed_sponsees:) if sponsees.empty? || !failed_sponsees.empty?
     return send_confirmation_singular(sponsor, sponsees) if sponsees.length == 1
 
     send_confirmation_plural(sponsor, sponsees)

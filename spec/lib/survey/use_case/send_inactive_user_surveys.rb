@@ -4,8 +4,8 @@ describe Survey::UseCase::SendInactiveUserSurveys do
 
   subject do
     described_class.new(
-      user_details_gateway: user_details_gateway,
-      notifications_gateway: notifications_gateway,
+      user_details_gateway:,
+      notifications_gateway:,
     )
   end
 

@@ -1,5 +1,5 @@
 describe SmokeTests::UseCase::DeleteSmokeTestUsers do
-  subject { described_class.new(user_details_gateway: user_details_gateway) }
+  subject { described_class.new(user_details_gateway:) }
 
   let(:user_details_gateway) { double(delete_users: nil) }
 

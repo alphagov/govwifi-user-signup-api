@@ -11,18 +11,18 @@ describe WifiUser::UseCase::SnsNotificationHandler do
 
   subject do
     described_class.new(
-      email_signup_handler: email_signup_handler,
-      sponsor_signup_handler: sponsor_signup_handler,
-      email_parser: email_parser,
-      logger: logger,
+      email_signup_handler:,
+      sponsor_signup_handler:,
+      email_parser:,
+      logger:,
     )
   end
 
   before do
     allow(email_parser).to receive(:execute).and_return(
       type: notification_type,
-      message_id: message_id,
-      to_address: to_address,
+      message_id:,
+      to_address:,
       from_address: "sally@something.gov.uk",
       s3_object_key: "some-s3-object-key",
       s3_bucket_name: "some-s3-bucket-name",

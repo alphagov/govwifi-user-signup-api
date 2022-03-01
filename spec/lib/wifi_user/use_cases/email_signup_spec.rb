@@ -4,8 +4,8 @@ describe WifiUser::UseCase::EmailSignup do
 
   subject do
     described_class.new(
-      user_model: user_model,
-      whitelist_checker: whitelist_checker,
+      user_model:,
+      whitelist_checker:,
     )
   end
 
@@ -16,8 +16,8 @@ describe WifiUser::UseCase::EmailSignup do
         email_address: created_contact,
         template_id: notify_template_id,
         personalisation: {
-          username: username,
-          password: password,
+          username:,
+          password:,
         },
         email_reply_to_id: do_not_reply_id,
       }
@@ -36,7 +36,7 @@ describe WifiUser::UseCase::EmailSignup do
 
       allow(user_model).to receive(:generate)
         .with(contact: created_contact)
-        .and_return(username: username, password: password)
+        .and_return(username:, password:)
     end
 
     after do
