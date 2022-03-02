@@ -36,7 +36,7 @@ lint:
 
 test:
 	$(MAKE) serve
-	$(DOCKER_COMPOSE) run --rm app rspec
+	$(DOCKER_COMPOSE) run --rm app bundle exec rspec
 	$(MAKE) stop
 
 shell: serve
