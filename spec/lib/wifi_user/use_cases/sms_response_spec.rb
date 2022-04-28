@@ -31,7 +31,7 @@ describe WifiUser::UseCase::SmsResponse do
     let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
     let(:notify_sms_request) do
       {
-        phone_number: phone_number,
+        phone_number:,
         template_id: notify_template_id,
         personalisation: {
           login: username,
@@ -106,7 +106,7 @@ describe WifiUser::UseCase::SmsResponse do
     let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
     let(:notify_sms_request) do
       {
-        phone_number: phone_number,
+        phone_number:,
         template_id: notify_template_id,
         personalisation: {
           login: username,

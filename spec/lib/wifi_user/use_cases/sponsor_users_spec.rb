@@ -273,7 +273,7 @@ describe WifiUser::UseCase::SponsorUsers do
 
   def a_signup_sms(phone_number:)
     {
-      phone_number: phone_number,
+      phone_number:,
       template_id: "3a4b1ca8-7b26-4266-8b5f-e05fdbd11879",
       template_parameters: {
         login: username,

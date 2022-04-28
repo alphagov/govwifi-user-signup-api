@@ -13,7 +13,7 @@ describe App do
       {
         source_number: from_phone_number,
         destination_number: to_phone_number,
-        message: message,
+        message:,
       }.to_json
     end
 
