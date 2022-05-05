@@ -75,7 +75,7 @@ GEM
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
-    mysql2 (0.5.3)
+    mysql2 (0.5.4)
     nenv (0.3.0)
     net-protocol (0.1.2)
       io-wait
