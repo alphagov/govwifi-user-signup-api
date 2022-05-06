@@ -17,20 +17,4 @@ namespace :users_signup_survey do
 
     logger.info("[active-users-signup-survey] done.")
   end
-
-  task :send_inactive do
-    require "./lib/loader"
-
-    logger.info("[inactive-users-signup-survey] starting email signup task...")
-
-    user_details_gateway = Survey::Gateway::UserDetails.new
-    notifications_gateway = Survey::Gateway::Notifications.new("inactive_users_signup_survey")
-
-    Survey::UseCase::SendInactiveUserSurveys.new(
-      user_details_gateway:,
-      notifications_gateway:,
-    ).execute
-
-    logger.info("[inactive-users-signup-survey] done.")
-  end
 end
