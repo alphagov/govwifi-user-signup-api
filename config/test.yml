@@ -9,7 +9,6 @@ notify_sms_template_ids:
     iphone: ggg
     windows: hhh
   active_users_signup_survey: active-users-mobile-signup-survey-template
-  inactive_users_signup_survey: inactive-users-mobile-signup-survey-template
 
 notify_email_template_ids:
   self_signup_credentials: iii
@@ -19,6 +18,5 @@ notify_email_template_ids:
     singular: lll
     failed: mmm
   active_users_signup_survey: active-users-email-signup-survey-template
-  inactive_users_signup_survey: inactive-users-email-signup-survey-template
 
 do_not_reply_email_id: nnn
