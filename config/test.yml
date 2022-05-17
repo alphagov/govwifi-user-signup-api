@@ -12,6 +12,7 @@ notify_sms_template_ids:
 
 notify_email_template_ids:
   self_signup_credentials: iii
+  rejected_email_address: test-rejected-email-address-template-id
   sponsored_credentials: jjj
   sponsor_confirmation:
     plural: kkk

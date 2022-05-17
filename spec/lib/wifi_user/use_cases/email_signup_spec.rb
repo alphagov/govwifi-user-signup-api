@@ -89,9 +89,18 @@ describe WifiUser::UseCase::EmailSignup do
 
       context "given an email address with a non-gov domain" do
         let(:whitelist_checker) { double(execute: { success: false }) }
-        let(:created_contact) { "irrelevant@somewhere.uk" }
+        let(:created_contact) { "ryan@example.com" }
         let(:username) { "irrelevant" }
         let(:password) { "irrelephant" }
+        let(:notify_template_id) { "dabb9566-ae35-4ada-a9c5-2dd0db099539" }
+
+        let(:notify_email_request) do
+          {
+            email_address: created_contact,
+            template_id: notify_template_id,
+            email_reply_to_id: do_not_reply_id,
+          }
+        end
 
         before { subject.execute(contact: "Ryan <ryan@example.com>") }
 
@@ -99,8 +108,8 @@ describe WifiUser::UseCase::EmailSignup do
           expect(user_model).not_to receive(:generate)
         end
 
-        it "does not send an email to Notify" do
-          expect(notify_email_stub).to_not have_been_requested
+        it "sends an email to Notify" do
+          expect(notify_email_stub).to have_been_requested.times(1)
         end
       end
     end
