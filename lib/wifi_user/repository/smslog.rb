@@ -1,6 +1,6 @@
 class WifiUser::Repository::Smslog < Sequel::Model(:smslog)
   def create_log(number, message)
-    self.class.insert number: number, message: message
+    self.class.insert number:, message:
   end
 
   def get_matching(number:, within_minutes:, message: nil)
