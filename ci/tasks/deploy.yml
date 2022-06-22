@@ -11,7 +11,7 @@ params:
   SERVICE_NAME: "user-signup-api-service"
   CLUSTER_NAME: "api-cluster"
   TASK_NAME: "user-signup-api"
-  CONTAINER_NAME: "user-signup"
+  CONTAINER_NAME: "user-signup-api"
 
 inputs:
   - name: src
