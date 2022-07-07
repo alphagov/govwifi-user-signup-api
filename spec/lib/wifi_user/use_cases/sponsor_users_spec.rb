@@ -8,14 +8,14 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:staging_do_not_reply_id) { "45d6b6c4-6a36-47df-b34d-256b8c0d1511" }
 
   let(:user_model) { double(generate: { username:, password: }) }
-  let(:whitelist_checker) { double(execute: { success: true }) }
+  let(:allowlist_checker) { double(execute: { success: true }) }
   let(:send_sms_gateway) { double(execute: double(success: true)) }
   let(:send_email_gateway) { double(execute: double(success: true)) }
 
   subject do
     described_class.new(
       user_model:,
-      whitelist_checker:,
+      allowlist_checker:,
       send_sms_gateway:,
       send_email_gateway:,
     )
@@ -164,7 +164,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:sponsor) { "adrian <adrian@fake.uk>" }
     let(:sponsees) { ["adrian@notgov.uk"] }
     let(:do_not_reply_id) { staging_do_not_reply_id }
-    let(:whitelist_checker) { double(execute: { success: false }) }
+    let(:allowlist_checker) { double(execute: { success: false }) }
 
     it "Does not call user_model#generate" do
       expect(user_model).not_to have_received(:generate)

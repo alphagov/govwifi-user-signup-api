@@ -1,6 +1,6 @@
 module WifiUser
   module UseCases
-    class CheckIfWhitelistedEmail
+    class CheckIfAllowlistedEmail
       def initialize(gateway:)
         @email_regex_gateway = gateway
       end
