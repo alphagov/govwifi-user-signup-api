@@ -30,23 +30,23 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
-    whitelist_checker = WifiUser::UseCases::CheckIfWhitelistedEmail.new(
+    allowlist_checker = WifiUser::UseCases::CheckIfAllowlistedEmail.new(
       gateway: Common::Gateway::S3ObjectFetcher.new(
-        bucket: ENV.fetch("S3_SIGNUP_WHITELIST_BUCKET"),
-        key: ENV.fetch("S3_SIGNUP_WHITELIST_OBJECT_KEY"),
+        bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
+        key: ENV.fetch("S3_SIGNUP_ALLOWLIST_OBJECT_KEY"),
         region: "eu-west-2",
       ),
     )
 
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
       user_model: WifiUser::Repository::User.new,
-      whitelist_checker:,
+      allowlist_checker:,
       logger:,
     )
 
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
       user_model: WifiUser::Repository::User.new,
-      whitelist_checker:,
+      allowlist_checker:,
       send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new(ENV.fetch("NOTIFY_API_KEY")),
       send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new(ENV.fetch("NOTIFY_API_KEY")),
       logger:,

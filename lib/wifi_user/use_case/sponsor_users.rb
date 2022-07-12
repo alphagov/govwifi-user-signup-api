@@ -1,8 +1,8 @@
 class WifiUser::UseCase::SponsorUsers
-  def initialize(user_model:, whitelist_checker:, send_sms_gateway:, send_email_gateway:, logger: Logger.new($stdout))
+  def initialize(user_model:, allowlist_checker:, send_sms_gateway:, send_email_gateway:, logger: Logger.new($stdout))
     @logger = logger
     @user_model = user_model
-    @whitelist_checker = whitelist_checker
+    @allowlist_checker = allowlist_checker
     @send_sms_gateway = send_sms_gateway
     @send_email_gateway = send_email_gateway
     @contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
@@ -11,7 +11,7 @@ class WifiUser::UseCase::SponsorUsers
   def execute(unsanitised_sponsees, sponsor)
     sponsor_address = Mail::Address.new(sponsor).address
 
-    if whitelist_checker.execute(sponsor_address)[:success]
+    if allowlist_checker.execute(sponsor_address)[:success]
       sponsees = sanitise_sponsees(unsanitised_sponsees)
       failed_sponsees = invite_sponsees(sponsor, sponsor_address, sponsees)[:failed]
       send_confirmation_email(sponsor_address, sponsees, failed_sponsees:)
@@ -22,7 +22,7 @@ class WifiUser::UseCase::SponsorUsers
 
 private
 
-  attr_reader :user_model, :contact_sanitiser, :whitelist_checker, :send_sms_gateway, :send_email_gateway, :logger
+  attr_reader :user_model, :contact_sanitiser, :allowlist_checker, :send_sms_gateway, :send_email_gateway, :logger
 
   def sanitise_sponsees(contacts)
     contacts.map { |contact| contact_sanitiser.execute(contact) }.compact.uniq

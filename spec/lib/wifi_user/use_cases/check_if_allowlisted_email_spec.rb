@@ -1,8 +1,8 @@
-describe WifiUser::UseCases::CheckIfWhitelistedEmail do
+describe WifiUser::UseCases::CheckIfAllowlistedEmail do
   subject { described_class.new(gateway: regex_gateway_stub) }
   let(:regex_gateway_stub) { double(fetch: '^.*@(aaa\.uk)$') }
 
-  context "given a whitelisted email" do
+  context "given a allowlisted email" do
     it "accepts an address matching the regex" do
       result = subject.execute("someone@aaa.uk")
       expect(result).to eq(success: true)
@@ -14,7 +14,7 @@ describe WifiUser::UseCases::CheckIfWhitelistedEmail do
     end
   end
 
-  context "given a non-whitelisted email" do
+  context "given a non-allowlisted email" do
     it "rejects an address not matching the regex" do
       result = subject.execute("someone@bbb.uk")
       expect(result).to eq(success: false)

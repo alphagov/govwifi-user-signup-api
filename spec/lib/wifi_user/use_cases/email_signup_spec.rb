@@ -1,11 +1,11 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
-  let(:whitelist_checker) { double(execute: { success: true }) }
+  let(:allowlist_checker) { double(execute: { success: true }) }
 
   subject do
     described_class.new(
       user_model:,
-      whitelist_checker:,
+      allowlist_checker:,
     )
   end
 
@@ -88,7 +88,7 @@ describe WifiUser::UseCase::EmailSignup do
       end
 
       context "given an email address with a non-gov domain" do
-        let(:whitelist_checker) { double(execute: { success: false }) }
+        let(:allowlist_checker) { double(execute: { success: false }) }
         let(:created_contact) { "ryan@example.com" }
         let(:username) { "irrelevant" }
         let(:password) { "irrelephant" }
