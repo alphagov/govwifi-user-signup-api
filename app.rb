@@ -113,6 +113,6 @@ class App < Sinatra::Base
   end
 
   def is_govnotify_token_valid?
-    env.fetch("HTTP_AUTHORIZATION") == "Bearer #{options.govnotify_token}"
+    env.fetch("HTTP_AUTHORIZATION") == "Bearer #{settings.govnotify_token}"
   end
 end
