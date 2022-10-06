@@ -27,25 +27,7 @@ These get stored and sent to the user.
 
 ## Performance Platform
 
-This application sends statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task. This Rake task is triggered by an ECS scheduled task.
-
-### Send statistics manually
-
-You can trigger statistics to be sent manually by running the command below locally.
-Ensure that your ~/.aws/credentials is set up correctly.
-Populate the date argument to the Rake task with the date that you want to send the statistics for.
-
-#### Volumetrics
-
-```shell
-aws ecs run-task --cluster wifi-api-cluster --task-definition user-signup-api-task-wifi --count 1 --overrides "{ \"containerOverrides\": [{ \"name\": \"user-signup\", \"command\": [\"bundle\", \"exec\", \"rake\", \"publish_daily_statistics['2019-02-11']\"] }] }" --network-configuration "{ \"awsvpcConfiguration\": { \"assignPublicIp\": \"ENABLED\", \"subnets\": [\"subnet-XXXXXXX\", \"subnet-XXXXXXX\"],\"securityGroups\": [\"sg-XXXXXX\"]}}" --region eu-west-2 --launch-type FARGATE
-```
-
-#### Completion Rate
-
-```shell
-aws ecs run-task --cluster api-cluster --task-definition user-signup-api-task --count 1 --overrides "{ \"containerOverrides\": [{ \"name\": \"user-signup\", \"command\": [\"bundle\", \"exec\", \"rake\", \"publish_weekly_statistics['2018-05-03']\"] }] }" --region eu-west-2
-```
+This application used to send statistics to the [Performance Platform][performance-platform] for volumetrics and completion rates via a Rake task. This is no longer the case because the Performance Platform has been archived and the relevant code in this application has been removed. The archived data is still available via the above link.
 
 ## GDPR
 
