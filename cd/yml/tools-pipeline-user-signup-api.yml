@@ -1,0 +1,42 @@
+metadata:
+  created: '2022-04-14T16:58:33.875000+01:00'
+  pipelineArn: arn:aws:codepipeline:eu-west-2:564433011836:govwifi-deploy-pipeline-user-signup-api
+  updated: '2022-04-14T16:58:33.875000+01:00'
+pipeline:
+  artifactStore:
+    location: govwifi-codepipeline-bucket
+    type: S3
+  name: govwifi-deploy-pipeline-user-signup-api
+  roleArn: arn:aws:iam::564433011836:role/govwifi-codepipeline-role
+  stages:
+  - actions:
+    - actionTypeId:
+        category: Source
+        owner: AWS
+        provider: ECR
+        version: '1'
+      configuration:
+        ImageTag: staging
+        RepositoryName: govwifi/user-signup-api
+      inputArtifacts: []
+      name: NewECRImagDetectedFor-user-signup-api
+      outputArtifacts:
+      - name: SourceArtifact
+      runOrder: 1
+    name: Source
+  - actions:
+    - actionTypeId:
+        category: Deploy
+        owner: AWS
+        provider: CodeDeploy
+        version: '1'
+      configuration:
+        ApplicationName: my-application
+        DeploymentGroupName: my-deployment-group
+      inputArtifacts:
+      - name: SourceArtifact
+      name: Deploy
+      outputArtifacts: []
+      runOrder: 1
+    name: Deploy
+  version: 1

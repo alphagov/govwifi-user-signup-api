@@ -2,7 +2,7 @@
 
 set -v -e -u -o pipefail
 
-source deploy-tools/aws-helpers.sh
+source ci/tasks/scripts/deploy-tools/aws-helpers.sh
 
 function deploy() {
   local cluster_name service_name deploy_stage
