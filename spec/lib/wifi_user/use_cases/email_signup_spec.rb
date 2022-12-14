@@ -1,11 +1,13 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
   let(:allowlist_checker) { double(execute: { success: true }) }
+  let(:check_user_is_sponsee) { double(execute: false) }
 
   subject do
     described_class.new(
       user_model:,
       allowlist_checker:,
+      check_user_is_sponsee:,
     )
   end
 
@@ -109,6 +111,24 @@ describe WifiUser::UseCase::EmailSignup do
         end
 
         it "sends an email to Notify" do
+          expect(notify_email_stub).to have_been_requested.times(1)
+        end
+      end
+
+      context "given an email address with a non-gov domain, but email is sponsored" do
+        let(:allowlist_checker) { double(execute: { success: false }) }
+        let(:check_user_is_sponsee) { double(execute: true) }
+        let(:created_contact) { "ryan@example.com" }
+        let(:username) { "irrelevant" }
+        let(:password) { "irrelephant" }
+
+        it "returns credentials username and password" do
+          expect(user_model).to receive(:generate).with(contact: created_contact).and_return(username:, password:)
+          subject.execute(contact: created_contact)
+        end
+
+        it "sends an email to Notify" do
+          subject.execute(contact: created_contact)
           expect(notify_email_stub).to have_been_requested.times(1)
         end
       end

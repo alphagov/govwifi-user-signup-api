@@ -2,16 +2,17 @@ require "mail"
 require "notifications/client"
 
 class WifiUser::UseCase::EmailSignup
-  def initialize(user_model:, allowlist_checker:, logger: Logger.new($stdout))
+  def initialize(user_model:, allowlist_checker:, check_user_is_sponsee:, logger: Logger.new($stdout))
     @user_model = user_model
     @allowlist_checker = allowlist_checker
+    @check_user_is_sponsee = check_user_is_sponsee
     @logger = logger
   end
 
   def execute(contact:)
     email_address = Mail::Address.new(contact).address
 
-    if allowlist_checker.execute(email_address)[:success]
+    if allowlist_checker.execute(email_address)[:success] || check_user_is_sponsee.execute(email_address)
       send_signup_instructions(email_address)
     else
       logger.info("Unsuccessful email signup attempt: #{email_address}")
@@ -23,7 +24,7 @@ class WifiUser::UseCase::EmailSignup
 
 private
 
-  attr_accessor :user_model, :allowlist_checker, :logger
+  attr_accessor :user_model, :allowlist_checker, :logger, :check_user_is_sponsee
 
   def send_signup_instructions(email_address)
     client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))

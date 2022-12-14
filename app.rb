@@ -38,9 +38,14 @@ class App < Sinatra::Base
       ),
     )
 
+    check_user_is_sponsee = WifiUser::UseCase::CheckUserIsSponsee.new(
+      allowlist_checker:,
+    )
+
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
       user_model: WifiUser::Repository::User.new,
       allowlist_checker:,
+      check_user_is_sponsee:,
       logger:,
     )
 
