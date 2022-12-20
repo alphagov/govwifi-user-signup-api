@@ -1,27 +1,25 @@
 describe WifiUser::UseCase::CheckUserIsSponsee do
-  subject { described_class.new(allowlist_checker:) }
+  subject { described_class.new }
 
-  let(:allowlist_checker) { double(execute: { success: true }) }
-  let!(:sponsored_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
+  let(:normal_user) { FactoryBot.create(:user_details, :recent, :active, :self_signed) }
+  let(:sponsee_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
 
   before do
-    @contact = sponsored_user.contact
-    @sponsor = sponsored_user.sponsor
+    @normal_user_contact = normal_user.contact
+    @sponsee_contact = sponsee_user.contact
   end
 
   context "given user is sponsored" do
     it "returns true when sponsee has a valid sponsor email" do
-      result = subject.execute(sponsored_user.contact)
+      result = subject.execute(@sponsee_contact)
       expect(result).to eq(true)
     end
+  end
 
-    context "Invalid sponsor email" do
-      let(:allowlist_checker) { double(execute: { success: false }) }
-
-      it "returns false when sponsee has an invalid sponsor email" do
-        result = subject.execute(sponsored_user.contact)
-        expect(result).to eq(false)
-      end
+  context "given user is not a sponsored" do
+    it "returns false when user's contact email provided matches their sponsor email" do
+      result = subject.execute(@normal_user_contact)
+      expect(result).to eq(false)
     end
   end
 

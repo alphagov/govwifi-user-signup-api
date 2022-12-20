@@ -1,20 +1,7 @@
 class WifiUser::UseCase::CheckUserIsSponsee
-  def initialize(allowlist_checker:)
-    @allowlist_checker = allowlist_checker
-  end
-
   def execute(contact)
-    sponsee = DB[:userdetails].where(contact:)&.first
+    sponsee = WifiUser::Repository::User.find(contact:)
 
-    return false unless sponsee
-    return false unless sponsee[:sponsor]
-
-    sponsor_email = sponsee[:sponsor]
-
-    allowlist_checker.execute(sponsor_email)[:success]
+    sponsee.present? && sponsee[:sponsor] != contact
   end
-
-private
-
-  attr_reader :allowlist_checker
 end

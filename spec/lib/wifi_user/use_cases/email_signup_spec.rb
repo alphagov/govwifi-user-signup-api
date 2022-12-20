@@ -1,13 +1,13 @@
 describe WifiUser::UseCase::EmailSignup do
   let(:user_model) { instance_double(WifiUser::Repository::User) }
   let(:allowlist_checker) { double(execute: { success: true }) }
-  let(:check_user_is_sponsee) { double(execute: false) }
+  let(:sponsee_is_user_checker) { double(execute: false) }
 
   subject do
     described_class.new(
       user_model:,
       allowlist_checker:,
-      check_user_is_sponsee:,
+      sponsee_is_user_checker:,
     )
   end
 
@@ -117,14 +117,28 @@ describe WifiUser::UseCase::EmailSignup do
 
       context "given an email address with a non-gov domain, but email is sponsored" do
         let(:allowlist_checker) { double(execute: { success: false }) }
-        let(:check_user_is_sponsee) { double(execute: true) }
-        let(:created_contact) { "ryan@example.com" }
-        let(:username) { "irrelevant" }
-        let(:password) { "irrelephant" }
+        let(:sponsee_is_user_checker) { double(execute: true) }
+        let(:notify_template_id) { "4f6bae31-5add-43a9-b0e3-7db43452676e" }
+        let(:sponsored_user) { FactoryBot.create(:user_details, :recent, :active, :sponsored) }
+        let(:created_contact) { sponsored_user.contact }
+        let(:sponsor) { sponsored_user.sponsor }
+        let(:username) { sponsored_user.contact }
+        let(:password) { sponsored_user.password }
+        let(:notify_email_request) do
+          {
+            email_address: created_contact,
+            template_id: notify_template_id,
+            personalisation: {
+              username:,
+              password:,
+              sponsor:,
+            },
+            email_reply_to_id: do_not_reply_id,
+          }
+        end
 
-        it "returns credentials username and password" do
-          expect(user_model).to receive(:generate).with(contact: created_contact).and_return(username:, password:)
-          subject.execute(contact: created_contact)
+        it "will not create a new User" do
+          expect { subject.execute(contact: created_contact) }.to_not change(WifiUser::Repository::User, :count)
         end
 
         it "sends an email to Notify" do
