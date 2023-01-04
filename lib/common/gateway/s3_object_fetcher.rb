@@ -8,7 +8,7 @@ class Common::Gateway::S3ObjectFetcher
   end
 
   def fetch
-    s3 = Aws::S3::Resource.new(region:)
+    s3 = Aws::S3::Resource.new(client: Services.s3_client, region:)
     object = s3.bucket(bucket).object(key)
     object.get.body.read
   end
