@@ -17,6 +17,7 @@ module RSpecMixin
 end
 
 SimpleCov.start
+FactoryBot.find_definitions
 
 RSpec.configure do |c|
   c.filter_run_when_matching focus: true
