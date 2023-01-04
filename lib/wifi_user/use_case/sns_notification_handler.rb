@@ -1,37 +1,20 @@
 class WifiUser::UseCase::SnsNotificationHandler
-  def initialize(email_signup_handler:, sponsor_signup_handler:, email_parser:, logger: Logger.new($stdout))
+  def initialize(email_signup_handler:, sponsor_signup_handler:, logger: Logger.new($stdout))
     @email_signup_handler = email_signup_handler
     @sponsor_signup_handler = sponsor_signup_handler
     @logger = logger
-    @email_parser = email_parser
   end
 
-  def handle(request)
-    if request_invalid?(request)
-      logger.warn("Unexpected request: \n #{request.body.read}")
-      return
-    end
-    params = request.body.read
-
-    begin
-      payload = email_parser.execute(params)
-    rescue KeyError
-      logger.debug("Unable to process signup.  Malformed request: #{params}")
-      return
-    end
-
-    logger.info(payload) if payload.fetch(:type) == "SubscriptionConfirmation"
-    handle_email_notification(payload) if payload.fetch(:type) == "Notification"
+  def handle(payload)
+    handle_email_notification(payload)
     ""
   end
 
 private
 
-  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler, :email_parser
+  attr_reader :logger, :email_signup_handler, :sponsor_signup_handler
 
   def handle_email_notification(payload)
-    return if payload.fetch(:message_id) == "AMAZON_SES_SETUP_NOTIFICATION"
-
     if sponsor_request?(payload)
       handle_sponsor_request(payload)
     else
@@ -62,18 +45,5 @@ private
     )
 
     sponsor_signup_handler.execute(sponsee_extractor.execute, from_address)
-  end
-
-  def request_invalid?(request)
-    !request_valid?(request)
-  end
-
-  def request_valid?(request)
-    # For now, we only care that the correct header is set to see if we're
-    # actually dealing with a notification.
-    # There is much more that should be in here.
-
-    request.has_header?("HTTP_X_AMZ_SNS_MESSAGE_TYPE") \
-    && request.get_header("HTTP_X_AMZ_SNS_MESSAGE_TYPE") == "Notification"
   end
 end
