@@ -30,6 +30,18 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
+    if request_invalid?(request)
+      logger.warn("Unexpected request: \n #{request.body.read}")
+      halt 200, ""
+    end
+
+    body = request.body.read
+    email_parser = WifiUser::UseCase::ParseEmailRequest.new(logger:)
+    payload = email_parser.execute(body)
+    halt 200, "" unless payload.fetch(:type) == "Notification"
+    halt 200, "" if payload.fetch(:message_id) == "AMAZON_SES_SETUP_NOTIFICATION"
+    logger.info(payload) if payload.fetch(:type) == "SubscriptionConfirmation"
+
     allowlist_checker = WifiUser::UseCases::CheckIfAllowlistedEmail.new(
       gateway: Common::Gateway::S3ObjectFetcher.new(
         bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
@@ -52,16 +64,14 @@ class App < Sinatra::Base
       logger:,
     )
 
-    email_parser = WifiUser::UseCase::ParseEmailRequest.new(
-      logger:,
-    )
-
     WifiUser::UseCase::SnsNotificationHandler.new(
       email_signup_handler:,
       sponsor_signup_handler:,
-      email_parser:,
       logger:,
-    ).handle(request)
+    ).handle(payload)
+  rescue KeyError
+    logger.debug("Unable to process signup.  Malformed request: #{body}")
+    halt 200, ""
   end
 
   post "/user-signup/sms-notification/notify" do
@@ -114,5 +124,18 @@ class App < Sinatra::Base
 
   def is_govnotify_token_valid?
     env.fetch("HTTP_AUTHORIZATION") == "Bearer #{settings.govnotify_token}"
+  end
+
+  def request_invalid?(request)
+    !request_valid?(request)
+  end
+
+  def request_valid?(request)
+    # For now, we only care that the correct header is set to see if we're
+    # actually dealing with a notification.
+    # There is much more that should be in here.
+
+    request.has_header?("HTTP_X_AMZ_SNS_MESSAGE_TYPE") \
+    && request.get_header("HTTP_X_AMZ_SNS_MESSAGE_TYPE") == "Notification"
   end
 end
