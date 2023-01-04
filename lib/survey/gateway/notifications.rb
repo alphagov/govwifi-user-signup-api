@@ -2,7 +2,7 @@ require "notifications/client"
 
 class Survey::Gateway::Notifications
   def initialize(key)
-    @client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
+    @client = Services.notify_client
 
     config = YAML.load_file("config/#{ENV['RACK_ENV']}.yml")
 
