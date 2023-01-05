@@ -26,9 +26,7 @@ private
   attr_accessor :user_model, :allowlist_checker, :logger
 
   def send_signup_instructions(email_address)
-    client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
-
-    client.send_email(
+    Services.notify_client.send_email(
       email_address:,
       template_id: credentials_template_id,
       personalisation: user_model.generate(contact: email_address),
@@ -37,9 +35,7 @@ private
   end
 
   def send_rejected_email_address_email(email_address)
-    client = Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
-
-    client.send_email(
+    Services.notify_client.send_email(
       email_address:,
       template_id: rejected_email_address_template_id,
       email_reply_to_id: do_not_reply_email_address_id,

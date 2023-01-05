@@ -19,7 +19,7 @@ describe WifiUser::Gateway::GovNotifySMS do
   end
 
   let(:subject) do
-    described_class.new(api_key)
+    described_class.new
       .execute(phone_number:, template_id:, template_parameters: parameters)
   end
 

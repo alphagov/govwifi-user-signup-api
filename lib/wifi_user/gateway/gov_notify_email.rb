@@ -1,8 +1,8 @@
 require "notifications/client"
 
 class WifiUser::Gateway::GovNotifyEmail
-  def initialize(api_key)
-    @client = Notifications::Client.new(api_key)
+  def initialize
+    @client = Services.notify_client
   end
 
   def execute(email_address:, template_id:, template_parameters: {}, reply_to_id: nil)

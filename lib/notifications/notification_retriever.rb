@@ -2,7 +2,7 @@ module Notifications
   class NotificationRetriever
     def self.execute
       dataset = DB[:notifications]
-      client = Notifications::Gateway::Notify.new(ENV.fetch("NOTIFY_API_KEY"))
+      client = Notifications::Gateway::Notify.new
       client.to_enum.each do |notification|
         upsert_hash = {
           id: notification.id,

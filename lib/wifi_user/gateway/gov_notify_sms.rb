@@ -1,8 +1,8 @@
 require "notifications/client"
 
 class WifiUser::Gateway::GovNotifySMS
-  def initialize(api_key)
-    @client = Notifications::Client.new(api_key)
+  def initialize
+    @client = Services.notify_client
   end
 
   def execute(phone_number:, template_id:, template_parameters: {})

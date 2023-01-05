@@ -3,8 +3,8 @@ require "notifications/client"
 module Notifications
   module Gateway
     class Notify
-      def initialize(api_key)
-        @client = Notifications::Client.new(api_key)
+      def initialize
+        @client = Services.notify_client
       end
 
       def to_enum

@@ -18,6 +18,8 @@ class WifiUser::UseCase::SponsorUsers
     else
       logger.info("Unsuccessful sponsor signup attempt: #{sponsor_address}")
     end
+  rescue Mail::Field::ParseError => e
+    logger.warn("unable to parse address: #{e}")
   end
 
 private

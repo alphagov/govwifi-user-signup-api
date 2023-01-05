@@ -1,16 +1,20 @@
 require "nokogiri"
 
 class WifiUser::UseCase::EmailSponseesExtractor
-  def initialize(email_fetcher:, exclude_addresses:)
+  def initialize(email_fetcher:, exclude_addresses:, logger: Logger.new($stdout))
     @email_fetcher = email_fetcher
-    @exclude_addresses = exclude_addresses.map { |addr| Mail::Address.new(addr).address }
+    @exclude_addresses = exclude_addresses
+    @logger = logger
   end
 
   def execute
+    normalised_exclude_addresses = @exclude_addresses.map { |addr| Mail::Address.new(addr).address }
     mail = Mail.read_from_string(email_fetcher.fetch)
 
     contacts_from_mail(mail).map(&:strip).reject(&:empty?)
-      .reject { |contact| @exclude_addresses.include?(contact) }
+      .reject { |contact| normalised_exclude_addresses.include?(contact) }
+  rescue Mail::Field::ParseError => e
+    @logger.warn("unable to parse address: #{e}")
   end
 
 private

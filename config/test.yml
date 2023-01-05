@@ -1,23 +1,23 @@
 notify_sms_template_ids:
-  credentials: aaa
-  help_menu: bbb
-  generic_help: ccc
+  credentials: sms_credentials_template_id
+  help_menu: sms_help_menu_template_id
+  recap: sms_recap_template_id
   device_help:
-    android: ddd
-    blackberry: eee
-    mac: fff
-    iphone: ggg
-    windows: hhh
+    android: sms_device_help_android_template_id
+    blackberry: sms_device_help_blackberry_template_id
+    mac: sms_device_help_mac_template_id
+    iphone: sms_device_help_iphone_template_id
+    windows: sms_device_help_windows_template_id
   active_users_signup_survey: active-users-mobile-signup-survey-template
 
 notify_email_template_ids:
-  self_signup_credentials: iii
-  rejected_email_address: test-rejected-email-address-template-id
-  sponsored_credentials: jjj
+  self_signup_credentials: email_self_signup_credentials_template_id
+  rejected_email_address: email_rejected_email_address_template_id
+  sponsored_credentials: email_sponsored_credentials_template_id
   sponsor_confirmation:
-    plural: kkk
-    singular: lll
-    failed: mmm
+    plural: email_sponsor_confirmation_plural_template_id
+    singular: email_sponsor_confirmation_singular_template_id
+    failed: email_sponsor_confirmation_failed_template_id
   active_users_signup_survey: active-users-email-signup-survey-template
 
-do_not_reply_email_id: nnn
+do_not_reply_email_id: do_not_reply_email_template_id
