@@ -1,11 +1,8 @@
 require_relative "./shared"
 
 RSpec.describe App do
-  before :each do
-    allow(Services).to receive(:notify_client).and_return(double)
-    allow(Services.notify_client).to receive(:send_email)
-    allow(Services.notify_client).to receive(:send_sms)
-  end
+  include_context "fake notify"
+  include_context "simple allow list"
 
   let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
   let(:email_request_headers) do
