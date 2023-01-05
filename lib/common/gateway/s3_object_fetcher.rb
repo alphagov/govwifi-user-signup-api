@@ -13,6 +13,21 @@ class Common::Gateway::S3ObjectFetcher
     object.get.body.read
   end
 
+  def self.allow_list_regexp
+    Common::Gateway::S3ObjectFetcher.new(
+      bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
+      key: ENV.fetch("S3_SIGNUP_ALLOWLIST_OBJECT_KEY"),
+      region: "eu-west-2",
+    ).fetch
+  end
+
+  def self.sponsor_email(sns_message)
+    Common::Gateway::S3ObjectFetcher.new(
+      bucket: sns_message.s3_bucket_name,
+      key: sns_message.s3_object_key,
+    )
+  end
+
 private
 
   attr_reader :bucket, :key, :region

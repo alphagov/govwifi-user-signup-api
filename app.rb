@@ -38,6 +38,7 @@ class App < Sinatra::Base
     body = request.body.read
     email_parser = WifiUser::UseCase::ParseEmailRequest.new(logger:)
     payload = email_parser.execute(body)
+
     halt 200, "" unless payload.fetch(:type) == "Notification"
     halt 200, "" if payload.fetch(:message_id) == "AMAZON_SES_SETUP_NOTIFICATION"
     logger.info(payload) if payload.fetch(:type) == "SubscriptionConfirmation"
@@ -64,13 +65,21 @@ class App < Sinatra::Base
       logger:,
       )
 
-    WifiUser::UseCase::SnsNotificationHandler.new(
-      email_signup_handler:,
-      sponsor_signup_handler:,
-      logger:,
-    ).handle(payload)
+    sns_message = WifiUser::SnsMessage.new(body:)
+    if sns_message.sponsor_request?
+      WifiUser::UseCase::SnsNotificationHandler.new(
+        email_signup_handler:,
+        sponsor_signup_handler:,
+        logger:,
+        ).handle(payload)
+    else
+      WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
+    end
   rescue KeyError
     logger.debug("Unable to process signup.  Malformed request: #{body}")
+    halt 200, ""
+  rescue Mail::Field::ParseError => e
+    logger.warn("unable to parse email address in #{@parsed_message}: #{e}")
     halt 200, ""
   end
 

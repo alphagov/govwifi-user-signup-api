@@ -37,39 +37,6 @@ RSpec.describe App do
       }.to_json, sns_headers
     end
 
-    describe "when the Notification is a signup" do
-      let(:from_address) { "adrian@adrian.gov.uk" }
-      let(:to_address) { "signup@wifi.service.gov.uk" }
-
-      before do
-        allow_any_instance_of(WifiUser::UseCase::EmailSignup).to receive(:execute)
-      end
-
-      it "returns a 200" do
-        post_notification
-        expect(last_response).to be_ok
-      end
-
-      it "calls UserSignup#execute" do
-        expect_any_instance_of(WifiUser::UseCase::EmailSignup).to \
-          receive(:execute).with(contact: from_address)
-        post_notification
-      end
-
-      it "returns no sensitive information to SNS" do
-        post_notification
-        expect(last_response.body).to eq("")
-      end
-
-      describe "POSTing a Amazon SES Setup Notification to /user-signup/email-notification" do
-        let(:message_id) { "AMAZON_SES_SETUP_NOTIFICATION" }
-
-        it "ignores the message" do
-          expect { post_notification }.to_not(raise_error)
-        end
-      end
-    end
-
     describe "when the Notification is a sponsor" do
       let(:from_address) { "chris@example.com" }
       let(:to_address) { "sponsor@wifi.service.gov.uk" }
