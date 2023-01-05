@@ -1,11 +1,9 @@
 require_relative "./shared"
 
 RSpec.describe App do
-  before :each do
-    allow(Services).to receive(:notify_client).and_return(double)
-    allow(Services.notify_client).to receive(:send_email)
-    allow(Services.notify_client).to receive(:send_sms)
-  end
+  include_context "fake notify"
+  include_context "simple allow list"
+
   describe "POST /user-signup/sms-notification/notify" do
     let(:email_request_headers) { { "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification" } }
     let(:bucketName) { "mybucket" }
