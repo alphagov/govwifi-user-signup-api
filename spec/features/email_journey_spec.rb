@@ -27,22 +27,22 @@ RSpec.describe App do
       it "creates a new user" do
         expect {
           do_user_signup
-        }.to change(WifiUser::Repository::User, :count).by(1)
+        }.to change(WifiUser::User, :count).by(1)
       end
       it "creates a new user with the correct parameters" do
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@gov.uk", sponsor: "john@gov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@gov.uk", sponsor: "john@gov.uk")).to_not be(nil)
       end
       describe "normalise user" do
         let(:from) { "   John Doe < john@gov.uk  >  " }
         it "creates a new user, normalising the email address" do
           do_user_signup
-          expect(WifiUser::Repository::User.find(contact: "john@gov.uk", sponsor: "john@gov.uk")).to_not be(nil)
+          expect(WifiUser::User.find(contact: "john@gov.uk", sponsor: "john@gov.uk")).to_not be(nil)
         end
       end
       it "sends a message to notify" do
         do_user_signup
-        user = WifiUser::Repository::User.find(contact: from)
+        user = WifiUser::User.find(contact: from)
         expect(Services.notify_client).to have_received(:send_email).with({ email_address: "john@gov.uk",
                                                                             personalisation: {
                                                                               username: user.username,
@@ -66,7 +66,7 @@ RSpec.describe App do
       it "does not create another user" do
         expect {
           do_user_signup
-        }.to_not change(WifiUser::Repository::User, :count)
+        }.to_not change(WifiUser::User, :count)
       end
       it "sends a message to notify" do
         do_user_signup
@@ -85,7 +85,7 @@ RSpec.describe App do
       it "Does not create a user" do
         expect {
           do_user_signup
-        }.to_not change(WifiUser::Repository::User, :count)
+        }.to_not change(WifiUser::User, :count)
       end
       it "Sends a rejection email" do
         do_user_signup

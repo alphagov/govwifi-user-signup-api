@@ -7,7 +7,7 @@ describe WifiUser::UseCase::SponsorUsers do
   let(:production_do_not_reply_id) { "0d22d71f-afa3-4c72-8cd4-7716678dbd43" }
   let(:staging_do_not_reply_id) { "45d6b6c4-6a36-47df-b34d-256b8c0d1511" }
 
-  let(:user_model) { double(generate: { username:, password: }) }
+  let(:user_model) { double(find_or_create: double(username:, password:)) }
   let(:allowlist_checker) { double(execute: { success: true }) }
   let(:send_sms_gateway) { double(execute: double(success: true)) }
   let(:send_email_gateway) { double(execute: double(success: true)) }
@@ -31,8 +31,8 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:sponsees) { ["adrian@example.com<mailto: adrian@example.com>"] }
     let(:do_not_reply_id) { production_do_not_reply_id }
 
-    it "Calls user_model#generate with the sponsees email" do
-      expect(user_model).to have_received(:generate) \
+    it "Calls user_model#find_or_create with the sponsees email" do
+      expect(user_model).to have_received(:find_or_create) \
         .with(contact: "adrian@example.com", sponsor: "chris@gov.uk")
     end
 
@@ -59,7 +59,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:sponsees) { ["+44 7700 900003"] }
 
     it "Calls user_model#generate with the sponsees phone number" do
-      expect(user_model).to have_received(:generate) \
+      expect(user_model).to have_received(:find_or_create) \
         .with(contact: "+447700900003", sponsor: "craig@gov.uk")
     end
 
@@ -74,7 +74,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:sponsees) { ["+447700900003", "+447700900003"] }
 
     it "Calls user_model#generate once" do
-      expect(user_model).to have_received(:generate) \
+      expect(user_model).to have_received(:find_or_create) \
         .with(contact: "+447700900003", sponsor: "craig@gov.uk").once
     end
   end
@@ -85,12 +85,12 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:do_not_reply_id) { production_do_not_reply_id }
 
     it "Calls user_model#generate for the email address" do
-      expect(user_model).to have_received(:generate) \
+      expect(user_model).to have_received(:find_or_create) \
         .with(contact: "steve@example.com", sponsor: "chloe@gov.uk")
     end
 
     it "Calls the user_model#generate for the phone number" do
-      expect(user_model).to have_received(:generate) \
+      expect(user_model).to have_received(:find_or_create) \
         .with(contact: "+447700900004", sponsor: "chloe@gov.uk")
     end
 
@@ -144,7 +144,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:do_not_reply_id) { production_do_not_reply_id }
 
     it "Does not call user_model#generate" do
-      expect(user_model).not_to have_received(:generate)
+      expect(user_model).not_to have_received(:find_or_create)
     end
 
     it "sends a sponsorship failed email to the sponsor" do
@@ -167,7 +167,7 @@ describe WifiUser::UseCase::SponsorUsers do
     let(:allowlist_checker) { double(execute: { success: false }) }
 
     it "Does not call user_model#generate" do
-      expect(user_model).not_to have_received(:generate)
+      expect(user_model).not_to have_received(:find_or_create)
     end
   end
 

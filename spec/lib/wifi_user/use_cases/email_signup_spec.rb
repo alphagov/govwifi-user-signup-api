@@ -1,5 +1,5 @@
 describe WifiUser::UseCase::EmailSignup do
-  let(:user_model) { instance_double(WifiUser::Repository::User) }
+  let(:user_model) { class_double(WifiUser::User) }
   let(:allowlist_checker) { double(execute: { success: true }) }
 
   subject do
@@ -34,9 +34,9 @@ describe WifiUser::UseCase::EmailSignup do
 
       notify_email_stub
 
-      allow(user_model).to receive(:generate)
+      allow(user_model).to receive(:find_or_create)
         .with(contact: created_contact)
-        .and_return(username:, password:)
+        .and_return(double(username:, password:))
     end
 
     after do
@@ -105,7 +105,7 @@ describe WifiUser::UseCase::EmailSignup do
         before { subject.execute(contact: "Ryan <ryan@example.com>") }
 
         it "does not create a user" do
-          expect(user_model).not_to receive(:generate)
+          expect(user_model).not_to receive(:find_or_create)
         end
 
         it "sends an email to Notify" do

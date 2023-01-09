@@ -26,10 +26,11 @@ private
   attr_accessor :user_model, :allowlist_checker, :logger
 
   def send_signup_instructions(email_address)
+    user = user_model.find_or_create(contact: email_address)
     Services.notify_client.send_email(
       email_address:,
       template_id: credentials_template_id,
-      personalisation: user_model.generate(contact: email_address),
+      personalisation: { username: user.username, password: user.password },
       email_reply_to_id: do_not_reply_email_address_id,
     )
   end
