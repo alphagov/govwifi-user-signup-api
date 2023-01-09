@@ -6,7 +6,7 @@ class WifiUser::UseCase::SmsResponse
   end
 
   def execute(contact:, sms_content:)
-    phone_number = WifiUser::UseCase::ContactSanitiser.new.execute(contact)
+    phone_number = WifiUser::PhoneNumber.extract_from(contact)
     return logger.warn("Unexpected contact detail found #{contact}") if phone_number.nil?
 
     DB.transaction do
