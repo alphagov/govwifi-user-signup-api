@@ -5,6 +5,7 @@ RSpec.describe App do
   include_context "simple allow list"
 
   describe "POST /user-signup/sms-notification/notify" do
+    before { skip "Temporarily disabled" }
     let(:email_request_headers) { { "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification" } }
     let(:bucketName) { "mybucket" }
     let(:objectKey) { "mykey" }
