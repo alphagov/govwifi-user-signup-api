@@ -16,18 +16,13 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_sponsor_email(sponsee_user)
+  def self.send_sponsor_email(raw_sponsor_address, sponsee_user)
     Services.notify_client.send_email(
       email_address: sponsee_user.contact,
       template_id: sponsor_email_template_id,
-      personalisation: { username: sponsee_user.username, password: sponsee_user.password, sponsor: sponsee_user.sponsor },
+      personalisation: { username: sponsee_user.username, password: sponsee_user.password, sponsor: raw_sponsor_address },
       email_reply_to_id: do_not_reply_email_address_id,
     )
-    true
-  rescue Notifications::Client::RequestError => e
-    raise unless e.message.include?("ValidationError")
-
-    false
   end
 
   def self.send_sponsor_confirmation_plural(sponsee_users)

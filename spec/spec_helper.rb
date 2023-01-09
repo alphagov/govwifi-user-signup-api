@@ -4,6 +4,7 @@ require "rspec"
 require "simplecov"
 require "sequel"
 require "webmock/rspec"
+require "shared"
 
 ENV["RACK_ENV"] = "test"
 
