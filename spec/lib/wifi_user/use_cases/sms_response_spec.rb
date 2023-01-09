@@ -1,5 +1,5 @@
 describe WifiUser::UseCase::SmsResponse do
-  let(:user_model) { instance_double(WifiUser::Repository::User) }
+  let(:user_model) { WifiUser::User }
   let(:template_finder) { double(execute: notify_template_id) }
   subject { described_class.new(user_model:, template_finder:) }
 
@@ -9,7 +9,7 @@ describe WifiUser::UseCase::SmsResponse do
     let(:notify_sms_url) { stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/sms") }
 
     it "does not create a user" do
-      expect(user_model).to_not receive(:generate)
+      expect(user_model).to_not receive(:find_or_create)
       subject.execute(contact: phone_number, sms_content: "")
     end
 
@@ -21,7 +21,7 @@ describe WifiUser::UseCase::SmsResponse do
 
   context "With valid phone number" do
     before do
-      expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
+      expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
     end
 
     let(:username) { "hello" }
@@ -130,7 +130,7 @@ describe WifiUser::UseCase::SmsResponse do
       end
 
       before do
-        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
+        expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
       end
 
       it "doesn't raise error" do
@@ -155,7 +155,7 @@ describe WifiUser::UseCase::SmsResponse do
       end
 
       before do
-        expect(user_model).to receive(:generate).with(contact: phone_number).and_return(username:, password:)
+        expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
       end
 
       it "raises original error" do

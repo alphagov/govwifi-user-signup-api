@@ -2,7 +2,7 @@ require "logger"
 
 class Survey::Gateway::UserDetails
   def fetch_active
-    WifiUser::Repository::User
+    WifiUser::User
       .where { created_at > (Date.today - 1).to_time }
       .where { created_at <= Date.today.to_time }
       .where { contact =~ sponsor }

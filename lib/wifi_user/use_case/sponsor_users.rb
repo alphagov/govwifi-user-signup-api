@@ -46,23 +46,23 @@ private
   end
 
   def sponsor_phone_number(actual_sponsor, sponsee)
-    login_details = user_model.generate(contact: sponsee, sponsor: actual_sponsor)
+    login_details = user_model.find_or_create(contact: sponsee, sponsor: actual_sponsor)
     send_sms_gateway.execute(
       phone_number: sponsee,
       template_id: config["notify_sms_template_ids"]["credentials"],
       template_parameters: {
-        login: login_details[:username],
-        pass: login_details[:password],
+        login: login_details.username,
+        pass: login_details.password,
       },
     ).success
   end
 
   def sponsor_email(sponsor, sponsor_address, sponsee_address)
-    login_details = user_model.generate(contact: sponsee_address, sponsor: sponsor_address)
+    login_details = user_model.find_or_create(contact: sponsee_address, sponsor: sponsor_address)
     send_email_gateway.execute(
       email_address: sponsee_address,
       template_id: config["notify_email_template_ids"]["sponsored_credentials"],
-      template_parameters: login_details.merge(sponsor:),
+      template_parameters: { username: login_details.username, password: login_details.password }.merge(sponsor:),
       reply_to_id: do_not_reply_email_address_id,
     ).success
   end

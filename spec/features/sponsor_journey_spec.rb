@@ -34,7 +34,7 @@ RSpec.describe App do
     end
 
     def notify_has_sent_email_to(email_address)
-      user = WifiUser::Repository::User.find(contact: email_address)
+      user = WifiUser::User.find(contact: email_address)
       expect(Services.notify_client).to have_received(:send_email).with(
         {
           email_address:,
@@ -50,7 +50,7 @@ RSpec.describe App do
     end
 
     def notify_has_sent_sms_to(phone_number)
-      user = WifiUser::Repository::User.find(contact: phone_number)
+      user = WifiUser::User.find(contact: phone_number)
       expect(Services.notify_client).to have_received(:send_sms).with(
         {
           phone_number:,
@@ -68,27 +68,27 @@ RSpec.describe App do
         set_email(body: "john@nongov.uk\nemma@elsewhere.uk")
         expect {
           do_user_signup
-        }.to change(WifiUser::Repository::User, :count).by(2)
+        }.to change(WifiUser::User, :count).by(2)
       end
       it "creates a new user with the correct parameters" do
         set_email(body: "john@nongov.uk")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk", sponsor: sponsor_address)).to_not be(nil)
       end
       it "creates a new user, normalising the email address" do
         set_email(body: "  John Doe < john@nongov.uk  >  ")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "handles html multipart" do
         set_email(html_part: "<h1><b>john@nongov.uk</b></h1>")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "handles text multipart" do
         set_email(text_part: "john@nongov.uk")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "sends an email to all email recipients" do
         set_email(body: "john@nongov.uk\nemma@elsewhere.uk")
@@ -103,17 +103,17 @@ RSpec.describe App do
         set_email(body: "07701001111\n+447701002222")
         expect {
           do_user_signup
-        }.to change(WifiUser::Repository::User, :count).by(2)
+        }.to change(WifiUser::User, :count).by(2)
       end
       it "creates a new user with the correct parameters" do
         set_email(body: "+447701001111")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
       end
       it "normalises phone numbers" do
         set_email(body: "07701001111")
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
       end
       it "sends SMSes to all users" do
         set_email(body: "07701001111\n+447701002222")
@@ -171,7 +171,7 @@ RSpec.describe App do
       it "Does not create a user" do
         expect {
           do_user_signup
-        }.to_not change(WifiUser::Repository::User, :count)
+        }.to_not change(WifiUser::User, :count)
       end
       it "Does not send any emails" do
         expect(Services.notify_client).to_not have_received(:send_email)

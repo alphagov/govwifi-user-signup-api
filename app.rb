@@ -51,13 +51,13 @@ class App < Sinatra::Base
     )
 
     email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
-      user_model: WifiUser::Repository::User.new,
+      user_model: WifiUser::User,
       allowlist_checker:,
       logger:,
     )
 
     sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
-      user_model: WifiUser::Repository::User.new,
+      user_model: WifiUser::User,
       allowlist_checker:,
       send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new,
       send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new,
@@ -96,7 +96,7 @@ class App < Sinatra::Base
     template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
 
     WifiUser::UseCase::SmsResponse.new(
-      user_model: WifiUser::Repository::User.new,
+      user_model: WifiUser::User,
       template_finder:,
       logger:,
     ).execute(
