@@ -70,12 +70,7 @@ Then access the site at <http://localhost:8080/healthcheck>
 
 ### Deploying changes
 
-Once you have merged your changes into master branch, deploying them is made up of
-two steps:
-
-- Pushing a built image to the docker registry.
-
-- Restarting the running tasks so it picks up the latest image.
+You can find in depth instructions on using our deploy process [here](https://docs.google.com/document/d/1ORrF2HwrqUu3tPswSlB0Duvbi3YHzvESwOqEY9-w6IQ/) (you must be member of the GovWifi Team to access this document).
 
 ## Licence
 
