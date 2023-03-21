@@ -55,6 +55,7 @@ private
     email_fetcher = Common::Gateway::S3ObjectFetcher.new(
       bucket: payload.fetch(:s3_bucket_name),
       key: payload.fetch(:s3_object_key),
+      region: "eu-west-1",
     )
     sponsee_extractor = WifiUser::UseCase::EmailSponseesExtractor.new(
       email_fetcher:,

@@ -91,7 +91,7 @@ RSpec.describe App do
       it "constructs Common::Gateway::S3ObjectFetcher with the bucket and keyName" do
         post_notification
         expect(Common::Gateway::S3ObjectFetcher).to have_received(:new)
-                                    .with(bucket: bucket_name, key: object_key)
+                                    .with(bucket: bucket_name, key: object_key, region: "eu-west-1")
       end
 
       it "constructs WifiUser::UseCase::EmailSponseesExtractor with the Common::Gateway::S3ObjectFetcher" do
