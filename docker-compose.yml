@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   db:
+    platform: linux/x86_64
     build: ./mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -14,6 +15,7 @@ services:
       retries: 10
 
   app:
+    platform: linux/x86_64
     build: .
     environment:
       DB_NAME: govwifi_test
@@ -27,6 +29,8 @@ services:
       GOVNOTIFY_BEARER_TOKEN: 'dummy-bearer-token-1234'
     expose:
         - "8080"
+    volumes:
+      - ".:/usr/src/app"
     depends_on:
       db:
         condition: service_healthy
