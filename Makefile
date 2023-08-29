@@ -1,3 +1,4 @@
+DOCKER_COMPOSE = docker-compose -f docker-compose.yml
 BUNDLE_FLAGS = --build-arg BUNDLE_INSTALL_CMD='bundle install --jobs 20 --retry 5'
 
 ifdef DEPLOYMENT
