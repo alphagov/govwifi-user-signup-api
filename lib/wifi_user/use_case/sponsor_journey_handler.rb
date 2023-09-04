@@ -19,12 +19,12 @@ class WifiUser::UseCase::SponsorJourneyHandler
 
     successful_sponsees, failed_sponsees = deliver_to_sponsees(raw_sponsor_address:, sponsee_users:)
 
-    return WifiUser::EmailSender.send_sponsor_failed_confirmation_email(failed_sponsees) unless failed_sponsees.empty?
+    return WifiUser::EmailSender.send_sponsor_failed_confirmation_email(sponsor_address, failed_sponsees) unless failed_sponsees.empty?
 
     if successful_sponsees.length == 1
-      WifiUser::EmailSender.send_sponsor_confirmation_singular(successful_sponsees.first)
+      WifiUser::EmailSender.send_sponsor_confirmation_singular(sponsor_address, successful_sponsees.first)
     else
-      WifiUser::EmailSender.send_sponsor_confirmation_plural(successful_sponsees)
+      WifiUser::EmailSender.send_sponsor_confirmation_plural(sponsor_address, successful_sponsees)
     end
   end
 

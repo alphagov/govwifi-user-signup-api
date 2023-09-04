@@ -75,8 +75,8 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
     end
     it "sends a confirmation email to the sponsor" do
       expect(WifiUser::EmailSender).to receive(:send_sponsor_confirmation_plural)
-        .with(match_array([have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address),
-                           have_attributes(contact: "+447701001111", sponsor: sponsor_address)]))
+        .with(sponsor_address, match_array([have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address),
+                                            have_attributes(contact: "+447701001111", sponsor: sponsor_address)]))
       WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
     end
     context "a user already exists but has not been sponsored" do
@@ -103,7 +103,7 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
       end
       it "sends a singular confirmation email to the sponsor" do
         expect(WifiUser::EmailSender).to receive(:send_sponsor_confirmation_singular)
-          .with(have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address))
+          .with(sponsor_address, have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address))
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
       end
     end
@@ -115,8 +115,8 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
       end
       it "sends a failure confirmation email to the sponsor" do
         expect(WifiUser::EmailSender).to receive(:send_sponsor_failed_confirmation_email)
-          .with(match_array([have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address),
-                             have_attributes(contact: "+447701001111", sponsor: sponsor_address)]))
+          .with(sponsor_address, match_array([have_attributes(contact: "dave@nongov.uk", sponsor: sponsor_address),
+                                              have_attributes(contact: "+447701001111", sponsor: sponsor_address)]))
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
       end
     end

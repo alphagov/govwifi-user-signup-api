@@ -25,8 +25,7 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_sponsor_confirmation_plural(sponsee_users)
-    sponsor_address = sponsee_users.first.sponsor
+  def self.send_sponsor_confirmation_plural(sponsor_address, sponsee_users)
     Services.notify_client.send_email(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_plural_template,
@@ -38,9 +37,9 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_sponsor_confirmation_singular(sponsee_user)
+  def self.send_sponsor_confirmation_singular(sponsor_address, sponsee_user)
     Services.notify_client.send_email(
-      email_address: sponsee_user.sponsor,
+      email_address: sponsor_address,
       template_id: sponsor_confirmation_singular_template,
       personalisation: {
         contact: sponsee_user.contact,
@@ -49,8 +48,7 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_sponsor_failed_confirmation_email(failed_sponsees)
-    sponsor_address = failed_sponsees.first.sponsor
+  def self.send_sponsor_failed_confirmation_email(sponsor_address, failed_sponsees)
     Services.notify_client.send_email(
       email_address: sponsor_address,
       template_id: sponsor_confirmation_failed_template,

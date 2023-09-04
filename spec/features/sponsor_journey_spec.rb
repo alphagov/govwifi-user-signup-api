@@ -55,6 +55,36 @@ RSpec.describe App do
       )
     end
 
+    describe "Users already exist" do
+      before :each do
+        FactoryBot.create(:user_details, contact: "john@nongov.uk", sponsor: "john@nongov.uk")
+        FactoryBot.create(:user_details, contact: "+447701001111", sponsor: "+447701001111")
+        write_email_to_s3(body: "john@nongov.uk\n+447701001111", bucket_name:, object_key:)
+      end
+      it "does not create any new users" do
+        expect {
+          do_user_signup
+        }.to_not change(WifiUser::User, :count)
+      end
+      it "sends an email to the sponsored user" do
+        do_user_signup
+        notify_has_sent_email_to "john@nongov.uk"
+        notify_has_sent_sms_to("+447701001111")
+      end
+      it "sends a confirmation email to the sponsor" do
+        do_user_signup
+        expect(Services.notify_client).to have_received(:send_email).with(
+          email_address: sponsor_address,
+          personalisation: {
+            number_of_accounts: 2,
+            contacts: "john@nongov.uk\r\n+447701001111",
+          },
+          template_id: "email_sponsor_confirmation_plural_template_id",
+          email_reply_to_id: "do_not_reply_email_template_id",
+        )
+      end
+    end
+
     describe "A valid sponsor signs up users through email" do
       it "creates two new users" do
         write_email_to_s3(body: "john@nongov.uk\nemma@elsewhere.uk", bucket_name:, object_key:)
