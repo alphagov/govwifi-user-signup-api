@@ -9,8 +9,8 @@ class Gdpr::Gateway::Userdetails
     total = 0
     loop do
       deleted_rows = DB[:userdetails].with_sql_delete("
-        DELETE FROM userdetails WHERE (last_login < DATE_SUB(NOW(), INTERVAL 24 MONTH)
-        OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL 24 MONTH)))
+        DELETE FROM userdetails WHERE (last_login < DATE_SUB(NOW(), INTERVAL 12 MONTH)
+        OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)))
         AND username != 'HEALTH'
         LIMIT #{SESSION_BATCH_SIZE}")
       total += deleted_rows
