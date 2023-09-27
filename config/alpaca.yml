@@ -17,8 +17,8 @@ notify_email_template_ids:
   rejected_email_address: dabb9566-ae35-4ada-a9c5-2dd0db099539
   sponsored_credentials: 18aac792-fd98-4d96-884c-2179bdc2a76f
   sponsor_confirmation:
-    plural: 856a5726-1099-4236-b67c-23b654e9edbf
-    singular: 079cb5ff-19b7-4a90-b2e8-dad342ca2bf9
+    plural: 0f5d2b80-bcb4-4b38-beea-0268745429f5
+    singular: 67e4f3bb-e209-4697-8e93-f76dbd2e5047
     failed: 3b1e71a6-a9be-4ba9-8598-44f4c6de340c
   active_users_signup_survey: 9cdaccbe-4813-4874-a4d7-172ebab5a927
 
