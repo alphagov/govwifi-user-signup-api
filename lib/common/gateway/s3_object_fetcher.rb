@@ -13,6 +13,14 @@ class Common::Gateway::S3ObjectFetcher
     object.get.body.read
   end
 
+  def self.allow_list_regexp
+    Common::Gateway::S3ObjectFetcher.new(
+      bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
+      key: ENV.fetch("S3_SIGNUP_ALLOWLIST_OBJECT_KEY"),
+      region: "eu-west-2",
+    ).fetch
+  end
+
 private
 
   attr_reader :bucket, :key, :region

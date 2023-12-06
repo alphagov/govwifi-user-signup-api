@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :user_details, class: WifiUser::Repository::User do
+  factory :user_details, class: WifiUser::User do
     to_create(&:save)
 
     username { SecureRandom.alphanumeric(6).downcase }

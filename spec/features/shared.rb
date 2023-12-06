@@ -4,7 +4,7 @@ RSpec.shared_examples "sends_template" do |template_id|
     expect(Services.notify_client).to have_received(:send_sms).with(hash_including(template_id:))
   end
   it "creates a new user" do
-    expect { do_user_signup }.to change(WifiUser::Repository::User, :count).by(1)
+    expect { do_user_signup }.to change(WifiUser::User, :count).by(1)
   end
 end
 
@@ -12,7 +12,7 @@ RSpec.shared_examples "rejects_email" do
   it "Does not create a user" do
     expect {
       post "/user-signup/email-notification", request_body.to_json, email_request_headers
-    }.to_not change(WifiUser::Repository::User, :count)
+    }.to_not change(WifiUser::User, :count)
   end
   it "Does not send an email" do
     post "/user-signup/email-notification", request_body.to_json, email_request_headers

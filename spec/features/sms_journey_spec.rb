@@ -1,11 +1,8 @@
 require_relative "./shared"
 
 RSpec.describe App do
-  before :each do
-    allow(Services).to receive(:notify_client).and_return(double)
-    allow(Services.notify_client).to receive(:send_email)
-    allow(Services.notify_client).to receive(:send_sms)
-  end
+  include_context "fake notify"
+  include_context "simple allow list"
 
   let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
   let(:email_request_headers) do
@@ -31,22 +28,22 @@ RSpec.describe App do
     it "creates a new user" do
       expect {
         do_user_signup
-      }.to change(WifiUser::Repository::User, :count).by(1)
+      }.to change(WifiUser::User, :count).by(1)
     end
     it "creates a new user with the correct parameters" do
       do_user_signup
-      expect(WifiUser::Repository::User.find(contact: from_phone_number, sponsor: from_phone_number)).to_not be(nil)
+      expect(WifiUser::User.find(contact: from_phone_number, sponsor: from_phone_number)).to_not be(nil)
     end
     describe "internationalise phone number" do
       let(:from_phone_number) { "07701001111" }
       it "creates a new user, internationalising the phone number" do
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "+447701001111", sponsor: "+447701001111")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "+447701001111", sponsor: "+447701001111")).to_not be(nil)
       end
     end
     it "sends an SMS to the user containing credentials" do
       do_user_signup
-      user = WifiUser::Repository::User.find(contact: "+447701001111")
+      user = WifiUser::User.find(contact: "+447701001111")
       expect(Services.notify_client).to have_received(:send_sms).with(
         phone_number: from_phone_number,
         template_id: "sms_credentials_template_id",
@@ -102,7 +99,7 @@ RSpec.describe App do
     it "does not create another user" do
       expect {
         do_user_signup
-      }.to_not change(WifiUser::Repository::User, :count)
+      }.to_not change(WifiUser::User, :count)
     end
     it "sends an SMS to the user containing credentials" do
       do_user_signup
@@ -123,7 +120,7 @@ RSpec.describe App do
       allow(Services.notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError.new(response))
     end
     it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::Repository::User, :count)
+      expect { do_user_signup }.to_not change(WifiUser::User, :count)
     end
   end
 
@@ -135,7 +132,7 @@ RSpec.describe App do
       expect(last_response.status).to be(401)
     end
     it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::Repository::User, :count)
+      expect { do_user_signup }.to_not change(WifiUser::User, :count)
     end
     it "does not send any messages" do
       do_user_signup
@@ -148,7 +145,7 @@ RSpec.describe App do
     let(:from_phone_number) { "+447700000000" }
     let(:to_phone_number) { "+447700000000" }
     it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::Repository::User, :count)
+      expect { do_user_signup }.to_not change(WifiUser::User, :count)
     end
     it "does not send any messages" do
       do_user_signup
