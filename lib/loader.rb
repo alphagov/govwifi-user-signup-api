@@ -1,4 +1,5 @@
 require "sequel"
+require "yaml"
 
 if %w[production staging].include?(ENV["RACK_ENV"])
   require "raven"

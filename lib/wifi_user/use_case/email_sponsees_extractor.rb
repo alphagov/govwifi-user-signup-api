@@ -1,42 +1,50 @@
 require "nokogiri"
 
 class WifiUser::UseCase::EmailSponseesExtractor
-  def initialize(email_fetcher:, exclude_addresses:, logger: Logger.new($stdout))
-    @email_fetcher = email_fetcher
-    @exclude_addresses = exclude_addresses
-    @logger = logger
+  def initialize(sns_message:)
+    @sns_message = sns_message
   end
 
   def execute
-    normalised_exclude_addresses = @exclude_addresses.map { |addr| Mail::Address.new(addr).address }
-    mail = Mail.read_from_string(email_fetcher.fetch)
-
-    contacts_from_mail(mail).map(&:strip).reject(&:empty?)
-      .reject { |contact| normalised_exclude_addresses.include?(contact) }
+    email_contents = Common::Gateway::S3ObjectFetcher.new(bucket: @sns_message.s3_bucket_name,
+                                                          key: @sns_message.s3_object_key).fetch
+    lines_in_email = extract_lines_from email_contents
+    contacts = extract_contact_details_from lines_in_email
+    remove_sponsor_from contacts
   rescue Mail::Field::ParseError => e
-    @logger.warn("unable to parse address: #{e}")
+    raise "unable to parse email address in #{@sns_message.parsed_message}: #{e}"
   end
 
 private
 
-  attr_reader :email_fetcher
+  def extract_contact_details_from(lines)
+    contacts = lines.map do |line|
+      WifiUser::EmailAddress.extract_from(line) || WifiUser::PhoneNumber.extract_from(line)
+    end
+    contacts.compact
+  end
 
-  def contacts_from_mail(mail)
+  def remove_sponsor_from(contacts)
+    contacts.reject { |contact| contact == @sns_message.from_address }
+  end
+
+  def extract_lines_from(email_contents)
+    mail = Mail.read_from_string(email_contents)
     if !mail.multipart?
       lines_from_plain_text(mail.body)
     elsif mail.text_part
       lines_from_plain_text(mail.text_part)
     else
-      lines_from_html(mail)
+      lines_from_html(mail.html_part)
     end
   end
 
-  def lines_from_plain_text(message)
-    message.decoded.lines "\n"
+  def lines_from_plain_text(text_part)
+    text_part.decoded.lines "\n"
   end
 
-  def lines_from_html(mail)
-    Nokogiri::HTML(mail.html_part.decoded).xpath("//text()[not(ancestor::style)]").map do |node|
+  def lines_from_html(html_part)
+    Nokogiri::HTML(html_part.decoded).xpath("//text()[not(ancestor::style)]").map do |node|
       node.xpath("normalize-space()")
     end
   end

@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  app:
-    volumes:
-    - ".:/usr/src/app"
-    ports:
-      - "8080:8080"

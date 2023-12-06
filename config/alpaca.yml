@@ -1,0 +1,25 @@
+notify_sms_template_ids:
+  credentials: ee83e3e7-6c1f-4eaa-b753-a937a8e5949b
+  help_menu: 512deae1-7ec4-4888-8f2d-7be79e5eb379
+  recap: 72dbd002-913f-4207-8c74-9a8a576d0dc7
+  device_help:
+    other: 60985003-1682-45a6-8d8d-e121cadbc234
+    android: ee81124c-2a92-4b63-a7be-258aedb26ed8
+    blackberry: 57b362d0-9753-4fd9-ada0-bfd643db8eee
+    mac: ec8f83bb-5371-40bf-b777-307a52926fe1
+    iphone: 1dc8b2b5-b2e6-4bce-9aae-ee1e9c7cb650
+    windows: 3b8f158b-22c8-4226-b84b-3ea5085a46d5
+    chromebook: 1cf2cc2f-fbb3-465b-88b6-521e63cfeab8
+  active_users_signup_survey: 3aaaabe1-fa0b-4e41-8033-6dc5e44705eb
+
+notify_email_template_ids:
+  self_signup_credentials: e67776c1-7ac4-43b1-b5fb-09aae69a5405
+  rejected_email_address: dabb9566-ae35-4ada-a9c5-2dd0db099539
+  sponsored_credentials: 18aac792-fd98-4d96-884c-2179bdc2a76f
+  sponsor_confirmation:
+    plural: 856a5726-1099-4236-b67c-23b654e9edbf
+    singular: 079cb5ff-19b7-4a90-b2e8-dad342ca2bf9
+    failed: 3b1e71a6-a9be-4ba9-8598-44f4c6de340c
+  active_users_signup_survey: 9cdaccbe-4813-4874-a4d7-172ebab5a927
+
+do_not_reply_email_id: 005bb964-dab5-46c8-b151-c87e1ce9a84a
