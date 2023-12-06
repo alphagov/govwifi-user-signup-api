@@ -30,6 +30,7 @@ GEM
     concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
+    date (3.3.4)
     diff-lcs (1.5.0)
     docile (1.4.0)
     factory_bot (6.2.1)
@@ -65,10 +66,13 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     lumberjack (1.2.8)
-    mail (2.7.1)
+    mail (2.8.1)
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     method_source (1.0.0)
-    mini_mime (1.0.1)
+    mini_mime (1.1.5)
     mini_portile2 (2.8.0)
     minitest (5.18.0)
     multipart-post (2.1.1)
@@ -76,6 +80,11 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mysql2 (0.5.4)
     nenv (0.3.0)
+    net-imap (0.4.7)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
     net-protocol (0.2.1)
       timeout
     net-smtp (0.3.3)
@@ -194,7 +203,7 @@ DEPENDENCIES
   aws-sdk-s3 (~> 1)
   factory_bot
   guard-rspec
-  mail (~> 2.7)
+  mail (~> 2.8)
   mysql2
   net-smtp
   nokogiri (~> 1.13)
@@ -214,7 +223,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.1.1p18
+   ruby 3.1.2p20
 
 BUNDLED WITH
    2.2.32
