@@ -2,6 +2,8 @@ require "sensible_logging"
 require "sinatra/base"
 require "net/http"
 require "logger"
+require "mail"
+require "notifications/client"
 require "./lib/loader"
 
 class App < Sinatra::Base
@@ -30,38 +32,22 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
-    allowlist_checker = WifiUser::UseCases::CheckIfAllowlistedEmail.new(
-      gateway: Common::Gateway::S3ObjectFetcher.new(
-        bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
-        key: ENV.fetch("S3_SIGNUP_ALLOWLIST_OBJECT_KEY"),
-        region: "eu-west-2",
-      ),
-    )
+    raise "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
 
-    email_signup_handler = ::WifiUser::UseCase::EmailSignup.new(
-      user_model: WifiUser::Repository::User.new,
-      allowlist_checker:,
-      logger:,
-    )
+    sns_message = WifiUser::SnsMessage.new(body: request.body.read)
 
-    sponsor_signup_handler = ::WifiUser::UseCase::SponsorUsers.new(
-      user_model: WifiUser::Repository::User.new,
-      allowlist_checker:,
-      send_sms_gateway: WifiUser::Gateway::GovNotifySMS.new,
-      send_email_gateway: WifiUser::Gateway::GovNotifyEmail.new,
-      logger:,
-    )
+    halt 200, "" if sns_message.type != "Notification" || sns_message.message_id == "AMAZON_SES_SETUP_NOTIFICATION"
+    logger.info(sns_message.to_s) if sns_message.type == "SubscriptionConfirmation"
 
-    email_parser = WifiUser::UseCase::ParseEmailRequest.new(
-      logger:,
-    )
-
-    WifiUser::UseCase::SnsNotificationHandler.new(
-      email_signup_handler:,
-      sponsor_signup_handler:,
-      email_parser:,
-      logger:,
-    ).handle(request)
+    if sns_message.sponsor_request?
+      WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
+    else
+      WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
+    end
+  rescue StandardError => e
+    logger.warn(e.message)
+  ensure
+    halt 200, ""
   end
 
   post "/user-signup/sms-notification/notify" do
@@ -86,7 +72,7 @@ class App < Sinatra::Base
     template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
 
     WifiUser::UseCase::SmsResponse.new(
-      user_model: WifiUser::Repository::User.new,
+      user_model: WifiUser::User,
       template_finder:,
       logger:,
     ).execute(
@@ -97,22 +83,31 @@ class App < Sinatra::Base
   end
 
   def numbers_are_equal?(number1, number2)
-    contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
-    contact_sanitiser.execute(number1) == contact_sanitiser.execute(number2)
+    WifiUser::PhoneNumber.internationalise(number1) == WifiUser::PhoneNumber.internationalise(number2)
   end
 
   def sender_is_repetitive?(source, message)
-    contact_sanitiser = WifiUser::UseCase::ContactSanitiser.new
     repetitive_sms_checker = WifiUser::UseCase::RepetitiveSmsChecker.new(
       smslog_model: WifiUser::Repository::Smslog.new,
     )
 
-    sanitised_source = contact_sanitiser.execute(source)
-
-    repetitive_sms_checker.execute(sanitised_source, message)
+    repetitive_sms_checker.execute(WifiUser::PhoneNumber.internationalise(source), message)
   end
 
   def is_govnotify_token_valid?
     env.fetch("HTTP_AUTHORIZATION") == "Bearer #{settings.govnotify_token}"
+  end
+
+  def request_invalid?(request)
+    !request_valid?(request)
+  end
+
+  def request_valid?(request)
+    # For now, we only care that the correct header is set to see if we're
+    # actually dealing with a notification.
+    # There is much more that should be in here.
+
+    request.has_header?("HTTP_X_AMZ_SNS_MESSAGE_TYPE") \
+    && request.get_header("HTTP_X_AMZ_SNS_MESSAGE_TYPE") == "Notification"
   end
 end
