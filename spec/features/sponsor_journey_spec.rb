@@ -1,15 +1,13 @@
 require_relative "./shared"
 
 RSpec.describe App do
-  before :each do
-    allow(Services).to receive(:notify_client).and_return(double)
-    allow(Services.notify_client).to receive(:send_email)
-    allow(Services.notify_client).to receive(:send_sms)
-  end
+  include_context "fake notify"
+  include_context "simple allow list"
+
   describe "POST /user-signup/sms-notification/notify" do
     let(:email_request_headers) { { "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification" } }
-    let(:bucketName) { "mybucket" }
-    let(:objectKey) { "mykey" }
+    let(:bucket_name) { "mybucket" }
+    let(:object_key) { "mykey" }
     let(:sponsor_address) { "pete@gov.uk" }
     let(:type) { "Notification" }
     let(:messageId) { "123" }
@@ -19,24 +17,16 @@ RSpec.describe App do
                         to: "sponsor@gov.uk",
                         messageId:,
                         type:,
-                        bucketName:,
-                        objectKey:)
+                        bucketName: bucket_name,
+                        objectKey: object_key)
     end
 
     def do_user_signup
       post "/user-signup/email-notification", request_body.to_json, email_request_headers
     end
 
-    def set_email(text_part: nil, html_part: nil, body: nil)
-      mail = Mail.new
-      mail.parts << Mail::Part.new(body: text_part) if text_part
-      mail.parts << Mail::Part.new(content_type: "text/html; charset=UTF-8", body: html_part) if html_part
-      mail.body = body if body
-      Services.s3_client.put_object(bucket: bucketName, key: objectKey, body: mail.to_s)
-    end
-
     def notify_has_sent_email_to(email_address)
-      user = WifiUser::Repository::User.find(contact: email_address)
+      user = WifiUser::User.find(contact: email_address)
       expect(Services.notify_client).to have_received(:send_email).with(
         {
           email_address:,
@@ -52,7 +42,7 @@ RSpec.describe App do
     end
 
     def notify_has_sent_sms_to(phone_number)
-      user = WifiUser::Repository::User.find(contact: phone_number)
+      user = WifiUser::User.find(contact: phone_number)
       expect(Services.notify_client).to have_received(:send_sms).with(
         {
           phone_number:,
@@ -65,35 +55,71 @@ RSpec.describe App do
       )
     end
 
-    describe "A valid sponsor signs up users through email" do
-      it "creates two new users" do
-        set_email(body: "john@nongov.uk\nemma@elsewhere.uk")
+    describe "Users already exist" do
+      before :each do
+        FactoryBot.create(:user_details, contact: "john@nongov.uk", sponsor: "john@nongov.uk")
+        FactoryBot.create(:user_details, contact: "+447701001111", sponsor: "+447701001111")
+        write_email_to_s3(body: "john@nongov.uk\n+447701001111", bucket_name:, object_key:)
+      end
+      it "does not create any new users" do
         expect {
           do_user_signup
-        }.to change(WifiUser::Repository::User, :count).by(2)
+        }.to_not change(WifiUser::User, :count)
+      end
+      it "sends an email to the sponsored user" do
+        do_user_signup
+        notify_has_sent_email_to "john@nongov.uk"
+        notify_has_sent_sms_to("+447701001111")
+      end
+      it "sends a confirmation email to the sponsor" do
+        do_user_signup
+        expect(Services.notify_client).to have_received(:send_email).with(
+          email_address: sponsor_address,
+          personalisation: {
+            number_of_accounts: 2,
+            contacts: "john@nongov.uk\r\n+447701001111",
+          },
+          template_id: "email_sponsor_confirmation_plural_template_id",
+          email_reply_to_id: "do_not_reply_email_template_id",
+        )
+      end
+    end
+
+    describe "A valid sponsor signs up users through email" do
+      it "creates two new users" do
+        write_email_to_s3(body: "john@nongov.uk\nemma@elsewhere.uk", bucket_name:, object_key:)
+        expect {
+          do_user_signup
+        }.to change(WifiUser::User, :count).by(2)
+      end
+      it "filters out lines without email addresses" do
+        write_email_to_s3(body: "john@nongov.uk\nemma@elsewhere.uk", bucket_name:, object_key:)
+        expect {
+          do_user_signup
+        }.to change(WifiUser::User, :count).by(2)
       end
       it "creates a new user with the correct parameters" do
-        set_email(body: "john@nongov.uk")
+        write_email_to_s3(body: "john@nongov.uk", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk", sponsor: sponsor_address)).to_not be(nil)
       end
       it "creates a new user, normalising the email address" do
-        set_email(body: "  John Doe < john@nongov.uk  >  ")
+        write_email_to_s3(body: "  John Doe < john@nongov.uk  >  ", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "handles html multipart" do
-        set_email(html_part: "<h1><b>john@nongov.uk</b></h1>")
+        write_email_to_s3(html_part: "<h1><b>john@nongov.uk</b></h1>", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "handles text multipart" do
-        set_email(text_part: "john@nongov.uk")
+        write_email_to_s3(text_part: "john@nongov.uk", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "john@nongov.uk")).to_not be(nil)
+        expect(WifiUser::User.find(contact: "john@nongov.uk")).to_not be(nil)
       end
       it "sends an email to all email recipients" do
-        set_email(body: "john@nongov.uk\nemma@elsewhere.uk")
+        write_email_to_s3(body: "john@nongov.uk\nemma@elsewhere.uk", bucket_name:, object_key:)
         do_user_signup
         notify_has_sent_email_to "john@nongov.uk"
         notify_has_sent_email_to "emma@elsewhere.uk"
@@ -102,23 +128,23 @@ RSpec.describe App do
 
     describe "A valid sponsor signs up users through SMS" do
       it "creates two new users" do
-        set_email(body: "07701001111\n+447701002222")
+        write_email_to_s3(body: "07701001111\n+447701002222", bucket_name:, object_key:)
         expect {
           do_user_signup
-        }.to change(WifiUser::Repository::User, :count).by(2)
+        }.to change(WifiUser::User, :count).by(2)
       end
       it "creates a new user with the correct parameters" do
-        set_email(body: "+447701001111")
+        write_email_to_s3(body: "+447701001111", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
       end
       it "normalises phone numbers" do
-        set_email(body: "07701001111")
+        write_email_to_s3(body: "07701001111", bucket_name:, object_key:)
         do_user_signup
-        expect(WifiUser::Repository::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
+        expect(WifiUser::User.find(contact: "+447701001111", sponsor: sponsor_address)).to_not be(nil)
       end
       it "sends SMSes to all users" do
-        set_email(body: "07701001111\n+447701002222")
+        write_email_to_s3(body: "07701001111\n+447701002222", bucket_name:, object_key:)
         do_user_signup
         notify_has_sent_sms_to("+447701002222")
         notify_has_sent_sms_to("+447701001111")
@@ -126,7 +152,7 @@ RSpec.describe App do
     end
     describe "sending receipts" do
       it "sends a receipt to the sponsor (plural)" do
-        set_email(body: "john@nongov.uk\n07701001111")
+        write_email_to_s3(body: "john@nongov.uk\n07701001111", bucket_name:, object_key:)
         do_user_signup
         expect(Services.notify_client).to have_received(:send_email).with(
           email_address: sponsor_address,
@@ -139,7 +165,7 @@ RSpec.describe App do
         )
       end
       it "sends a receipt to the sponsor (singular)" do
-        set_email(body: "john@nongov.uk")
+        write_email_to_s3(body: "john@nongov.uk", bucket_name:, object_key:)
         do_user_signup
         expect(Services.notify_client).to have_received(:send_email).with(
           email_address: sponsor_address,
@@ -151,10 +177,10 @@ RSpec.describe App do
         )
       end
       it "sends a receipt when a sponsee email has failed to send" do
-        set_email(body: "07701001111\njohn@nongov.uk")
-        response = double(body: "ValidationError", code: 200)
-        allow(Services.notify_client).to receive(:send_email).and_raise(Notifications::Client::RequestError.new(response))
-        allow(Services.notify_client).to receive(:send_sms).and_raise(Notifications::Client::RequestError.new(response))
+        write_email_to_s3(body: "07701001111\njohn@nongov.uk", bucket_name:, object_key:)
+        error = Notifications::Client::RequestError.new(double(body: "ValidationError", code: 200))
+        allow(Services.notify_client).to receive(:send_email).with(hash_including(template_id: "email_sponsored_credentials_template_id")).and_raise error
+        allow(Services.notify_client).to receive(:send_sms).with(hash_including(template_id: "sms_credentials_template_id")).and_raise error
 
         do_user_signup
         expect(Services.notify_client).to have_received(:send_email).with(
@@ -173,7 +199,7 @@ RSpec.describe App do
       it "Does not create a user" do
         expect {
           do_user_signup
-        }.to_not change(WifiUser::Repository::User, :count)
+        }.to_not change(WifiUser::User, :count)
       end
       it "Does not send any emails" do
         expect(Services.notify_client).to_not have_received(:send_email)

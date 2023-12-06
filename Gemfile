@@ -2,11 +2,11 @@ source "http://rubygems.org"
 ruby File.read(".ruby-version").chomp
 
 gem "aws-sdk-s3", "~> 1"
-gem "mail", "~> 2.7"
+gem "mail", "~> 2.8"
 gem "mysql2"
 gem "net-smtp"
 gem "nokogiri", "~> 1.13"
-gem "notifications-ruby-client", "~> 5.3.0"
+gem "notifications-ruby-client", "~> 5.4.0"
 gem "puma"
 gem "rake", "~> 13.0"
 gem "require_all"
