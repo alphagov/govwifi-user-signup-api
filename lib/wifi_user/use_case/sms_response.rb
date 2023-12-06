@@ -6,11 +6,11 @@ class WifiUser::UseCase::SmsResponse
   end
 
   def execute(contact:, sms_content:)
-    phone_number = WifiUser::UseCase::ContactSanitiser.new.execute(contact)
+    phone_number = WifiUser::PhoneNumber.extract_from(contact)
     return logger.warn("Unexpected contact detail found #{contact}") if phone_number.nil?
 
     DB.transaction do
-      login_details = user_model.generate(contact: phone_number)
+      login_details = user_model.find_or_create(contact: phone_number)
       notify_params = { login: login_details[:username], pass: login_details[:password] }
 
       send_signup_instructions(phone_number, notify_params, sms_content)

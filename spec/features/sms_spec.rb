@@ -7,7 +7,7 @@ describe App do
     let(:notify_sms_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
     let(:notify_template_id) { "24d47eb3-8b02-4eba-aa04-81ffaf4bb1b4" }
     let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
-    let(:created_user) { WifiUser::Repository::User.find(contact: internationalised_phone_number) }
+    let(:created_user) { WifiUser::User.find(contact: internationalised_phone_number) }
 
     let(:payload) do
       {

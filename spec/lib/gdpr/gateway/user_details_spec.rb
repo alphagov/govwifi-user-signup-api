@@ -8,7 +8,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given no inactive users" do
         before do
           user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", last_login: Date.today - 729)
+          user_details.insert(username: "sally", last_login: Date.today - 363)
         end
 
         it "does not delete any users" do
@@ -19,8 +19,8 @@ describe Gdpr::Gateway::Userdetails do
       context "Given one inactive user" do
         before do
           user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 729)
-          user_details.insert(username: "george", last_login: Date.today - 731)
+          user_details.insert(username: "sally", created_at: Date.today - 363)
+          user_details.insert(username: "george", last_login: Date.today - 367)
         end
 
         it "does deletes only the old user record" do
@@ -31,8 +31,8 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Given multiple inactive user" do
         before do
-          user_details.insert(username: "bob", last_login: Date.today - 831)
-          user_details.insert(username: "george", last_login: Date.today - 731)
+          user_details.insert(username: "bob", last_login: Date.today - 367)
+          user_details.insert(username: "george", last_login: Date.today - 367)
         end
 
         it "deletes all the inactive users" do
@@ -59,7 +59,7 @@ describe Gdpr::Gateway::Userdetails do
       context "Given no inactive users" do
         before do
           user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 729)
+          user_details.insert(username: "sally", created_at: Date.today - 300)
         end
 
         it "does not delete any user details" do
@@ -70,8 +70,8 @@ describe Gdpr::Gateway::Userdetails do
       context "Given one inactive user" do
         before do
           user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 729)
-          user_details.insert(username: "george", created_at: Date.today - 731)
+          user_details.insert(username: "sally", created_at: Date.today - 300)
+          user_details.insert(username: "george", created_at: Date.today - 368)
         end
 
         it "does deletes only the old user record" do
@@ -82,8 +82,8 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Given multiple inactive user" do
         before do
-          user_details.insert(username: "bob", created_at: Date.today - 831)
-          user_details.insert(username: "george", created_at: Date.today - 731)
+          user_details.insert(username: "bob", created_at: Date.today - 370)
+          user_details.insert(username: "george", created_at: Date.today - 380)
         end
 
         it "deletes all the inactive users" do
