@@ -85,9 +85,9 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.1)
+    net-protocol (0.2.2)
       timeout
-    net-smtp (0.3.3)
+    net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
     nokogiri (1.13.10)
@@ -186,7 +186,7 @@ GEM
     thor (1.0.1)
     tilt (2.0.11)
     timecop (0.9.6)
-    timeout (0.3.2)
+    timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
