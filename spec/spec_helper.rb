@@ -4,6 +4,7 @@ require "rspec"
 require "simplecov"
 require "sequel"
 require "webmock/rspec"
+require "shared"
 
 ENV["RACK_ENV"] = "test"
 
@@ -51,12 +52,25 @@ module S3Fake
 end
 RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = 1000
 
-RSpec.configure do |c|
-  c.before(:each) do
-    allow(Services).to receive(:s3_client).and_return(S3Fake.fake_s3_client)
+RSpec.shared_context "simple allow list" do
+  before :each do
     Services.s3_client.put_object(bucket: ENV.fetch("S3_SIGNUP_ALLOWLIST_BUCKET"),
                                   key: ENV.fetch("S3_SIGNUP_ALLOWLIST_OBJECT_KEY"),
                                   body: '^.*@(gov\.uk)$')
+  end
+end
+
+RSpec.shared_context "fake notify" do
+  before :each do
+    allow(Services).to receive(:notify_client).and_return(double)
+    allow(Services.notify_client).to receive(:send_email)
+    allow(Services.notify_client).to receive(:send_sms)
+  end
+end
+
+RSpec.configure do |c|
+  c.before(:each) do
+    allow(Services).to receive(:s3_client).and_return(S3Fake.fake_s3_client)
     DB[:smslog].truncate
     DB[:userdetails].truncate
     DB[:notifications].truncate
