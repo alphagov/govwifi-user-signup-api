@@ -12,7 +12,7 @@ gem "rake", "~> 13.1"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.8"
 gem "sentry-raven"
-gem "sequel", "~> 5.78"
+gem "sequel", "~> 5.79"
 gem "sinatra"
 
 group :test do
