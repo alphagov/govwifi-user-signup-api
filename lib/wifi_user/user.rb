@@ -12,6 +12,10 @@ class WifiUser::User < Sequel::Model(:userdetails)
     self.sponsor ||= contact
   end
 
+  def mobile?
+    contact.start_with? "+"
+  end
+
 private
 
   def random_username
