@@ -11,6 +11,7 @@ notify_sms_template_ids:
     windows: 3b8f158b-22c8-4226-b84b-3ea5085a46d5
     chromebook: 1cf2cc2f-fbb3-465b-88b6-521e63cfeab8
   active_users_signup_survey: 3aaaabe1-fa0b-4e41-8033-6dc5e44705eb
+  followup: f084f526-9a11-4b29-8707-8e2ebc0148c6
 
 notify_email_template_ids:
   self_signup_credentials: 96d1f5ac-2ebe-41a7-878f-9a569e0bb55c
@@ -21,5 +22,6 @@ notify_email_template_ids:
     singular: 079cb5ff-19b7-4a90-b2e8-dad342ca2bf9
     failed: 3b1e71a6-a9be-4ba9-8598-44f4c6de340c
   active_users_signup_survey: 9cdaccbe-4813-4874-a4d7-172ebab5a927
+  followup: 839dce58-972f-4573-9243-3fc5c0dae2dc
 
 do_not_reply_email_id: 45d6b6c4-6a36-47df-b34d-256b8c0d1511

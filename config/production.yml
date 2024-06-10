@@ -12,6 +12,7 @@ notify_sms_template_ids:
     chromebook: 0e5bbafc-3110-4375-a6e4-4488c503f45a
   active_users_signup_survey: 43134a22-4a00-4546-bf52-965fea3d2beb
   inactive_users_signup_survey: 1550f29b-471c-4e96-be61-97748e07729a
+  followup: 6e65ed51-0cb2-4bdc-9f68-f5aa9e678cf1
 
 notify_email_template_ids:
   self_signup_credentials: f18708c0-e857-4f62-b5f3-8f0c75fc2fdb
@@ -23,5 +24,6 @@ notify_email_template_ids:
     failed: 52c19b68-4d8b-497a-b6ae-ee27d49439c3
   active_users_signup_survey: 7eb89dbc-2b17-4ea5-8400-5c265d3757cf
   inactive_users_signup_survey: ceb8a0a4-c507-48c8-94be-66ff0b4874bf
+  followup: 3bdee28c-ce96-4c11-974d-b877135a81e2
 
 do_not_reply_email_id: 0d22d71f-afa3-4c72-8cd4-7716678dbd43
