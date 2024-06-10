@@ -5,12 +5,10 @@ FactoryBot.define do
     username { SecureRandom.alphanumeric(6).downcase }
 
     sequence :contact, 1 do |n|
-      "username#{n}.domain.uk"
+      "username#{n}@domain.uk"
     end
 
-    sequence :sponsor, 1 do |n|
-      "sponsor#{n}.domain.uk"
-    end
+    sponsor { contact }
 
     password { SecureRandom.alphanumeric(10).downcase }
     notifications_opt_out { 0 }
@@ -30,13 +28,9 @@ FactoryBot.define do
     end
 
     trait :sponsored do
-      transient do
-        sequence :sponsor_address, 1 do |n|
-          "sponsor_address#{n}@domain.uk"
-        end
+      sequence :sponsor, 1 do |n|
+        "sponsor_address#{n}@domain.uk"
       end
-
-      sponsor { sponsor_address }
     end
 
     trait :not_logged_in do
@@ -44,11 +38,7 @@ FactoryBot.define do
     end
 
     trait :sms do
-      transient do
-        random_sms_no { "+4477#{SecureRandom.random_number(100_000_000)}" }
-      end
-      contact { random_sms_no }
-      sponsor { random_sms_no }
+      contact { "+4477#{SecureRandom.random_number(100_000_000)}" }
     end
 
     trait :signup_survey_sent do
