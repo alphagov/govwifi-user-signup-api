@@ -59,6 +59,14 @@ class WifiUser::EmailSender
     )
   end
 
+  def self.send_followup_email(email_address)
+    Services.notify_client.send_email(
+      email_address:,
+      template_id: followup_template_id,
+      email_reply_to_id: do_not_reply_email_address_id,
+    )
+  end
+
   def self.sponsor_email_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("sponsored_credentials")
   end
@@ -85,5 +93,9 @@ class WifiUser::EmailSender
 
   def self.sponsor_confirmation_failed_template
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("sponsor_confirmation").fetch("failed")
+  end
+
+  def self.followup_template_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("followup")
   end
 end

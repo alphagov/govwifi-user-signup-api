@@ -17,7 +17,7 @@ class Survey::Gateway::Notifications
 private
 
   def send_survey(user)
-    if is_mobile? user
+    if user.mobile?
       send_text(user)
     else
       send_email(user)
@@ -36,9 +36,5 @@ private
       phone_number: user.contact,
       template_id: @mobile_template_id,
     )
-  end
-
-  def is_mobile?(user)
-    user.contact.start_with? "+"
   end
 end

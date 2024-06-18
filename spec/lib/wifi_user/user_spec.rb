@@ -56,6 +56,15 @@ describe WifiUser::User do
         users = (1..number_of_possible_combinations).map { |number| WifiUser::User.create(contact: "user_#{number}@gov.uk") }
         expect(users.map(&:username).uniq.length).to eq(number_of_possible_combinations)
       end
+
+      describe "#mobile?" do
+        it "is a mobile" do
+          expect(FactoryBot.create(:user_details, contact: "+447700000000")).to be_a_mobile
+        end
+        it "is not a mobile" do
+          expect(FactoryBot.create(:user_details, contact: "user@gov.uk")).to_not be_a_mobile
+        end
+      end
     end
   end
 end

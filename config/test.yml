@@ -9,6 +9,7 @@ notify_sms_template_ids:
     iphone: sms_device_help_iphone_template_id
     windows: sms_device_help_windows_template_id
   active_users_signup_survey: active-users-mobile-signup-survey-template
+  followup: sms_followup_template_id
 
 notify_email_template_ids:
   self_signup_credentials: email_self_signup_credentials_template_id
@@ -19,5 +20,6 @@ notify_email_template_ids:
     singular: email_sponsor_confirmation_singular_template_id
     failed: email_sponsor_confirmation_failed_template_id
   active_users_signup_survey: active-users-email-signup-survey-template
+  followup: email_followup_template_id
 
 do_not_reply_email_id: do_not_reply_email_template_id
