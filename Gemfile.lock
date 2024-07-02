@@ -89,7 +89,6 @@ GEM
       date
       net-protocol
     net-pop (0.1.2)
-      net-protocol
     net-protocol (0.2.2)
       timeout
     net-smtp (0.5.0)
@@ -234,7 +233,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.1.2p20
+   ruby 3.3.3p89
 
 BUNDLED WITH
    2.2.32
