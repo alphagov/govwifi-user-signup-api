@@ -196,7 +196,7 @@ describe Gdpr::Gateway::Userdetails do
       expect(notify_client).to receive(:send_sms).with(
         phone_number: "+07391491234",
         template_id: "3d24dcb3-503c-4045-9ac4-22d0868eb49f",
-        personalisation: { inactivity_period: "11 months", username: "Rob" }
+        personalisation: { inactivity_period: "11 months", username: "Rob" },
       ).once
 
       subject.notify_inactive_users
