@@ -10,6 +10,8 @@ notify_sms_template_ids:
     windows: sms_device_help_windows_template_id
   active_users_signup_survey: active-users-mobile-signup-survey-template
   followup: sms_followup_template_id
+  credentials_expiring_notification: 3d24dcb3-503c-4045-9ac4-22d0868eb49f
+  notify_user_account_removed_sms: 4976e93a-e9e8-4e64-bdd0-5aeaf188c56b
 
 notify_email_template_ids:
   self_signup_credentials: email_self_signup_credentials_template_id
@@ -21,5 +23,7 @@ notify_email_template_ids:
     failed: email_sponsor_confirmation_failed_template_id
   active_users_signup_survey: active-users-email-signup-survey-template
   followup: email_followup_template_id
+  credentials_expiring_notification: 30af3d4a-6bc0-4455-93b6-9c0422e5109d
+  notify_user_account_removed: 6b0234d7-ede5-4593-bd10-fee9269fa656
 
 do_not_reply_email_id: do_not_reply_email_template_id

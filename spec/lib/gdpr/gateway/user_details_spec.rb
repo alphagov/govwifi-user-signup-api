@@ -1,14 +1,19 @@
 describe Gdpr::Gateway::Userdetails do
   let(:user_details) { DB[:userdetails] }
+  let(:notify_client) { instance_double(Notifications::Client) }
 
-  before { user_details.delete }
+  before :each do
+    user_details.delete
+    allow(Services).to receive(:notify_client).and_return(notify_client)
+    allow(notify_client).to receive_messages(send_email: true, send_sms: true)
+  end
 
   context "Deleting old users" do
     context "Based on last_login" do
       context "Given no inactive users" do
         before do
-          user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", last_login: Date.today - 363)
+          user_details.insert(username: "bob", contact: "+7391480025", last_login: Date.today)
+          user_details.insert(username: "sally", contact: "sally@gov.uk", last_login: Date.today - 363)
         end
 
         it "does not delete any users" do
@@ -18,21 +23,32 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Given one inactive user" do
         before do
-          user_details.insert(username: "bob", last_login: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 363)
-          user_details.insert(username: "george", last_login: Date.today - 367)
+          user_details.insert(username: "bob", contact: "+7391480025", last_login: Date.today)
+          user_details.insert(username: "sally", contact: "+7391488825", created_at: Date.today - 363)
+          user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
         end
 
-        it "does deletes only the old user record" do
+        it "deletes only the old user record" do
           subject.delete_users
           expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob sally])
+        end
+
+        it "notifies deleted user" do
+          expect(notify_client).to receive(:send_email).with(
+            email_address: "george@gov.uk",
+            template_id: "6b0234d7-ede5-4593-bd10-fee9269fa656",
+            personalisation: { inactivity_period: "12 months" },
+            email_reply_to_id: "do_not_reply_email_template_id",
+          ).once
+
+          subject.delete_users
         end
       end
 
       context "Given multiple inactive user" do
         before do
-          user_details.insert(username: "bob", last_login: Date.today - 367)
-          user_details.insert(username: "george", last_login: Date.today - 367)
+          user_details.insert(username: "bob", contact: "+7391481225", last_login: Date.today - 367)
+          user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
         end
 
         it "deletes all the inactive users" do
@@ -58,8 +74,8 @@ describe Gdpr::Gateway::Userdetails do
     context "Based on created_at" do
       context "Given no inactive users" do
         before do
-          user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 300)
+          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today)
+          user_details.insert(username: "sally", contact: "sally@gov.uk", created_at: Date.today - 300)
         end
 
         it "does not delete any user details" do
@@ -69,9 +85,9 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Given one inactive user" do
         before do
-          user_details.insert(username: "bob", created_at: Date.today)
-          user_details.insert(username: "sally", created_at: Date.today - 300)
-          user_details.insert(username: "george", created_at: Date.today - 368)
+          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today)
+          user_details.insert(username: "sally", contact: "sally@gov.uk", created_at: Date.today - 300)
+          user_details.insert(username: "george", contact: "george@gov.uk", created_at: Date.today - 368)
         end
 
         it "does deletes only the old user record" do
@@ -82,8 +98,8 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Given multiple inactive user" do
         before do
-          user_details.insert(username: "bob", created_at: Date.today - 370)
-          user_details.insert(username: "george", created_at: Date.today - 380)
+          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today - 370)
+          user_details.insert(username: "george", contact: "george@gov.uk", created_at: Date.today - 380)
         end
 
         it "deletes all the inactive users" do
@@ -158,6 +174,39 @@ describe Gdpr::Gateway::Userdetails do
           expect(user_details.where(username: "fred").get(:sponsor)).to eq("fred@example.com")
         end
       end
+    end
+  end
+
+  context "Notifying inactive users" do
+    before do
+      user_details.insert(username: "Kate", contact: "Kate@digital.cabinet-office.gov.uk", last_login: Date.today - 335)
+      user_details.insert(username: "Rob", contact: "+07391491234", created_at: Date.today - 335)
+      user_details.insert(username: "Adam", contact: "+07391491678", last_login: Date.today)
+      user_details.insert(username: "Sim", contact: "sim@gov.uk", last_login: Date.today)
+    end
+
+    it "notifies inactive users" do
+      expect(notify_client).to receive(:send_email).with(
+        email_address: "Kate@digital.cabinet-office.gov.uk",
+        template_id: "30af3d4a-6bc0-4455-93b6-9c0422e5109d",
+        personalisation: { inactivity_period: "11 months", username: "Kate" },
+        email_reply_to_id: "do_not_reply_email_template_id",
+      ).once
+
+      expect(notify_client).to receive(:send_sms).with(
+        phone_number: "+07391491234",
+        template_id: "3d24dcb3-503c-4045-9ac4-22d0868eb49f",
+        personalisation: { inactivity_period: "11 months", username: "Rob" }
+      ).once
+
+      subject.notify_inactive_users
+    end
+
+    it "does not notify active users" do
+      expect(notify_client).not_to receive(:send_email).with(email_address: "sim@gov.uk")
+      expect(notify_client).not_to receive(:send_sms).with(phone_number: "+07391491678")
+
+      subject.notify_inactive_users
     end
   end
 end

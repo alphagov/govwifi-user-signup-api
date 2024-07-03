@@ -13,6 +13,8 @@ notify_sms_template_ids:
   active_users_signup_survey: 43134a22-4a00-4546-bf52-965fea3d2beb
   inactive_users_signup_survey: 1550f29b-471c-4e96-be61-97748e07729a
   followup: 6e65ed51-0cb2-4bdc-9f68-f5aa9e678cf1
+  credentials_expiring_notification: d7cb48b4-914a-4aa9-80a0-3ec17f1cd2e2
+  notify_user_account_removed_sms: 9d322d32-830e-4491-aff3-0d84fa11b52d
 
 notify_email_template_ids:
   self_signup_credentials: f18708c0-e857-4f62-b5f3-8f0c75fc2fdb
@@ -25,5 +27,7 @@ notify_email_template_ids:
   active_users_signup_survey: 7eb89dbc-2b17-4ea5-8400-5c265d3757cf
   inactive_users_signup_survey: ceb8a0a4-c507-48c8-94be-66ff0b4874bf
   followup: 3bdee28c-ce96-4c11-974d-b877135a81e2
+  credentials_expiring_notification: 1b9aea55-02f6-4076-9745-24ff733ce4cd
+  notify_user_account_removed: e9ba68e6-bb1a-4146-9104-1b3ac870112a
 
 do_not_reply_email_id: 0d22d71f-afa3-4c72-8cd4-7716678dbd43

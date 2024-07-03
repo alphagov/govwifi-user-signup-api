@@ -67,6 +67,37 @@ class WifiUser::EmailSender
     )
   end
 
+  def self.send_credentials_expiring_notification(username, contact)
+    Services.notify_client.send_email(
+      email_address: contact,
+      template_id: credentials_expiring_notification_template_id,
+      personalisation: {
+        username:,
+        inactivity_period: "11 months",
+      },
+      email_reply_to_id: do_not_reply_email_address_id,
+    )
+  end
+
+  def self.notify_user(_username, contact)
+    Services.notify_client.send_email(
+      email_address: contact,
+      template_id: notify_user_template_id,
+      personalisation: {
+        inactivity_period: "12 months",
+      },
+      email_reply_to_id: do_not_reply_email_address_id,
+    )
+  end
+
+  def self.notify_user_template_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("notify_user_account_removed")
+  end
+
+  def self.credentials_expiring_notification_template_id
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("credentials_expiring_notification")
+  end
+
   def self.sponsor_email_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("sponsored_credentials")
   end

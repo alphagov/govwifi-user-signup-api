@@ -38,7 +38,7 @@ describe Followups::FollowupSender do
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: one_day_ago)
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: two_days_ago)
     end
-    it "sends two emails and to sms messages" do
+    it "sends two emails and two sms messages" do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_email).twice
       expect(notify_client).to have_received(:send_sms).twice

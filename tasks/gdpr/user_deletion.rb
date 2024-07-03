@@ -7,6 +7,7 @@ task :delete_inactive_users do
 
   Gdpr::UseCase::DeleteInactiveUsers.new(user_details_gateway:).execute
   Gdpr::UseCase::ObfuscateSponsors.new(user_details_gateway:).execute
+  Gdpr::UseCase::NotifyInactiveUsers.new(user_details_gateway:).execute
 
   logger.info("Daily Inactive User Cleanup Ran")
 end
