@@ -12,15 +12,15 @@ FactoryBot.define do
     end
     type { "email" }
     status { "delivered" }
+    transient do
+      uuid { SecureRandom.uuid }
+    end
     template do
-      f = lambda do |id|
-        {
-          "version" => "1",
-          "id" => id.to_s,
-          "uri" => "/v2/template/#{id}/1",
-        }
-      end
-      f.call(SecureRandom.uuid)
+      {
+        "version" => "1",
+        "id" => uuid.to_s,
+        "uri" => "/v2/template/#{uuid}/1",
+      }
     end
     sequence :body, 1 do |n|
       "body_#{n}"
