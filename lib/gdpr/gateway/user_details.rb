@@ -6,7 +6,7 @@ class Gdpr::Gateway::Userdetails
     logger = Logger.new($stdout)
 
     logger.info("Finding users that have been inactive for 12 months")
-    inactive_users = DB[:userdetails].select(:username, :contact).where(
+    inactive_users = WifiUser::User.where(
       Sequel.lit("
       (last_login < DATE_SUB(NOW(), INTERVAL 12 MONTH)
       OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)))
@@ -21,12 +21,19 @@ class Gdpr::Gateway::Userdetails
       username = user[:username]
       contact = user[:contact]
 
-      if contact.start_with?("+")
+      logger.info("Found user: #{user}")
+      logger.info("Found username: #{username}")
+      logger.info("Found contact #{contact}")
+      logger.info("Valid email: #{user.valid_email?(contact)}")
+
+      if user.mobile?
         WifiUser::SMSSender.notify_user(username, contact)
-        logger.info("sms sent to #{username}: #{contact}")
-      else
+        logger.info("SMS sent to #{username}: #{contact}")
+      elsif user.valid_email?(contact)
         WifiUser::EmailSender.notify_user(username, contact)
-        logger.info("email sent to #{username}: #{contact}")
+        logger.info("Email sent to #{username}: #{contact}")
+      else
+        logger.warn("Invalid email address for user #{username}: #{contact}")
       end
     end
 
@@ -60,7 +67,7 @@ class Gdpr::Gateway::Userdetails
     logger = Logger.new($stdout)
     logger.info("Starting notification process for users inactive for 11 months")
 
-    inactive_users = DB[:userdetails].select(:username, :contact).where(
+    inactive_users = WifiUser::User.where(
       Sequel.lit("
       (last_login < DATE_SUB(NOW(), INTERVAL 11 MONTH)
       OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL 11 MONTH)))
@@ -74,13 +81,20 @@ class Gdpr::Gateway::Userdetails
       contact = user[:contact]
       username = user[:username]
 
-      if contact.start_with?("+")
+      logger.info("Found user: #{user}")
+      logger.info("Found username: #{username}")
+      logger.info("Found contact #{contact}")
+      logger.info("Valid email: #{user.valid_email?(contact)}")
+
+      if user.mobile?
         WifiUser::SMSSender.send_credentials_expiring_notification(username, contact)
-      else
+      elsif user.valid_email?(contact)
         WifiUser::EmailSender.send_credentials_expiring_notification(username, contact)
+      else
+        logger.warn("Invalid email address for user #{username}: #{contact}")
       end
     end
 
-    logger.info("Finished notification process for users inactive for 11 months")
+    logger.info("Finished notification process for users who were inactive for 11 months")
   end
 end

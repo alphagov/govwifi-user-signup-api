@@ -1,4 +1,5 @@
 class WifiUser::User < Sequel::Model(:userdetails)
+  include WifiUser::EmailAllowListChecker
   unrestrict_primary_key
 
   USERNAME_LENGTH = 6
