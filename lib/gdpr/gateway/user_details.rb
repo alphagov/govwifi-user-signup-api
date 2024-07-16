@@ -21,11 +21,6 @@ class Gdpr::Gateway::Userdetails
       username = user[:username]
       contact = user[:contact]
 
-      logger.info("Found user: #{user}")
-      logger.info("Found username: #{username}")
-      logger.info("Found contact #{contact}")
-      logger.info("Valid email: #{user.valid_email?(contact)}")
-
       if user.mobile?
         WifiUser::SMSSender.notify_user(username, contact)
         logger.info("SMS sent to #{username}: #{contact}")
@@ -80,11 +75,6 @@ class Gdpr::Gateway::Userdetails
     inactive_users.each do |user|
       contact = user[:contact]
       username = user[:username]
-
-      logger.info("Found user: #{user}")
-      logger.info("Found username: #{username}")
-      logger.info("Found contact #{contact}")
-      logger.info("Valid email: #{user.valid_email?(contact)}")
 
       if user.mobile?
         WifiUser::SMSSender.send_credentials_expiring_notification(username, contact)
