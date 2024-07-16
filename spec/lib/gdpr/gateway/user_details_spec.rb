@@ -1,6 +1,7 @@
 describe Gdpr::Gateway::Userdetails do
   let(:user_details) { DB[:userdetails] }
   let(:notify_client) { instance_double(Notifications::Client) }
+  let(:valid_email_regexp) { /^[A-Za-z0-9._%+-]+@gov\.uk$/ }
 
   before :each do
     user_details.delete
@@ -22,15 +23,29 @@ describe Gdpr::Gateway::Userdetails do
       end
 
       context "Given one inactive user" do
+        include WifiUser::EmailAllowListChecker
+
         before do
+          allow(Common::Gateway::S3ObjectFetcher).to receive(:allow_list_regexp).and_return(valid_email_regexp)
           user_details.insert(username: "bob", contact: "+7391480025", last_login: Date.today)
           user_details.insert(username: "sally", contact: "+7391488825", created_at: Date.today - 363)
           user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
+          user_details.insert(username: "Tony", contact: "tony@example.com", last_login: Date.today - 367)
         end
 
         it "deletes only the old user record" do
           subject.delete_users
           expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob sally])
+        end
+
+        it "invalidates an incorrect email" do
+          email_address = "tony@example.com"
+          expect(valid_email?(email_address)).to be false
+        end
+
+        it "validates a correct email" do
+          email_address = "george@gov.uk"
+          expect(valid_email?(email_address)).to be true
         end
 
         it "notifies deleted user" do
