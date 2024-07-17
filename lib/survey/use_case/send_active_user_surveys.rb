@@ -1,19 +1,19 @@
 require "logger"
 
 class Survey::UseCase::SendActiveUserSurveys
-  def initialize(user_details_gateway:, notifications_gateway:)
-    @user_details_gateway = user_details_gateway
-    @notifications_gateway = notifications_gateway
-    @logger = Logger.new($stdout)
-  end
+  def self.execute
+    user_details_gateway = Survey::Gateway::UserDetails.new
 
-  def execute
     users = user_details_gateway.fetch_active
 
-    @logger.info("[active-users-signup-survey] sending survey to #{users.count} users.")
+    Logger.new($stdout).info("[active-users-signup-survey] sending survey to #{users.count} users.")
 
     users.each do |user|
-      @notifications_gateway.execute(user)
+      if user.mobile?
+        WifiUser::SMSSender.send_active_users_signup_survey(user)
+      else
+        WifiUser::EmailSender.send_active_users_signup_survey(user)
+      end
     end
 
     user_details_gateway.mark_as_sent(users)

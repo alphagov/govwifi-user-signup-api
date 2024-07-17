@@ -1,33 +1,55 @@
+require "timecop"
 describe Survey::UseCase::SendActiveUserSurveys do
-  let(:user_details_gateway) { double("gateway double", fetch_active: %i[user1 user2], mark_as_sent: nil) }
-  let(:notifications_gateway) { double("notifications gateway", execute: :success) }
+  let(:year) { 2024 }
+  let(:month) { 5 }
+  let(:day) { 10 }
 
-  subject do
-    described_class.new(
-      user_details_gateway:,
-      notifications_gateway:,
-    )
+  let(:client) { double(Notifications::Client, send_email: nil, send_sms: nil) }
+  before do
+    Timecop.freeze(Time.local(year, month, day, 9, 0, 0))
+    allow(Services).to receive(:notify_client).and_return(client)
+  end
+  after do
+    Timecop.return
   end
 
-  it "calls the user_details_gateway's fetch method" do
-    subject.execute
-
-    expect(user_details_gateway).to have_received(:fetch_active)
+  it "sends an email to a an active user" do
+    user = FactoryBot.create(:user_details, created_at: Time.local(year, month, day - 1, 15, 0, 0))
+    Survey::UseCase::SendActiveUserSurveys.execute
+    expect(client).to have_received(:send_email).with(template_id: "active-users-email-signup-survey-template",
+                                                      email_address: user.contact)
+    expect(client).to_not have_received(:send_sms)
   end
 
-  it "calls the notifications gateway with each value received" do
-    subject.execute
-
-    expect(notifications_gateway)
-      .to have_received(:execute).with(:user1).ordered
-
-    expect(notifications_gateway)
-      .to have_received(:execute).with(:user2).ordered
+  it "sends an sms to a an active user" do
+    user = FactoryBot.create(:user_details, :sms, created_at: Time.local(year, month, day - 1, 15, 0, 0))
+    Survey::UseCase::SendActiveUserSurveys.execute
+    expect(client).to have_received(:send_sms).with(template_id: "active-users-mobile-signup-survey-template",
+                                                    phone_number: user.contact)
+    expect(client).to_not have_received(:send_email)
   end
 
-  it "calls the user_details_gateway's mark_as_sent method" do
-    subject.execute
+  it "does not send a survey to users outside the window" do
+    FactoryBot.create(:user_details, :sms, created_at: Time.local(year, month, day - 3, 15, 0, 0))
+    FactoryBot.create(:user_details, :sms, created_at: Time.local(year, month, day, 9, 0, 0))
+    FactoryBot.create(:user_details, created_at: Time.local(year, month, day - 2, 15, 0, 0))
+    Survey::UseCase::SendActiveUserSurveys.execute
+    expect(client).to_not have_received(:send_email)
+    expect(client).to_not have_received(:send_sms)
+  end
 
-    expect(user_details_gateway).to have_received(:mark_as_sent).with(%i[user1 user2])
+  it "does not send a survey to users that haven't signed in" do
+    FactoryBot.create(:user_details, :inactive, created_at: Time.local(year, month, day - 1, 15, 0, 0))
+    Survey::UseCase::SendActiveUserSurveys.execute
+    expect(client).to_not have_received(:send_email)
+  end
+
+  it "sets the signup_survey_sent_at flag" do
+    user = FactoryBot.create(:user_details, :sms, created_at: Time.local(year, month, day - 1, 15, 0, 0))
+    expect {
+      Survey::UseCase::SendActiveUserSurveys.execute
+    }.to change {
+      user.reload.signup_survey_sent_at
+    }.from(nil).to(Time.local(year, month, day, 9, 0, 0))
   end
 end

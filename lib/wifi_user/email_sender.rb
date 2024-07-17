@@ -91,6 +91,13 @@ class WifiUser::EmailSender
     )
   end
 
+  def self.send_active_users_signup_survey(user)
+    Services.notify_client.send_email(
+      email_address: user.contact,
+      template_id: active_users_signup_survey_template,
+    )
+  end
+
   def self.notify_user_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("notify_user_account_removed")
   end
@@ -129,5 +136,9 @@ class WifiUser::EmailSender
 
   def self.followup_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("followup")
+  end
+
+  def self.active_users_signup_survey_template
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("active_users_signup_survey")
   end
 end
