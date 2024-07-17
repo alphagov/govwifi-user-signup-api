@@ -38,6 +38,13 @@ class WifiUser::SMSSender
     )
   end
 
+  def self.send_active_users_signup_survey(user)
+    Services.notify_client.send_sms(
+      phone_number: user.contact,
+      template_id: active_users_signup_survey_template,
+    )
+  end
+
   def self.notify_user_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_sms_template_ids").fetch("notify_user_account_removed_sms")
   end
@@ -52,5 +59,9 @@ class WifiUser::SMSSender
 
   def self.followup_template
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_sms_template_ids").fetch("followup")
+  end
+
+  def self.active_users_signup_survey_template
+    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_sms_template_ids").fetch("active_users_signup_survey")
   end
 end
