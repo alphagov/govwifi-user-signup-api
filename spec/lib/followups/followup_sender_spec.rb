@@ -2,7 +2,7 @@ require "timecop"
 
 describe Followups::FollowupSender do
   let(:user_details) { DB[:userdetails] }
-  let(:notify_client) { instance_double(Notifications::Client) }
+  let(:notify_client) { instance_double(Notifications::Client, send_email: true, send_sms: true) }
   let(:year) { 2024 }
   let(:month) { 5 }
   let(:day) { 10 }
@@ -13,7 +13,6 @@ describe Followups::FollowupSender do
     user_details.delete
     Timecop.freeze(Time.local(year, month, day, 9, 0, 0))
     allow(Services).to receive(:notify_client).and_return(notify_client)
-    allow(notify_client).to receive_messages(send_email: true, send_sms: true)
   end
 
   after do

@@ -1,167 +1,115 @@
 describe WifiUser::UseCase::SmsResponse do
   let(:user_model) { WifiUser::User }
-  let(:template_finder) { double(execute: notify_template_id) }
-  subject { described_class.new(user_model:, template_finder:) }
+  let(:notify_client) { instance_double(Notifications::Client, send_sms: nil) }
+  let(:logger) { instance_double(Logger, warn: nil) }
+  subject { described_class.new(logger:) }
 
+  before do
+    allow(Services).to receive(:notify_client).and_return(notify_client)
+  end
   context "With named number" do
     let(:phone_number) { "HIDDENNUMBER" }
     let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
-    let(:notify_sms_url) { stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/sms") }
 
     it "does not create a user" do
-      expect(user_model).to_not receive(:find_or_create)
-      subject.execute(contact: phone_number, sms_content: "")
+      expect {
+        subject.execute(contact: phone_number, sms_content: "")
+      }.to_not change(WifiUser::User, :count)
     end
 
     it "does not send a message to this number" do
       subject.execute(contact: phone_number, sms_content: "")
-      expect(notify_sms_url).not_to have_been_requested
+      expect(notify_client).not_to have_received(:send_sms)
     end
   end
 
   context "With valid phone number" do
-    before do
-      expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
-    end
-
-    let(:username) { "hello" }
-    let(:password) { "password" }
-    let(:phone_number) { "+447700900003" }
-    let(:notify_sms_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
-    let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
-    let(:notify_sms_request) do
-      {
-        phone_number:,
-        template_id: notify_template_id,
-        personalisation: {
-          login: username,
-          pass: password,
-        },
-      }
-    end
-    let!(:notify_sms_stub) do
-      stub_request(:post, notify_sms_url).with(body: notify_sms_request)\
-        .to_return(status: 200, body: {}.to_json)
-    end
-
     it "Creates a user with the phone number with a +44 already" do
       subject.execute(contact: "+447700900003", sms_content: "")
+      expect(WifiUser::User.find(contact: "+447700900003")).to_not be nil
     end
 
     it "Creates a user prepended by +44" do
       subject.execute(contact: "07700900003", sms_content: "")
+      expect(WifiUser::User.find(contact: "+447700900003")).to_not be nil
     end
 
     it "Creates a user prepended by +" do
       subject.execute(contact: "447700900003", sms_content: "")
+      expect(WifiUser::User.find(contact: "+447700900003")).to_not be nil
     end
 
-    context "Calls the template finder with the message content" do
+    context "Uses the correct template" do
       it "with a message of Go" do
         subject.execute(contact: "447700900003", sms_content: "Go")
-        expect(template_finder).to have_received(:execute).with(message_content: "Go")
+        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "sms_credentials_template_id"))
       end
 
       it "with a message of Help" do
         subject.execute(contact: "447700900003", sms_content: "Help")
-        expect(template_finder).to have_received(:execute).with(message_content: "Help")
+        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "sms_help_menu_template_id"))
       end
-    end
-
-    it "does not raise an error" do
-      expect {
-        subject.execute(contact: "447700900003", sms_content: "Help")
-      }.to_not raise_error
     end
 
     context "For one set of credentials" do
-      let(:username) { "AnExampleUsername" }
-      let(:password) { "AnExamplePassword" }
       let(:phone_number) { "+447700900005" }
 
       it "Sends details to Notify" do
-        subject.execute(contact: phone_number, sms_content: "")
-        expect(notify_sms_stub).to have_been_requested.times(1)
-      end
-    end
-
-    context "With a separate set of credentials" do
-      let(:username) { "AnotherUsername" }
-      let(:password) { "AnotherPassword" }
-      let(:phone_number) { "+447700900006" }
-      let(:notify_template_id) { "00000000-3333-3333-3333-000000000000" }
-
-      it "Sends details to Notify" do
-        subject.execute(contact: phone_number, sms_content: "")
-        expect(notify_sms_stub).to have_been_requested.times(1)
+        subject.execute(contact: phone_number, sms_content: "Go")
+        user = WifiUser::User.find(contact: phone_number)
+        expect(notify_client).to have_received(:send_sms).with(
+          phone_number:,
+          template_id: "sms_credentials_template_id",
+          personalisation: {
+            login: user.username,
+            pass: user.password,
+          },
+        )
       end
     end
   end
 
   context "With Notifications::Client::BadRequestError" do
-    let(:username) { "hello" }
-    let(:password) { "password" }
     let(:phone_number) { "+447700900003" }
-    let(:notify_sms_url) { "https://api.notifications.service.gov.uk/v2/notifications/sms" }
-    let(:notify_template_id) { "00000000-7777-8888-9999-000000000000" }
-    let(:notify_sms_request) do
-      {
-        phone_number:,
-        template_id: notify_template_id,
-        personalisation: {
-          login: username,
-          pass: password,
-        },
-      }
-    end
 
-    context "with ValidationError" do
-      let!(:notify_sms_stub) do
-        stub_request(:post, notify_sms_url).with(body: notify_sms_request)
-          .to_return(status: 400, body: {
-            "errors": [
-              {
-                "error": "ValidationError",
-                "message": "foo",
-              },
-            ],
-            "status_code": 400,
-          }.to_json)
-      end
-
+    context "with an email address validation error" do
       before do
-        expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
+        allow(notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError,
+                                                             OpenStruct.new(code: 500, body: "ValidationError"))
       end
-
-      it "doesn't raise error" do
+      it "doesn't raise error when the email is not valid" do
         expect {
-          subject.execute(contact: "447700900003", sms_content: "")
+          subject.execute(contact: phone_number, sms_content: "Go")
         }.not_to raise_error
       end
-    end
-
-    context "with FooError" do
-      let!(:notify_sms_stub) do
-        stub_request(:post, notify_sms_url).with(body: notify_sms_request)
-          .to_return(status: 400, body: {
-            "errors": [
-              {
-                "error": "FooError",
-                "message": "foo",
-              },
-            ],
-            "status_code": 400,
-          }.to_json)
+      it "logs the attempt" do
+        subject.execute(contact: phone_number, sms_content: "Go")
+        expect(logger).to have_received(:warn).with(/Failed to send email/)
       end
-
-      before do
-        expect(user_model).to receive(:find_or_create).with(contact: phone_number).and_return(username:, password:)
-      end
-
-      it "raises original error" do
+      it "does not create a user" do
         expect {
-          subject.execute(contact: "447700900003", sms_content: "")
+          subject.execute(contact: phone_number, sms_content: "Go")
+        }.not_to change(WifiUser::User, :count)
+      end
+    end
+    context "with an error that is not a email address validation error" do
+      before do
+        allow(notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError,
+                                                             OpenStruct.new(code: 500, body: "Something"))
+      end
+      it "re-raises the error" do
+        expect {
+          subject.execute(contact: "447700900003", sms_content: "Go")
         }.to raise_error(Notifications::Client::BadRequestError)
+      end
+      it "does not create a user" do
+        expect {
+          begin
+            subject.execute(contact: phone_number, sms_content: "Go")
+          rescue StandardError
+            # Ignored
+          end
+        }.not_to change(WifiUser::User, :count)
       end
     end
   end
