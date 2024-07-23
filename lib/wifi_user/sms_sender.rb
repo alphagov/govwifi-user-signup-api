@@ -45,6 +45,15 @@ class WifiUser::SMSSender
     )
   end
 
+  def send_signup_instructions(phone_number:, sms_content:, personalisation:)
+    template_id = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV")).execute(sms_content:)
+    Services.notify_client.send_sms(
+      phone_number:,
+      template_id:,
+      personalisation:,
+    )
+  end
+
   def self.notify_user_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_sms_template_ids").fetch("notify_user_account_removed_sms")
   end

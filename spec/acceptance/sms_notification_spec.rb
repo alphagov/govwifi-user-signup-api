@@ -1,4 +1,6 @@
 RSpec.describe App do
+  include_context "fake notify"
+
   describe "POSTing an SMS to /user-signup/sms-notification" do
     let(:from_phone_number) { "07700900000" }
     let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
@@ -44,10 +46,6 @@ RSpec.describe App do
     end
 
     describe "environment specific template finder" do
-      before do
-        allow_any_instance_of(WifiUser::UseCase::SmsResponse).to receive(:execute)
-      end
-
       context "production" do
         before do
           ENV["RACK_ENV"] = "production"
@@ -58,8 +56,11 @@ RSpec.describe App do
         end
 
         it "uses the rack environment variable" do
-          expect(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).with(environment: "production")
+          allow(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).and_return(double(execute: "123"))
+
           post_sms_notification
+
+          expect(WifiUser::UseCase::SmsTemplateFinder).to have_received(:new).with(environment: "production")
         end
       end
 
@@ -73,8 +74,11 @@ RSpec.describe App do
         end
 
         it "uses the rack environment variable" do
-          expect(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).with(environment: "staging")
+          allow(WifiUser::UseCase::SmsTemplateFinder).to receive(:new).and_return(double(execute: "123"))
+
           post_sms_notification
+
+          expect(WifiUser::UseCase::SmsTemplateFinder).to have_received(:new).with(environment: "staging")
         end
       end
     end

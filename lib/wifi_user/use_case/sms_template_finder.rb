@@ -1,16 +1,16 @@
 class WifiUser::UseCase::SmsTemplateFinder
-  def initialize(environment:)
+  def initialize(environment: ENV.fetch("RACK_ENV"))
     @environment = environment
   end
 
-  def execute(message_content:)
+  def execute(sms_content:)
     device_name_matchers.each do |matcher, device_name|
-      return device_instruction_config.fetch(device_name) if message_content.match?(matcher)
+      return device_instruction_config.fetch(device_name) if sms_content.match?(matcher)
     end
 
     template_name = "recap"
-    template_name = "credentials" if message_content.match?(/^\s*$/) || message_content.match(/go/i)
-    template_name = "help_menu" if message_content.match?(/help/i)
+    template_name = "credentials" if sms_content.match?(/^\s*$/) || sms_content.match(/go/i)
+    template_name = "help_menu" if sms_content.match?(/help/i)
 
     config[template_name]
   end

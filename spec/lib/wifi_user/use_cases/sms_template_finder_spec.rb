@@ -2,8 +2,8 @@ describe WifiUser::UseCase::SmsTemplateFinder do
   let(:environment) { "production" }
   subject { described_class.new(environment:) }
 
-  def template_for_message(message_content)
-    subject.execute(message_content:)
+  def template_for_message(sms_content)
+    subject.execute(sms_content:)
   end
 
   context "Given no message content" do
