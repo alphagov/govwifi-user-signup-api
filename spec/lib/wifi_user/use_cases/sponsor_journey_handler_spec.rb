@@ -19,13 +19,27 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
   end
   let(:sns_message) { WifiUser::SnsMessage.new(body: request_body.to_json) }
 
-  context "the user is from a non-government address" do
-    let(:raw_sponsor_address) { "test@nongov.uk" }
-    it "raises an error" do
+  context "when the user is from a non-government address" do
+    let(:request_body) do
+      FactoryBot.create(:request_body,
+                        from: "pete@nongov.uk",
+                        to: "sponsor@gov.uk",
+                        messageId:,
+                        type:,
+                        bucketName: bucket_name,
+                        objectKey: object_key)
+    end
+    let(:sns_message) { WifiUser::SnsMessage.new(body: request_body.to_json) }
+
+    it "sends a rejection email and raises an error" do
+      expect(WifiUser::EmailSender).to receive(:send_sponsor_rejection_email)
+        .with("pete@nongov.uk").and_return(true)
+
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-      }.to raise_error(/Unsuccessful sponsor signup attempt/)
+      }.to raise_error(RuntimeError, "Unsuccessful sponsor signup attempt: pete@nongov.uk")
     end
+
     it "does not create a new user" do
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
