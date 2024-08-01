@@ -11,7 +11,7 @@ class WifiUser::UseCase::SmsResponse
       login_details = WifiUser::User.find_or_create(contact: phone_number)
       personalisation = { login: login_details[:username], pass: login_details[:password] }
 
-      WifiUser::SMSSender.new.send_signup_instructions(phone_number:, sms_content:, personalisation:)
+      WifiUser::SMSSender.send_signup_instructions(phone_number:, sms_content:, personalisation:)
     end
   rescue Notifications::Client::BadRequestError => e
     raise e unless e.message.include? "ValidationError"

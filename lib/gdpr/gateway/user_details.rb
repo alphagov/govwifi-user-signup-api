@@ -9,7 +9,7 @@ class Gdpr::Gateway::Userdetails
     @logger = Logger.new($stdout)
   end
 
-  def delete_users
+  def delete_inactive_users
     @logger.info("Finding users that have been inactive for 12 months")
     inactive_users = find_inactive_users(DAYS_IN_YEAR)
 
@@ -21,18 +21,16 @@ class Gdpr::Gateway::Userdetails
       username = user[:username]
       contact = user[:contact]
 
-      if user.mobile?
-        WifiUser::SMSSender.notify_user(username, contact)
-      elsif user.valid_email?(contact)
-        begin
-          WifiUser::EmailSender.notify_user(username, contact)
-        rescue Notifications::Client::BadRequestError => e
-          handle_email_error(e, username, contact)
-        rescue StandardError => e
-          @logger.warn(e.message)
+      begin
+        if user.mobile?
+          WifiUser::SMSSender.send_user_account_removed(username, contact)
+        else
+          WifiUser::EmailSender.send_user_account_removed(username, contact)
         end
-      else
-        @logger.warn("Invalid contact for user #{username}")
+      rescue Notifications::Client::BadRequestError => e
+        handle_email_error(e, username, contact)
+      rescue StandardError => e
+        @logger.warn(e.message)
       end
     end
 
