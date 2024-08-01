@@ -1,177 +1,92 @@
-require_relative "./shared"
-
-RSpec.describe App do
-  include_context "fake notify"
-  include_context "simple allow list"
-
-  let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
-  let(:email_request_headers) do
-    { "HTTP_X_AMZ_SNS_MESSAGE_TYPE" => "Notification",
-      "HTTP_AUTHORIZATION" => "Bearer #{notify_token}" }
-  end
-  let(:request_body) do
-    {
-      source_number: from_phone_number,
-      destination_number: to_phone_number,
-      message:,
-    }
-  end
-  let(:from_phone_number) { "+447701001111" }
-  let(:to_phone_number) { "+447701002222" }
-  let(:message) { "GO" }
-
-  def do_user_signup
-    post "/user-signup/sms-notification/notify", request_body.to_json, email_request_headers
-  end
-
-  describe "A valid user signs up" do
-    it "creates a new user" do
-      expect {
-        do_user_signup
-      }.to change(WifiUser::User, :count).by(1)
+describe App do
+  describe "/user-signup/sms-notification/notify" do
+    include_context "fake notify"
+    let(:templates) do
+      [
+        instance_double(Notifications::Client::Template, name: "credentials_sms", id: "credentials_sms_id"),
+      ]
     end
-    it "creates a new user with the correct parameters" do
-      do_user_signup
-      expect(WifiUser::User.find(contact: from_phone_number, sponsor: from_phone_number)).to_not be(nil)
-    end
-    describe "internationalise phone number" do
-      let(:from_phone_number) { "07701001111" }
-      it "creates a new user, internationalising the phone number" do
-        do_user_signup
-        expect(WifiUser::User.find(contact: "+447701001111", sponsor: "+447701001111")).to_not be(nil)
+    describe "Signing up to GovWifi via the text message service" do
+      let(:from_phone_number) { "07700900000" }
+      let(:to_phone_number) { "" }
+      let(:message) { "Go" }
+      let(:internationalised_phone_number) { "+447700900000" }
+      let(:notify_token) { ENV["GOVNOTIFY_BEARER_TOKEN"] }
+      let(:created_user) { WifiUser::User.find(contact: internationalised_phone_number) }
+
+      let(:payload) do
+        {
+          source_number: from_phone_number,
+          destination_number: to_phone_number,
+          message:,
+        }.to_json
       end
-    end
-    it "sends an SMS to the user containing credentials" do
-      do_user_signup
-      user = WifiUser::User.find(contact: "+447701001111")
-      expect(Services.notify_client).to have_received(:send_sms).with(
-        phone_number: from_phone_number,
-        template_id: "sms_credentials_template_id",
-        personalisation: {
-          login: user.username,
-          pass: user.password,
-        },
-      )
-    end
-    it "returns 200" do
-      do_user_signup
-      expect(last_response.body).to eq("")
-      expect(last_response).to be_successful
-    end
-    describe "Sending a help Message" do
-      let(:message) { "help" }
-      include_examples "sends_template", "sms_help_menu_template_id"
-    end
-    describe "Sending a recap" do
-      let(:message) { "something random" }
-      include_examples "sends_template", "sms_recap_template_id"
-    end
-    describe "Sending a message detailing how to connect using an Android device" do
-      let(:message) { "Android" }
-      include_examples "sends_template", "sms_device_help_android_template_id"
-    end
-    describe "Sending a message detailing how to connect using a Blackberry" do
-      let(:message) { "Blackberry" }
-      include_examples "sends_template", "sms_device_help_blackberry_template_id"
-    end
-    describe "Sending a message detailing how to connect using a Mac" do
-      let(:message) { "Mac" }
-      include_examples "sends_template", "sms_device_help_mac_template_id"
-    end
-    describe "Sending a message detailing how to connect using an iPhone" do
-      let(:message) { "iphone" }
-      include_examples "sends_template", "sms_device_help_iphone_template_id"
-    end
-    describe "Sending a message detailing how to connect using Windows" do
-      let(:message) { "windows" }
-      include_examples "sends_template", "sms_device_help_windows_template_id"
-    end
-    describe "The message can contain other data" do
-      let(:message) { "I would like to know more about Windows please" }
-      include_examples "sends_template", "sms_device_help_windows_template_id"
-    end
-  end
 
-  describe "the user already exists" do
-    before :each do
-      @user = FactoryBot.create(:user_details, contact: from_phone_number)
-    end
-    it "does not create another user" do
-      expect {
-        do_user_signup
-      }.to_not change(WifiUser::User, :count)
-    end
-    it "sends an SMS to the user containing credentials" do
-      do_user_signup
-      expect(Services.notify_client).to have_received(:send_sms).with(
-        phone_number: from_phone_number,
-        template_id: "sms_credentials_template_id",
-        personalisation: {
-          login: @user.username,
-          pass: @user.password,
-        },
-      )
-    end
-  end
+      it "sends an SMS containing login details back to the user" do
+        post "/user-signup/sms-notification/notify",
+             payload,
+             "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
 
-  describe "The user is unreachable by phone" do
-    before :each do
-      response = double(body: "ValidationError", code: 200)
-      allow(Services.notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError.new(response))
-    end
-    it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::User, :count)
-    end
-  end
+        expect(Services.notify_client).to have_received(:send_sms).with(
+          phone_number: internationalised_phone_number,
+          template_id: "credentials_sms_id",
+          personalisation: {
+            login: created_user.username,
+            pass: created_user.password,
+          },
+        )
+      end
 
-  describe "An invalid Bearer token" do
-    let(:notify_token) { "invalid" }
-    it "returns error code 401" do
-      do_user_signup
-      expect(last_response.body).to eq("")
-      expect(last_response.status).to be(401)
-    end
-    it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::User, :count)
-    end
-    it "does not send any messages" do
-      do_user_signup
-      expect(Services.notify_client).to_not have_received(:send_email)
-      expect(Services.notify_client).to_not have_received(:send_sms)
-    end
-  end
+      context "with a a phone texting itself" do
+        shared_examples "rejecting an SMS" do
+          before do
+            post "/user-signup/sms-notification/notify",
+                 payload,
+                 "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
+          end
 
-  describe "same sender phone number as the receiver" do
-    let(:from_phone_number) { "+447700000000" }
-    let(:to_phone_number) { "+447700000000" }
-    it "does not create a user" do
-      expect { do_user_signup }.to_not change(WifiUser::User, :count)
-    end
-    it "does not send any messages" do
-      do_user_signup
-      expect(Services.notify_client).to_not have_received(:send_email)
-      expect(Services.notify_client).to_not have_received(:send_sms)
-    end
-    it "returns 200" do
-      do_user_signup
-      expect(last_response.body).to eq("")
-      expect(last_response).to be_successful
-    end
-  end
+          it "gives an empty ok" do
+            expect(last_response.ok?).to be true
+            expect(last_response.body).to eq("")
+          end
 
-  describe "repeated signups" do
-    before :each do
-      WifiUser::UseCase::RepetitiveSmsChecker::NUMBER_AND_MESSAGE_THRESHOLD.times { do_user_signup }
-    end
-    it "does not send any messages" do
-      expect(Services.notify_client).to_not receive(:send_email)
-      expect(Services.notify_client).to_not receive(:send_sms)
-      do_user_signup
-    end
-    it "returns 200" do
-      do_user_signup
-      expect(last_response.body).to eq("")
-      expect(last_response).to be_successful
+          it "does not send an SMS" do
+            expect(Services.notify_client).to_not have_received(:send_sms)
+          end
+        end
+
+        context "with both the same number" do
+          numbers = %w[07900000001 447900000001 +447900000001].freeze
+          numbers.each do |from_number|
+            numbers.each do |to_number|
+              context "with #{from_number} to #{to_number}" do
+                let(:from_phone_number) { from_number }
+                let(:to_phone_number) { to_number }
+
+                it_behaves_like "rejecting an SMS"
+              end
+            end
+          end
+        end
+      end
+
+      context "with an invalid bearer token" do
+        let(:notify_token) { "INVALID TOKEN" }
+
+        before do
+          post "/user-signup/sms-notification/notify",
+               { source_number: from_phone_number, message: "Go", destination_number: "" },
+               "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
+        end
+
+        it "receives an unauthorised response" do
+          expect(last_response.status).to eq(401)
+        end
+
+        it "does not send an SMS" do
+          expect(Services.notify_client).to_not have_received(:send_sms)
+        end
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 require "sequel"
 require "yaml"
 
-if %w[production staging].include?(ENV["RACK_ENV"])
+unless ENV["SENTRY_DSN"].nil?
   require "raven"
 
   Raven.configure do |config|
