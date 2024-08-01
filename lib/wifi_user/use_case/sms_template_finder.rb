@@ -1,26 +1,19 @@
 class WifiUser::UseCase::SmsTemplateFinder
-  def initialize(environment: ENV.fetch("RACK_ENV"))
-    @environment = environment
-  end
-
   def execute(sms_content:)
-    device_name_matchers.each do |matcher, device_name|
-      return device_instruction_config.fetch(device_name) if sms_content.match?(matcher)
-    end
+    return "credentials_sms" if sms_content.match?(/^\s*$/) || sms_content.match(/go/i)
+    return "help_menu_sms" if sms_content.match?(/help/i)
 
-    template_name = "recap"
-    template_name = "credentials" if sms_content.match?(/^\s*$/) || sms_content.match(/go/i)
-    template_name = "help_menu" if sms_content.match?(/help/i)
-
-    config[template_name]
+    device_help_template_name(sms_content) || "recap_sms"
   end
 
 private
 
   attr_reader :environment
 
-  def device_instruction_config
-    config.fetch("device_help")
+  def device_help_template_name(sms_content)
+    device_name_matchers.lazy.map { |matcher, device_name|
+      "device_help_#{device_name}_sms" if sms_content.match?(matcher)
+    }.find { |result| !result.nil? }
   end
 
   def device_name_matchers
@@ -33,9 +26,5 @@ private
       /5|blackberry/i => "blackberry",
       /6|chromebook/i => "chromebook",
     }
-  end
-
-  def config
-    YAML.load_file("config/#{environment}.yml")["notify_sms_template_ids"]
   end
 end

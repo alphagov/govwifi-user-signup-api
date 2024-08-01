@@ -2,7 +2,7 @@ require "logger"
 
 class Gdpr::Gateway::Userdetails
   SESSION_BATCH_SIZE = 500
-  def delete_users
+  def delete_inactive_users
     logger = Logger.new($stdout)
 
     logger.info("Finding users that have been inactive for 12 months")
@@ -22,10 +22,10 @@ class Gdpr::Gateway::Userdetails
       contact = user[:contact]
 
       if user.mobile?
-        WifiUser::SMSSender.notify_user(username, contact)
+        WifiUser::SMSSender.send_user_account_removed(username, contact)
         logger.info("SMS sent to #{username}: #{contact}")
       elsif user.valid_email?(contact)
-        WifiUser::EmailSender.notify_user(username, contact)
+        WifiUser::EmailSender.send_user_account_removed(username, contact)
         logger.info("Email sent to #{username}: #{contact}")
       else
         logger.warn("Invalid email address for user #{username}: #{contact}")

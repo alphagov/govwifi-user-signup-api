@@ -1,12 +1,22 @@
 describe Gdpr::Gateway::Userdetails do
+  include_context "fake notify"
+
+  let(:templates) do
+    [
+      instance_double(Notifications::Client::Template, name: "credentials_expiring_notification_email", id: "credentials_expiring_notification_email_id"),
+      instance_double(Notifications::Client::Template, name: "credentials_expiring_notification_sms", id: "credentials_expiring_notification_sms_id"),
+      instance_double(Notifications::Client::Template, name: "user_account_removed_sms", id: "user_account_removed_sms_id"),
+      instance_double(Notifications::Client::Template, name: "user_account_removed_email", id: "user_account_removed_email_id"),
+      instance_double(Notifications::Client::Template, name: "active_users_signup_survey_sms", id: "active_users_signup_survey_sms_id"),
+      instance_double(Notifications::Client::Template, name: "active_users_signup_survey_email", id: "active_users_signup_survey_email_id"),
+    ]
+  end
   let(:user_details) { DB[:userdetails] }
-  let(:notify_client) { instance_double(Notifications::Client) }
+  let(:notify_client) { Services.notify_client }
   let(:valid_email_regexp) { /^[A-Za-z0-9._%+-]+@gov\.uk$/ }
 
   before :each do
     user_details.delete
-    allow(Services).to receive(:notify_client).and_return(notify_client)
-    allow(notify_client).to receive_messages(send_email: true, send_sms: true)
   end
 
   context "Deleting old users" do
@@ -18,7 +28,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "does not delete any users" do
-          expect { subject.delete_users }.not_to(change { user_details.count })
+          expect { subject.delete_inactive_users }.not_to(change { user_details.count })
         end
       end
 
@@ -34,8 +44,8 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "deletes only the old user record" do
-          subject.delete_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob sally])
+          subject.delete_inactive_users
+          expect(user_details.select_map(:username)).to match_array(%w[bob sally])
         end
 
         it "invalidates an incorrect email" do
@@ -51,12 +61,12 @@ describe Gdpr::Gateway::Userdetails do
         it "notifies deleted user" do
           expect(notify_client).to receive(:send_email).with(
             email_address: "george@gov.uk",
-            template_id: "6b0234d7-ede5-4593-bd10-fee9269fa656",
+            template_id: "user_account_removed_email_id",
             personalisation: { inactivity_period: "12 months" },
             email_reply_to_id: "do_not_reply_email_template_id",
           ).once
 
-          subject.delete_users
+          subject.delete_inactive_users
         end
       end
 
@@ -67,8 +77,8 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "deletes all the inactive users" do
-          subject.delete_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to be_empty
+          subject.delete_inactive_users
+          expect(user_details.select_map(:username)).to be_empty
         end
 
         context "Given a HEALTH user" do
@@ -78,8 +88,8 @@ describe Gdpr::Gateway::Userdetails do
             end
 
             it "does not delete the HEALTH user" do
-              subject.delete_users
-              expect(user_details.all.map { |s| s.fetch(:username) }).to include("HEALTH")
+              subject.delete_inactive_users
+              expect(user_details.select_map(:username)).to include("HEALTH")
             end
           end
         end
@@ -94,7 +104,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "does not delete any user details" do
-          expect { subject.delete_users }.not_to(change { user_details.count })
+          expect { subject.delete_inactive_users }.not_to(change { user_details.count })
         end
       end
 
@@ -106,7 +116,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "does deletes only the old user record" do
-          subject.delete_users
+          subject.delete_inactive_users
           expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob sally])
         end
       end
@@ -118,7 +128,7 @@ describe Gdpr::Gateway::Userdetails do
         end
 
         it "deletes all the inactive users" do
-          subject.delete_users
+          subject.delete_inactive_users
           expect(user_details.all).to be_empty
         end
 
@@ -128,7 +138,7 @@ describe Gdpr::Gateway::Userdetails do
           end
 
           it "does not delete the HEALTH user" do
-            subject.delete_users
+            subject.delete_inactive_users
             expect(user_details.all.map { |s| s.fetch(:username) }).to include("HEALTH")
           end
         end
@@ -201,20 +211,20 @@ describe Gdpr::Gateway::Userdetails do
     end
 
     it "notifies inactive users" do
-      expect(notify_client).to receive(:send_email).with(
+      subject.notify_inactive_users
+
+      expect(notify_client).to have_received(:send_email).with(
         email_address: "Kate@digital.cabinet-office.gov.uk",
-        template_id: "30af3d4a-6bc0-4455-93b6-9c0422e5109d",
+        template_id: "credentials_expiring_notification_email_id",
         personalisation: { inactivity_period: "11 months", username: "Kate" },
         email_reply_to_id: "do_not_reply_email_template_id",
       ).once
 
-      expect(notify_client).to receive(:send_sms).with(
+      expect(notify_client).to have_received(:send_sms).with(
         phone_number: "+07391491234",
-        template_id: "3d24dcb3-503c-4045-9ac4-22d0868eb49f",
+        template_id: "credentials_expiring_notification_sms_id",
         personalisation: { inactivity_period: "11 months", username: "Rob" },
       ).once
-
-      subject.notify_inactive_users
     end
 
     it "does not notify active users" do

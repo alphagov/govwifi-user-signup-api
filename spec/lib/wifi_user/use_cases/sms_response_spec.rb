@@ -1,6 +1,12 @@
 describe WifiUser::UseCase::SmsResponse do
-  let(:user_model) { WifiUser::User }
-  let(:notify_client) { instance_double(Notifications::Client, send_sms: nil) }
+  include_context "fake notify"
+  let(:templates) do
+    [
+      instance_double(Notifications::Client::Template, name: "credentials_sms", id: "credentials_sms_id"),
+      instance_double(Notifications::Client::Template, name: "help_menu_sms", id: "help_menu_sms_id"),
+    ]
+  end
+  let(:notify_client) { Services.notify_client }
   let(:logger) { instance_double(Logger, warn: nil) }
   subject { described_class.new(logger:) }
 
@@ -42,12 +48,12 @@ describe WifiUser::UseCase::SmsResponse do
     context "Uses the correct template" do
       it "with a message of Go" do
         subject.execute(contact: "447700900003", sms_content: "Go")
-        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "sms_credentials_template_id"))
+        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "credentials_sms_id"))
       end
 
       it "with a message of Help" do
         subject.execute(contact: "447700900003", sms_content: "Help")
-        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "sms_help_menu_template_id"))
+        expect(notify_client).to have_received(:send_sms).with(hash_including(template_id: "help_menu_sms_id"))
       end
     end
 
@@ -59,7 +65,7 @@ describe WifiUser::UseCase::SmsResponse do
         user = WifiUser::User.find(contact: phone_number)
         expect(notify_client).to have_received(:send_sms).with(
           phone_number:,
-          template_id: "sms_credentials_template_id",
+          template_id: "credentials_sms_id",
           personalisation: {
             login: user.username,
             pass: user.password,

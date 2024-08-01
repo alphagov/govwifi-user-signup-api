@@ -1,18 +1,27 @@
 require "timecop"
 
 describe Followups::FollowupSender do
+  include_context "fake notify"
+
+  let(:templates) do
+    [
+      instance_double(Notifications::Client::Template, name: "followup_email", id: "followup_email_id"),
+      instance_double(Notifications::Client::Template, name: "followup_sms", id: "followup_sms_id"),
+    ]
+  end
+
   let(:user_details) { DB[:userdetails] }
-  let(:notify_client) { instance_double(Notifications::Client, send_email: true, send_sms: true) }
+  let(:notify_client) { Services.notify_client }
   let(:year) { 2024 }
   let(:month) { 5 }
   let(:day) { 10 }
   let(:one_day_ago) { Date.new(year, month, day - 1) }
   let(:two_days_ago) { Date.new(year, month, day - 2) }
+  let(:notify_client) { Services.notify_client }
 
   before :each do
     user_details.delete
     Timecop.freeze(Time.local(year, month, day, 9, 0, 0))
-    allow(Services).to receive(:notify_client).and_return(notify_client)
   end
 
   after do
@@ -52,7 +61,7 @@ describe Followups::FollowupSender do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_email).with(
         email_address: contact,
-        template_id: "email_followup_template_id",
+        template_id: "followup_email_id",
         email_reply_to_id: "do_not_reply_email_template_id",
       )
     end
@@ -89,7 +98,7 @@ describe Followups::FollowupSender do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_sms).with(
         phone_number: contact,
-        template_id: "sms_followup_template_id",
+        template_id: "followup_sms_id",
       )
     end
   end

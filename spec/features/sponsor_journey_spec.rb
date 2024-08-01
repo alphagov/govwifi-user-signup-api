@@ -2,6 +2,16 @@ require_relative "./shared"
 
 RSpec.describe App do
   include_context "fake notify"
+
+  let(:templates) do
+    [
+      instance_double(Notifications::Client::Template, name: "sponsor_credentials_email", id: "sponsor_credentials_email_id"),
+      instance_double(Notifications::Client::Template, name: "sponsor_confirmation_plural_email", id: "sponsor_confirmation_plural_id"),
+      instance_double(Notifications::Client::Template, name: "sponsor_confirmation_singular_email", id: "sponsor_confirmation_singular_id"),
+      instance_double(Notifications::Client::Template, name: "sponsor_confirmation_failed_email", id: "sponsor_confirmation_failed_id"),
+      instance_double(Notifications::Client::Template, name: "credentials_sms", id: "credentials_sms_id"),
+    ]
+  end
   include_context "simple allow list"
 
   describe "POST /user-signup/sms-notification/notify" do
@@ -35,7 +45,7 @@ RSpec.describe App do
             password: user.password,
             sponsor: sponsor_address,
           },
-          template_id: "email_sponsored_credentials_template_id",
+          template_id: "sponsor_credentials_email_id",
           email_reply_to_id: "do_not_reply_email_template_id",
         },
       )
@@ -50,7 +60,7 @@ RSpec.describe App do
             login: user.username,
             pass: user.password,
           },
-          template_id: "sms_credentials_template_id",
+          template_id: "credentials_sms_id",
         },
       )
     end
@@ -66,7 +76,7 @@ RSpec.describe App do
           do_user_signup
         }.to_not change(WifiUser::User, :count)
       end
-      it "sends an email to the sponsored user" do
+      it "sends messages to sponsored users" do
         do_user_signup
         notify_has_sent_email_to "john@nongov.uk"
         notify_has_sent_sms_to("+447701001111")
@@ -79,7 +89,7 @@ RSpec.describe App do
             number_of_accounts: 2,
             contacts: "john@nongov.uk\r\n+447701001111",
           },
-          template_id: "email_sponsor_confirmation_plural_template_id",
+          template_id: "sponsor_confirmation_plural_id",
           email_reply_to_id: "do_not_reply_email_template_id",
         )
       end
@@ -160,7 +170,7 @@ RSpec.describe App do
             number_of_accounts: 2,
             contacts: "john@nongov.uk\r\n+447701001111",
           },
-          template_id: "email_sponsor_confirmation_plural_template_id",
+          template_id: "sponsor_confirmation_plural_id",
           email_reply_to_id: "do_not_reply_email_template_id",
         )
       end
@@ -172,15 +182,15 @@ RSpec.describe App do
           personalisation: {
             contact: "john@nongov.uk",
           },
-          template_id: "email_sponsor_confirmation_singular_template_id",
+          template_id: "sponsor_confirmation_singular_id",
           email_reply_to_id: "do_not_reply_email_template_id",
         )
       end
       it "sends a receipt when a sponsee email has failed to send" do
         write_email_to_s3(body: "07701001111\njohn@nongov.uk", bucket_name:, object_key:)
         error = Notifications::Client::RequestError.new(double(body: "ValidationError", code: 200))
-        allow(Services.notify_client).to receive(:send_email).with(hash_including(template_id: "email_sponsored_credentials_template_id")).and_raise error
-        allow(Services.notify_client).to receive(:send_sms).with(hash_including(template_id: "sms_credentials_template_id")).and_raise error
+        allow(Services.notify_client).to receive(:send_email).with(hash_including(template_id: "sponsor_credentials_email_id")).and_raise error
+        allow(Services.notify_client).to receive(:send_sms).with(hash_including(template_id: "credentials_sms_id")).and_raise error
 
         do_user_signup
         expect(Services.notify_client).to have_received(:send_email).with(
@@ -188,7 +198,7 @@ RSpec.describe App do
           personalisation: {
             failedSponsees: "* +447701001111\n* john@nongov.uk",
           },
-          template_id: "email_sponsor_confirmation_failed_template_id",
+          template_id: "sponsor_confirmation_failed_id",
           email_reply_to_id: "do_not_reply_email_template_id",
         )
       end
