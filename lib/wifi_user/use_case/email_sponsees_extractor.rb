@@ -44,7 +44,7 @@ private
   end
 
   def lines_from_html(html_part)
-    Nokogiri::HTML(html_part.decoded).xpath("//text()[not(ancestor::style)]").map do |node|
+    Nokogiri::HTML(html_part.decoded).xpath("//text()[not(ancestor::style) and not(ancestor::img)]").map do |node|
       node.xpath("normalize-space()")
     end
   end
