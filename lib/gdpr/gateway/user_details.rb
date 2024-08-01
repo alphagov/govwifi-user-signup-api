@@ -64,7 +64,7 @@ class Gdpr::Gateway::Userdetails
 
   def notify_inactive_users
     @logger.info("Starting notification process for users inactive for 11 months")
-    inactive_users = find_users_inactive_for_11_months(DAYS_IN_11_MONTHS)
+    inactive_users = find_inactive_users_for_exact_number_of_days(DAYS_IN_11_MONTHS)
 
     @logger.info("Found #{inactive_users.size} inactive users")
 
@@ -102,7 +102,7 @@ private
     ).all
   end
 
-  def find_users_inactive_for_11_months(days)
+  def find_inactive_users_for_exact_number_of_days(days)
     WifiUser::User.where(
       Sequel.lit("
       (DATE(last_login) = DATE_SUB(CURDATE(), INTERVAL ? DAY)
