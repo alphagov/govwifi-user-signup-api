@@ -79,11 +79,12 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.notify_user(_username, contact)
+  def self.notify_user(username, contact)
     Services.notify_client.send_email(
       email_address: contact,
       template_id: notify_user_template_id,
       personalisation: {
+        username:,
         inactivity_period: "12 months",
       },
       email_reply_to_id: do_not_reply_email_address_id,
