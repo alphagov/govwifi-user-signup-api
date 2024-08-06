@@ -8,11 +8,7 @@ class WifiUser::UseCase::SponsorJourneyHandler
   def execute
     sponsor_address = @sns_message.from_address
     raw_sponsor_address = @sns_message.raw_from_address
-
-    if invalid_email?(sponsor_address)
-      send_rejection_email(sponsor_address)
-      raise "Unsuccessful sponsor signup attempt: #{sponsor_address}"
-    end
+    raise "Unsuccessful sponsor signup attempt: #{sponsor_address}" if invalid_email?(sponsor_address)
 
     sponsee_addresses = WifiUser::UseCase::EmailSponseesExtractor.new(sns_message: @sns_message).execute
     raise "Unable to find sponsees: #{sponsor_address}" if sponsee_addresses.empty?
@@ -33,12 +29,6 @@ class WifiUser::UseCase::SponsorJourneyHandler
   end
 
 private
-
-  def send_rejection_email(sponsor_address)
-    WifiUser::EmailSender.send_sponsor_rejection_email(sponsor_address)
-  rescue StandardError => e
-    puts "Failed to send rejection email: #{e.message}"
-  end
 
   def deliver_to_sponsees(raw_sponsor_address:, sponsee_users:)
     sponsee_users.partition do |sponsee_user|
