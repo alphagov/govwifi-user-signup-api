@@ -16,6 +16,7 @@ notify_sms_template_ids:
 
 notify_email_template_ids:
   self_signup_credentials: e67776c1-7ac4-43b1-b5fb-09aae69a5405
+  sponsor_rejection: 8504d92b-9275-4857-a04e-046df0cd874a
   rejected_email_address: dabb9566-ae35-4ada-a9c5-2dd0db099539
   sponsored_credentials: 18aac792-fd98-4d96-884c-2179bdc2a76f
   sponsor_confirmation:
