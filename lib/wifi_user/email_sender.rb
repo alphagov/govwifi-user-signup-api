@@ -25,14 +25,6 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_sponsor_rejection_email(sponsor_address)
-    Services.notify_client.send_email(
-      email_address: sponsor_address,
-      template_id: sponsor_rejection_email_template_id,
-      email_reply_to_id: do_not_reply_email_address_id,
-    )
-  end
-
   def self.send_sponsor_confirmation_plural(sponsor_address, sponsee_users)
     Services.notify_client.send_email(
       email_address: sponsor_address,
@@ -109,10 +101,6 @@ class WifiUser::EmailSender
 
   def self.sponsor_email_template_id
     YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("sponsored_credentials")
-  end
-
-  def self.sponsor_rejection_email_template_id
-    YAML.load_file("config/#{ENV['RACK_ENV']}.yml").fetch("notify_email_template_ids").fetch("sponsor_rejection")
   end
 
   def self.credentials_template_id
