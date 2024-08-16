@@ -5,6 +5,7 @@ gem "aws-sdk-s3", "~> 1"
 gem "mail", "~> 2.8"
 gem "mysql2"
 gem "net-smtp"
+gem 'phonelib'
 gem "nokogiri", "~> 1.16"
 gem "notifications-ruby-client", "~> 6.1.0"
 gem "puma"
