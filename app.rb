@@ -7,7 +7,10 @@ require "notifications/client"
 require "./lib/loader"
 
 class App < Sinatra::Base
-  use Raven::Rack if defined? Raven
+  if ENV.key?("SENTRY_DSN")
+    use Sentry::Rack::CaptureExceptions
+  end
+
   register Sinatra::SensibleLogging
 
   sensible_logging(
@@ -44,6 +47,9 @@ class App < Sinatra::Base
     else
       WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
     end
+  rescue Notifications::Client::RequestError => e
+    logger.error(e.message)
+    raise
   rescue StandardError => e
     logger.warn(e.message)
   ensure
