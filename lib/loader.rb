@@ -1,11 +1,12 @@
 require "sequel"
 require "yaml"
 
-if %w[production staging].include?(ENV["RACK_ENV"])
-  require "raven"
+if ENV.key?("SENTRY_DSN")
+  require "sentry-ruby"
 
-  Raven.configure do |config|
+  Sentry.init do |config|
     config.dsn = ENV["SENTRY_DSN"]
+    config.send_default_pii = true
   end
 end
 
