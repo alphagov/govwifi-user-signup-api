@@ -11,7 +11,7 @@ gem "puma"
 gem "rake", "~> 13.2"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.8"
-gem "sentry-raven"
+gem "sentry-ruby"
 gem "sequel", "~> 5.81"
 gem "sinatra"
 
