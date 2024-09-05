@@ -7,6 +7,10 @@ require "notifications/client"
 require "./lib/loader"
 
 class App < Sinatra::Base
+  if ENV.key?("SENTRY_DSN")
+    use Sentry::Rack::CaptureExceptions
+  end
+
   register Sinatra::SensibleLogging
 
   sensible_logging(
@@ -31,22 +35,7 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
-    raise "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
-
-    sns_message = WifiUser::SnsMessage.new(body: request.body.read)
-
-    halt 200, "" if sns_message.type != "Notification" || sns_message.message_id == "AMAZON_SES_SETUP_NOTIFICATION"
-    logger.info(sns_message.to_s) if sns_message.type == "SubscriptionConfirmation"
-
-    if sns_message.sponsor_request?
-      WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-    else
-      WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
-    end
-  rescue StandardError => e
-    logger.warn(e.message)
-  ensure
-    halt 200, ""
+    raise "This is broken"
   end
 
   post "/user-signup/sms-notification/notify" do
