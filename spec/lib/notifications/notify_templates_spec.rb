@@ -25,4 +25,23 @@ describe Notifications::NotifyTemplates do
       expect(Notifications::NotifyTemplates.template(template_one.to_sym)).to eq("template_one_id")
     end
   end
+  describe "#verify_templates" do
+    let(:templates) do
+      Notifications::NotifyTemplates::TEMPLATES.each_with_index.map do |template, index|
+        instance_double(Notifications::Client::Template, name: template, id: index.to_s)
+      end
+    end
+    it "verifies all templates" do
+      expect {
+        Notifications::NotifyTemplates.verify_templates
+      }.to_not raise_error
+    end
+    it "has a missing template" do
+      missing_template = templates.delete_at(0)
+
+      expect {
+        Notifications::NotifyTemplates.verify_templates
+      }.to raise_error(/Some templates have not been defined in Notify: #{missing_template.name}/)
+    end
+  end
 end

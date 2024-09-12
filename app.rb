@@ -31,7 +31,10 @@ class App < Sinatra::Base
   end
 
   get "/healthcheck" do
+    Notifications::NotifyTemplates.verify_templates
     "Healthy"
+  rescue StandardError => e
+    halt 500, e.message
   end
 
   post "/user-signup/email-notification" do

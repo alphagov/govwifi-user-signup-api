@@ -37,5 +37,11 @@ module Notifications
     def self.template(name)
       template_hash.fetch(name.is_a?(Symbol) ? name.to_s : name)
     end
+
+    def self.verify_templates
+      names = Services.notify_client.get_all_templates.collection.map(&:name)
+      differences = Notifications::NotifyTemplates::TEMPLATES - names
+      raise "Some templates have not been defined in Notify: #{differences.join(', ')}" unless differences.empty?
+    end
   end
 end
