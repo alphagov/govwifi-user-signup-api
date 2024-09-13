@@ -1,32 +1,32 @@
 notify_sms_template_ids:
-  credentials: 24d47eb3-8b02-4eba-aa04-81ffaf4bb1b4
-  help_menu: 512deae1-7ec4-4888-8f2d-7be79e5eb379
-  recap: 72dbd002-913f-4207-8c74-9a8a576d0dc7
+  credentials: 853a63bd-2f0f-4b17-bf03-9a6294b085b2
+  help_menu: d10c03a9-e51b-4cdf-8030-bce8ef846f09
+  recap: 244e8cf1-bb5a-4848-a63e-f1129b9115ae
   device_help:
-    other: 60985003-1682-45a6-8d8d-e121cadbc234
-    android: ee81124c-2a92-4b63-a7be-258aedb26ed8
-    blackberry: 57b362d0-9753-4fd9-ada0-bfd643db8eee
-    mac: ec8f83bb-5371-40bf-b777-307a52926fe1
-    iphone: 1dc8b2b5-b2e6-4bce-9aae-ee1e9c7cb650
-    windows: 3b8f158b-22c8-4226-b84b-3ea5085a46d5
-    chromebook: 1cf2cc2f-fbb3-465b-88b6-521e63cfeab8
-  active_users_signup_survey: 3aaaabe1-fa0b-4e41-8033-6dc5e44705eb
-  followup: f084f526-9a11-4b29-8707-8e2ebc0148c6
-  credentials_expiring_notification: 3d24dcb3-503c-4045-9ac4-22d0868eb49f
-  notify_user_account_removed_sms: 4976e93a-e9e8-4e64-bdd0-5aeaf188c56b
+    other: 8bc7bccc-d7b6-4f47-85d8-6ca43b54b706
+    android: 0e035c13-3ee9-4b7e-9069-7da607553f14
+    blackberry: 0e035c13-3ee9-4b7e-9069-7da607553f14
+    mac: a16ffddb-0e5d-4a59-9f4e-76599f84b881
+    iphone: a18b0924-343e-4087-be2f-3b5f21a4588e
+    windows: a16ffddb-0e5d-4a59-9f4e-76599f84b881
+    chromebook: 666ace7e-803e-4b16-9fde-1888bb0ea8e8
+  active_users_signup_survey: 2b33ff5e-3cc9-4792-a12a-c807bfa33407
+  followup: cc4347d5-7d4e-46e2-8961-6d7cf5839b2d
+  credentials_expiring_notification: 1be32f7d-645b-42db-90eb-2c7bc2059bb7
+  notify_user_account_removed_sms: 8c63a963-189a-4714-9079-24f6310b96ca
 
 notify_email_template_ids:
-  self_signup_credentials: 96d1f5ac-2ebe-41a7-878f-9a569e0bb55c
-  sponsor_rejection: f88c876a-5ead-4f1c-acc3-164839fa7134
-  rejected_email_address:  dabb9566-ae35-4ada-a9c5-2dd0db099539
-  sponsored_credentials: 4f6bae31-5add-43a9-b0e3-7db43452676e
+  self_signup_credentials: 2f88f41a-8cbc-4717-bca1-754e34cc42fd
+  sponsor_rejection: 031d7b38-af4f-4642-9853-03e16cb7e987
+  rejected_email_address: 604ae321-656b-40fa-8b96-0114df283883
+  sponsored_credentials: 8e4fc728-e3e8-47f3-8b26-21bf6d12a348
   sponsor_confirmation:
-    plural: 856a5726-1099-4236-b67c-23b654e9edbf
-    singular: 079cb5ff-19b7-4a90-b2e8-dad342ca2bf9
-    failed: 3b1e71a6-a9be-4ba9-8598-44f4c6de340c
-  active_users_signup_survey: 9cdaccbe-4813-4874-a4d7-172ebab5a927
-  followup: 839dce58-972f-4573-9243-3fc5c0dae2dc
-  credentials_expiring_notification: 30af3d4a-6bc0-4455-93b6-9c0422e5109d
-  notify_user_account_removed: 6b0234d7-ede5-4593-bd10-fee9269fa656
+    plural: b202218a-bdf1-42a8-910c-daccbebb9d20
+    singular: 219cabc0-6dcf-4729-9bf9-7e6c26c05b2d
+    failed: 682ef411-8715-4bd5-8673-4fb950876590
+  active_users_signup_survey: feb288cf-2eeb-4981-bb82-15cd2b44043a
+  followup: d8252524-9a58-4461-850f-bab23b707ca9
+  credentials_expiring_notification: cf7f986c-c112-4237-94f9-36da7513bcf4
+  notify_user_account_removed: 070367e3-f1ff-44f6-b6f1-dcdfda2b4358
 
-do_not_reply_email_id: 45d6b6c4-6a36-47df-b34d-256b8c0d1511
+do_not_reply_email_id: 03683962-2358-4315-940f-5df7fdcffcb9
