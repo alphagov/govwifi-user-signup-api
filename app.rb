@@ -31,7 +31,10 @@ class App < Sinatra::Base
   end
 
   get "/healthcheck" do
+    Notifications::NotifyTemplates.verify_templates
     "Healthy"
+  rescue StandardError => e
+    halt 500, e.message
   end
 
   post "/user-signup/email-notification" do
@@ -67,24 +70,15 @@ class App < Sinatra::Base
 
     if numbers_are_equal?(source, destination)
       logger.warn("SMS loop detected: #{destination}")
-      return ""
-    end
-
-    if sender_is_repetitive?(source, message)
+    elsif sender_is_repetitive?(source, message)
       logger.warn("Too many messages received from #{source} - (possible bot loop)")
-      return ""
+    else
+      WifiUser::UseCase::SmsResponse.new(logger:).execute(
+        contact: source,
+        sms_content: message,
+      )
     end
 
-    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
-
-    WifiUser::UseCase::SmsResponse.new(
-      user_model: WifiUser::User,
-      template_finder:,
-      logger:,
-    ).execute(
-      contact: source,
-      sms_content: message,
-    )
     ""
   end
 
