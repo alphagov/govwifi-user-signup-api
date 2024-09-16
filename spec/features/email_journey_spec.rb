@@ -64,6 +64,15 @@ RSpec.describe App do
       end
     end
 
+    describe "Notify throws an error" do
+      before :each do
+        allow(Services.notify_client).to receive(:send_email).and_raise(Notifications::Client::BadRequestError.new(double(body: "Error", code: 400)))
+      end
+      it "re-raises the error" do
+        expect { do_user_signup }.to raise_error(Notifications::Client::BadRequestError)
+      end
+    end
+
     describe "the user already exists" do
       let(:from) { "john@gov.uk" }
       before :each do

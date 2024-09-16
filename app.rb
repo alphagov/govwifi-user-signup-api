@@ -55,7 +55,6 @@ class App < Sinatra::Base
     raise
   rescue StandardError => e
     logger.warn(e.message)
-  ensure
     halt 200, ""
   end
 
