@@ -34,6 +34,7 @@ class App < Sinatra::Base
     Notifications::NotifyTemplates.verify_templates
     "Healthy"
   rescue StandardError => e
+    logger.error(e.message)
     halt 500, e.message
   end
 
