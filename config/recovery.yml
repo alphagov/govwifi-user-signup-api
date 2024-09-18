@@ -4,9 +4,9 @@ notify_sms_template_ids:
   recap: 244e8cf1-bb5a-4848-a63e-f1129b9115ae
   device_help:
     other: 8bc7bccc-d7b6-4f47-85d8-6ca43b54b706
-    android: 0e035c13-3ee9-4b7e-9069-7da607553f14
+    android: 2ddbfc57-a551-45df-82d6-7c6ec34432f7
     blackberry: 0e035c13-3ee9-4b7e-9069-7da607553f14
-    mac: a16ffddb-0e5d-4a59-9f4e-76599f84b881
+    mac: 37a8e788-b00f-4b38-9e08-038d8293c991
     iphone: a18b0924-343e-4087-be2f-3b5f21a4588e
     windows: a16ffddb-0e5d-4a59-9f4e-76599f84b881
     chromebook: 666ace7e-803e-4b16-9fde-1888bb0ea8e8
