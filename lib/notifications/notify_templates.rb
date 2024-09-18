@@ -41,7 +41,7 @@ module Notifications
     def self.verify_templates
       names = Services.notify_client.get_all_templates.collection.map(&:name)
       differences = Notifications::NotifyTemplates::TEMPLATES - names
-      raise "Some templates have not been defined in Notify: #{differences.join(', ')}" unless differences.empty?
+      raise UserSignupError, "Some templates have not been defined in Notify: #{differences.join(', ')}" unless differences.empty?
     end
   end
 end

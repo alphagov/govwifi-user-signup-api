@@ -41,7 +41,7 @@ describe Notifications::NotifyTemplates do
 
       expect {
         Notifications::NotifyTemplates.verify_templates
-      }.to raise_error(/Some templates have not been defined in Notify: #{missing_template.name}/)
+      }.to raise_error(UserSignupError, /Some templates have not been defined in Notify: #{missing_template.name}/)
     end
   end
 end

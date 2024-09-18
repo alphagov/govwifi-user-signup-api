@@ -34,12 +34,12 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
     it "raises an error" do
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-      }.to raise_error(/Unsuccessful sponsor signup attempt/)
+      }.to raise_error(UserSignupError, /Unsuccessful sponsor signup attempt/)
     end
     it "does not create a new user" do
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-      }.to raise_error.and change(WifiUser::User, :count).by(0)
+      }.to raise_error(UserSignupError).and change(WifiUser::User, :count).by(0)
     end
   end
 
@@ -50,12 +50,12 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
     it "raises an error" do
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-      }.to raise_error(/Unable to find sponsees:/)
+      }.to raise_error(UserSignupError, /Unable to find sponsees:/)
     end
     it "does not create a new user" do
       expect {
         WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
-      }.to raise_error.and change(WifiUser::User, :count).by(0)
+      }.to raise_error(UserSignupError).and change(WifiUser::User, :count).by(0)
     end
   end
 

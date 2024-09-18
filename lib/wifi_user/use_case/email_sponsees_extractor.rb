@@ -12,7 +12,7 @@ class WifiUser::UseCase::EmailSponseesExtractor
     contacts = extract_contact_details_from lines_in_email
     remove_sponsor_from contacts
   rescue Mail::Field::ParseError => e
-    raise "unable to parse email address in #{@sns_message.parsed_message}: #{e}"
+    raise UserSignupError, "unable to parse email address in #{@sns_message.parsed_message}: #{e}"
   end
 
 private
