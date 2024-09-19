@@ -16,7 +16,7 @@ class WifiUser::SnsMessage
     @s3_object_key = parsed_message.fetch("receipt").fetch("action").fetch("objectKey")
     @s3_bucket_name = parsed_message.fetch("receipt").fetch("action").fetch("bucketName")
     @sponsor_request = Mail::Address.new(to_address).local == "sponsor"
-  rescue KeyError
-    raise "Unable to process signup. Malformed request: #{body}"
+  rescue StandardError
+    raise UserSignupError, "Unable to process signup. Malformed request: #{body}"
   end
 end

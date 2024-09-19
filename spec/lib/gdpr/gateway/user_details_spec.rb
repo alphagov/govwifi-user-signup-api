@@ -83,7 +83,7 @@ describe Gdpr::Gateway::Userdetails do
 
       context "Sending an emails throws an exception" do
         before :each do
-          allow(Services.notify_client).to receive(:send_email).and_raise(StandardError)
+          allow(Services.notify_client).to receive(:send_email).and_raise(UserSignupError)
           user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
         end
         it "still deletes the user" do

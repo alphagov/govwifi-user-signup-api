@@ -39,7 +39,7 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
-    raise "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
+    raise UserSignupError, "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
 
     sns_message = WifiUser::SnsMessage.new(body: request.body.read)
 
@@ -51,12 +51,12 @@ class App < Sinatra::Base
     else
       WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
     end
-  rescue Notifications::Client::RequestError => e
-    logger.error(e.message)
-    raise
-  rescue StandardError => e
+  rescue UserSignupError => e
     logger.warn(e.message)
     halt 200, ""
+  rescue StandardError => e
+    logger.error(e.message)
+    raise
   end
 
   post "/user-signup/sms-notification/notify" do

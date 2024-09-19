@@ -64,7 +64,7 @@ describe Survey::UseCase::SendActiveUserSurveys do
 
   context "Notify throws an error" do
     before :each do
-      allow(Services.notify_client).to receive(:send_email).and_raise(StandardError)
+      allow(Services.notify_client).to receive(:send_email).and_raise(UserSignupError)
       @user = FactoryBot.create(:user_details, created_at: yesterday)
     end
     it "logs the failure" do
