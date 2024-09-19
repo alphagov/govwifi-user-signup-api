@@ -15,13 +15,13 @@ describe Followups::FollowupSender do
   let(:year) { 2024 }
   let(:month) { 5 }
   let(:day) { 10 }
-  let(:one_day_ago) { Date.new(year, month, day - 1) }
-  let(:two_days_ago) { Date.new(year, month, day - 2) }
+  let(:one_day_ago) { Time.local(year, month, day - 1, 13, 0, 0) }
+  let(:two_days_ago) { Time.local(year, month, day - 2, 13, 0, 0) }
   let(:notify_client) { Services.notify_client }
 
   before :each do
     user_details.delete
-    Timecop.freeze(Time.local(year, month, day, 9, 0, 0))
+    Timecop.freeze(Time.local(year, month, day, 18, 0, 0))
   end
 
   after do
@@ -46,10 +46,10 @@ describe Followups::FollowupSender do
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: one_day_ago)
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: two_days_ago)
     end
-    it "sends two emails and two sms messages" do
+    it "sends two emails and no sms messages" do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_email).twice
-      expect(notify_client).to have_received(:send_sms).twice
+      expect(notify_client).to_not have_received(:send_sms)
     end
   end
   context "given an inactive user" do
@@ -87,19 +87,6 @@ describe Followups::FollowupSender do
       Followups::FollowupSender.send_messages
       expect(notify_client).to_not have_received(:send_email)
       expect(notify_client).to_not have_received(:send_sms)
-    end
-  end
-  context "Given an inactive user who signed up using SMS" do
-    let(:contact) { "+447700000000" }
-    before do
-      FactoryBot.create(:user_details, :sms, :not_logged_in, contact:, created_at: two_days_ago)
-    end
-    it "sends an SMS using the correct parameters" do
-      Followups::FollowupSender.send_messages
-      expect(notify_client).to have_received(:send_sms).with(
-        phone_number: contact,
-        template_id: "followup_sms_id",
-      )
     end
   end
 end
