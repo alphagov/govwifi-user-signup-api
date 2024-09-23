@@ -16,4 +16,8 @@ COPY . .
 
 ENV GOVNOTIFY_BEARER_TOKEN ''
 
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
 CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0", "-p", "8080"]
