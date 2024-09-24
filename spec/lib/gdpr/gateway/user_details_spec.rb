@@ -15,76 +15,83 @@ describe Gdpr::Gateway::Userdetails do
   let(:notify_client) { Services.notify_client }
   let(:valid_email_regexp) { /^[A-Za-z0-9._%+-]+@gov\.uk$/ }
 
+  let(:year) { 2024 }
+  let(:month) { 12 }
+  let(:day) { 10 }
+  let(:hour) { 18 }
+  let(:now) { Time.new(year, month, day, hour, 0, 0) }
+  let(:notify_client) { Services.notify_client }
+  let(:inactive_months) { 3 }
+
+  after do
+    Timecop.return
+  end
+
   before :each do
     ENV["DO_NOT_REPLY"] = "do_not_reply_email_template_id"
     user_details.delete
+    Timecop.freeze(now)
   end
 
-  context "Deleting old users" do
+  context "#users_to_delete" do
     context "Based on last_login" do
       context "Given no inactive users" do
         before do
-          user_details.insert(username: "bob", contact: "+7391480025", last_login: Date.today)
-          user_details.insert(username: "sally", contact: "sally@gov.uk", last_login: Date.today - 363)
+          FactoryBot.create(:user_details, last_login: Time.new(year, month - inactive_months, day + 1, 12, 0, 0))
+          FactoryBot.create(:user_details, :sms, last_login: Time.new(year, month - inactive_months, day + 1, 12, 0, 0))
         end
 
         it "does not delete any users" do
-          expect { subject.delete_inactive_users }.not_to(change { user_details.count })
+          expect { subject.delete_inactive_users(inactive_months:) }.not_to change(WifiUser::User, :count)
+        end
+        it "does not send any messages" do
+          subject.delete_inactive_users(inactive_months:)
+          expect(notify_client).to_not have_received(:send_email)
+          expect(notify_client).to_not have_received(:send_sms)
         end
       end
-
       context "Given inactive users" do
         before do
-          allow(Common::Gateway::S3ObjectFetcher).to receive(:allow_list_regexp).and_return(valid_email_regexp)
-          user_details.insert(username: "bob", contact: "+7391480025", last_login: Date.today)
-          user_details.insert(username: "sally", contact: "+7391488825", created_at: Date.today - 363)
-          user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
-          user_details.insert(username: "Tony", contact: "tony@example.com", last_login: Date.today - 367)
-
-          subject.delete_inactive_users
+          FactoryBot.create(:user_details, contact: "dave@gov.uk", last_login: Time.new(year, month - inactive_months, day, 12, 0, 0))
+          FactoryBot.create(:user_details, contact: "+447700000000", last_login: Time.new(year, month - inactive_months, day, 12, 0, 0))
         end
-
-        it "deletes only the old user records" do
-          expect(user_details.select_map(:username)).to match_array(%w[bob sally])
+        it "deletes the users" do
+          expect { subject.delete_inactive_users(inactive_months:) }.to change(WifiUser::User, :count).by(-2)
         end
-
-        it "notifies the deleted user with a valid email" do
+        it "sends an email" do
+          subject.delete_inactive_users(inactive_months:)
           expect(notify_client).to have_received(:send_email).with(
-            email_address: "george@gov.uk",
+            email_address: "dave@gov.uk",
             template_id: "user_account_removed_email_id",
-            personalisation: { inactivity_period: "12 months" },
+            personalisation: { inactivity_period: "#{inactive_months} months" },
             email_reply_to_id: "do_not_reply_email_template_id",
           ).once
         end
-      end
-
-      context "Given multiple inactive users" do
-        before do
-          user_details.insert(username: "bob", contact: "+7391481225", last_login: Date.today - 367)
-          user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
-        end
-
-        it "deletes all the inactive users" do
-          subject.delete_inactive_users
-          expect(user_details.select_map(:username)).to be_empty
+        it "sends an sms" do
+          subject.delete_inactive_users(inactive_months:)
+          expect(notify_client).to have_received(:send_sms).with(
+            phone_number: "+447700000000",
+            template_id: "user_account_removed_sms_id",
+            personalisation: { inactivity_period: "#{inactive_months} months" },
+          ).once
         end
       end
 
       context "Given a HEALTH user" do
         before do
-          user_details.insert(username: "HEALTH", last_login: Date.today - 731)
+          FactoryBot.create(:user_details, :health_user, last_login: Time.new(year - 10, month, day, 12, 0, 0))
         end
 
         it "does not delete the HEALTH user" do
           subject.delete_inactive_users
-          expect(user_details.select_map(:username)).to include("HEALTH")
+          expect(WifiUser::User.find(username: "HEALTH")).to_not be nil
         end
       end
 
-      context "Sending an emails throws an exception" do
+      context "Sending an email throws an exception" do
         before :each do
           allow(Services.notify_client).to receive(:send_email).and_raise(UserSignupError)
-          user_details.insert(username: "george", contact: "george@gov.uk", last_login: Date.today - 367)
+          FactoryBot.create(:user_details, contact: "dave@gov.uk", last_login: Time.new(year - 10, month, day, 12, 0, 0))
         end
         it "still deletes the user" do
           expect { subject.delete_inactive_users }.to change { user_details.count }.by(-1)
@@ -96,48 +103,58 @@ describe Gdpr::Gateway::Userdetails do
     context "Based on created_at" do
       context "Given no inactive users" do
         before do
-          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today)
-          user_details.insert(username: "sally", contact: "sally@gov.uk", created_at: Date.today - 300)
+          FactoryBot.create(:user_details, :not_logged_in,
+                            created_at: Time.new(year, month - inactive_months, day + 1, 12, 0, 0))
+          FactoryBot.create(:user_details, :not_logged_in, :sms,
+                            created_at: Time.new(year, month - inactive_months, day + 1, 12, 0, 0))
         end
 
-        it "does not delete any user details" do
-          expect { subject.delete_inactive_users }.not_to(change { user_details.count })
+        it "does not delete any users" do
+          expect { subject.delete_inactive_users(inactive_months:) }.not_to change(WifiUser::User, :count)
         end
-      end
-
-      context "Given one inactive user" do
-        before do
-          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today)
-          user_details.insert(username: "sally", contact: "sally@gov.uk", created_at: Date.today - 300)
-          user_details.insert(username: "george", contact: "george@gov.uk", created_at: Date.today - 368)
-        end
-
-        it "deletes only the old user record" do
-          subject.delete_inactive_users
-          expect(user_details.all.map { |s| s.fetch(:username) }).to eq(%w[bob sally])
+        it "does not send any messages" do
+          subject.delete_inactive_users(inactive_months:)
+          expect(notify_client).to_not have_received(:send_email)
+          expect(notify_client).to_not have_received(:send_sms)
         end
       end
-
-      context "Given multiple inactive users" do
+      context "Given inactive users" do
         before do
-          user_details.insert(username: "bob", contact: "bob@gov.uk", created_at: Date.today - 370)
-          user_details.insert(username: "george", contact: "george@gov.uk", created_at: Date.today - 380)
+          FactoryBot.create(:user_details, :not_logged_in, contact: "dave@gov.uk",
+                                                           created_at: Time.new(year, month - inactive_months, day, 12, 0, 0))
+          FactoryBot.create(:user_details, :not_logged_in, contact: "+447700000000",
+                                                           created_at: Time.new(year, month - inactive_months, day, 12, 0, 0))
         end
 
-        it "deletes all the inactive users" do
+        it "deletes the users" do
+          expect { subject.delete_inactive_users(inactive_months:) }.to change(WifiUser::User, :count).by(-2)
+        end
+        it "sends an email" do
+          subject.delete_inactive_users(inactive_months:)
+          expect(notify_client).to have_received(:send_email).with(
+            email_address: "dave@gov.uk",
+            template_id: "user_account_removed_email_id",
+            personalisation: { inactivity_period: "#{inactive_months} months" },
+            email_reply_to_id: "do_not_reply_email_template_id",
+          ).once
+        end
+        it "sends an sms" do
+          subject.delete_inactive_users(inactive_months:)
+          expect(notify_client).to have_received(:send_sms).with(
+            phone_number: "+447700000000",
+            template_id: "user_account_removed_sms_id",
+            personalisation: { inactivity_period: "#{inactive_months} months" },
+          ).once
+        end
+      end
+      context "Given a HEALTH user" do
+        before do
+          FactoryBot.create(:user_details, :health_user, last_login: Time.new(year - 10, month, day, 12, 0, 0))
+        end
+
+        it "does not delete the HEALTH user" do
           subject.delete_inactive_users
-          expect(user_details.all).to be_empty
-        end
-
-        context "Given the HEALTH user with an inactive created_at" do
-          before do
-            user_details.insert(username: "HEALTH", created_at: Date.today - 549)
-          end
-
-          it "does not delete the HEALTH user" do
-            subject.delete_inactive_users
-            expect(user_details.all.map { |s| s.fetch(:username) }).to include("HEALTH")
-          end
+          expect(WifiUser::User.find(username: "HEALTH")).to_not be nil
         end
       end
     end
@@ -200,35 +217,40 @@ describe Gdpr::Gateway::Userdetails do
   end
 
   context "Notifying inactive users" do
-    before do
-      user_details.insert(username: "Kate", contact: "Kate@digital.cabinet-office.gov.uk", last_login: Date.today - 335)
-      user_details.insert(username: "Rob", contact: "+07391491234", created_at: Date.today - 335)
-      user_details.insert(username: "Adam", contact: "+07391491678", last_login: Date.today)
-      user_details.insert(username: "Sim", contact: "sim@gov.uk", last_login: Date.today)
-    end
-
-    it "notifies inactive users" do
-      subject.notify_inactive_users
-
-      expect(notify_client).to have_received(:send_email).with(
-        email_address: "Kate@digital.cabinet-office.gov.uk",
-        template_id: "credentials_expiring_notification_email_id",
-        personalisation: { inactivity_period: "11 months", username: "Kate" },
-        email_reply_to_id: "do_not_reply_email_template_id",
-      ).once
-
-      expect(notify_client).to have_received(:send_sms).with(
-        phone_number: "+07391491234",
-        template_id: "credentials_expiring_notification_sms_id",
-        personalisation: { inactivity_period: "11 months", username: "Rob" },
-      ).once
-    end
-
-    it "does not notify active users" do
-      expect(notify_client).not_to receive(:send_email).with(email_address: "sim@gov.uk")
-      expect(notify_client).not_to receive(:send_sms).with(phone_number: "+07391491678")
-
-      subject.notify_inactive_users
+    describe "#notify_inactive_users" do
+      it "notifies an inactive user by email" do
+        user = FactoryBot.create(:user_details, last_login: Time.new(year, month - inactive_months, day, 12, 0, 0))
+        subject.notify_inactive_users(inactive_months:)
+        expect(notify_client).to have_received(:send_email).with(
+          email_address: user.contact,
+          template_id: "credentials_expiring_notification_email_id",
+          personalisation: { inactivity_period: "3 months", username: user.username },
+          email_reply_to_id: "do_not_reply_email_template_id",
+        ).once
+      end
+      it "notifies an inactive user by sms" do
+        user = FactoryBot.create(:user_details, :sms, last_login: Time.new(year, month - 3, day, 12, 0, 0))
+        subject.notify_inactive_users(inactive_months:)
+        expect(notify_client).to have_received(:send_sms).with(
+          phone_number: user.contact,
+          template_id: "credentials_expiring_notification_sms_id",
+          personalisation: { inactivity_period: "3 months", username: user.username },
+        ).once
+      end
+      it "does not notify users that are not exactly the given months inactive" do
+        FactoryBot.create(:user_details, last_login: Time.new(year, month - 3, day - 1, 12, 0, 0))
+        FactoryBot.create(:user_details, last_login: Time.new(year, month - 3, day + 1, 12, 0, 0))
+        FactoryBot.create(:user_details, :sms, last_login: Time.new(year, month - 3, day - 1, 12, 0, 0))
+        FactoryBot.create(:user_details, :sms, last_login: Time.new(year, month - 3, day + 1, 12, 0, 0))
+        subject.notify_inactive_users(inactive_months:)
+        expect(notify_client).to_not have_received(:send_email)
+        expect(notify_client).to_not have_received(:send_sms)
+      end
+      it "does not notify the HEALTH user" do
+        FactoryBot.create(:user_details, :health_user, last_login: Time.new(year, month - 3, day, 12, 0, 0))
+        subject.notify_inactive_users(inactive_months:)
+        expect(notify_client).to_not have_received(:send_email)
+      end
     end
   end
 end

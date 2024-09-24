@@ -5,6 +5,7 @@ require "simplecov"
 require "sequel"
 require "webmock/rspec"
 require "shared"
+require "timecop"
 
 ENV["RACK_ENV"] = "test"
 

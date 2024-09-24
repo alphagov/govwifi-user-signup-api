@@ -17,23 +17,23 @@ class WifiUser::SMSSender
     )
   end
 
-  def self.send_credentials_expiring_notification(username, contact)
+  def self.send_credentials_expiring_notification(username, contact, inactive_months)
     Services.notify_client.send_sms(
       phone_number: contact,
       template_id: Notifications::NotifyTemplates.template(:credentials_expiring_notification_sms),
       personalisation: {
         username:,
-        inactivity_period: "11 months",
+        inactivity_period: "#{inactive_months} months",
       },
     )
   end
 
-  def self.send_user_account_removed(_username, contact)
+  def self.send_user_account_removed(contact, inactive_months)
     Services.notify_client.send_sms(
       phone_number: contact,
       template_id: Notifications::NotifyTemplates.template(:user_account_removed_sms),
       personalisation: {
-        inactivity_period: "12 months",
+        inactivity_period: "#{inactive_months} months",
       },
     )
   end

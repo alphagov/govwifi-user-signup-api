@@ -27,6 +27,12 @@ FactoryBot.define do
       sponsor { email_address }
     end
 
+    trait :health_user do
+      after(:create) do |user_details|
+        user_details.update(username: "HEALTH")
+      end
+    end
+
     trait :sponsored do
       sequence :sponsor, 1 do |n|
         "sponsor_address#{n}@domain.uk"

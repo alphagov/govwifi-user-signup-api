@@ -1,4 +1,3 @@
-require "timecop"
 describe Survey::UseCase::SendActiveUserSurveys do
   include_context "fake notify"
 
