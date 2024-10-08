@@ -62,7 +62,7 @@ describe Followups::FollowupSender do
       expect(notify_client).to have_received(:send_email).with(
         email_address: contact,
         template_id: "followup_email_id",
-        email_reply_to_id: "do_not_reply_email_template_id",
+        email_reply_to_id: "support_reply_email_template_id",
       )
     end
     it "does not send the emails twice" do

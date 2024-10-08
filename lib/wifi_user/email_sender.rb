@@ -63,7 +63,7 @@ class WifiUser::EmailSender
     Services.notify_client.send_email(
       email_address:,
       template_id: Notifications::NotifyTemplates.template(:followup_email),
-      email_reply_to_id: do_not_reply_email_address_id,
+      email_reply_to_id: support_reply_email_address_id,
     )
   end
 
@@ -99,5 +99,9 @@ class WifiUser::EmailSender
 
   def self.do_not_reply_email_address_id
     ENV["NOTIFY_DO_NOT_REPLY"] || "0d22d71f-afa3-4c72-8cd4-7716678dbd43"
+  end
+
+  def self.support_reply_email_address_id
+    ENV["NOTIFY_SUPPORT_REPLY"] || "5619b95b-2f93-4a70-be64-2f2568f8876f"
   end
 end
