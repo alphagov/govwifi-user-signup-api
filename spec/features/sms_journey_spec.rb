@@ -22,6 +22,23 @@ describe App do
         }.to_json
       end
 
+      shared_examples "rejecting an SMS" do
+        before do
+          post "/user-signup/sms-notification/notify",
+               payload,
+               "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
+        end
+
+        it "gives an empty ok" do
+          expect(last_response.ok?).to be true
+          expect(last_response.body).to eq("")
+        end
+
+        it "does not send an SMS" do
+          expect(Services.notify_client).to_not have_received(:send_sms)
+        end
+      end
+
       it "sends an SMS containing login details back to the user" do
         post "/user-signup/sms-notification/notify",
              payload,
@@ -37,24 +54,39 @@ describe App do
         )
       end
 
-      context "with a a phone texting itself" do
-        shared_examples "rejecting an SMS" do
-          before do
+      describe "no source phone number" do
+        let(:from_phone_number) { nil }
+        it "does not send an SMS" do
+          post "/user-signup/sms-notification/notify",
+               payload,
+               "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
+          expect(Services.notify_client).to_not have_received(:send_sms)
+        end
+        it "logs a message" do
+          expect {
             post "/user-signup/sms-notification/notify",
                  payload,
                  "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
-          end
-
-          it "gives an empty ok" do
-            expect(last_response.ok?).to be true
-            expect(last_response.body).to eq("")
-          end
-
-          it "does not send an SMS" do
-            expect(Services.notify_client).to_not have_received(:send_sms)
-          end
+          }
+            .to output(/Source number is unavailable/).to_stdout_from_any_process
         end
+      end
 
+      describe "no source phone number" do
+        let(:to_phone_number) { nil }
+        it_behaves_like "rejecting an SMS"
+
+        it "logs a message" do
+          expect {
+            post "/user-signup/sms-notification/notify",
+                 payload,
+                 "HTTP_AUTHORIZATION" => "Bearer #{notify_token}"
+          }
+            .to output(/Destination number is unavailable/).to_stdout_from_any_process
+        end
+      end
+
+      context "with a a phone texting itself" do
         context "with both the same number" do
           numbers = %w[07900000001 447900000001 +447900000001].freeze
           numbers.each do |from_number|

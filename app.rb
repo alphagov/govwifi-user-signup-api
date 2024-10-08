@@ -68,17 +68,18 @@ class App < Sinatra::Base
     message = payload["message"]
     logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
 
-    if numbers_are_equal?(source, destination)
-      logger.warn("SMS loop detected: #{destination}")
-    elsif sender_is_repetitive?(source, message)
-      logger.warn("Too many messages received from #{source} - (possible bot loop)")
-    else
-      WifiUser::UseCase::SmsResponse.new(logger:).execute(
-        contact: source,
-        sms_content: message,
-      )
-    end
+    raise UserSignupError, "Source number is unavailable" if source.nil?
+    raise UserSignupError, "Destination number is unavailable" if destination.nil?
+    raise UserSignupError, "SMS loop detected: #{destination}" if numbers_are_equal?(source, destination)
+    raise UserSignupError, "Too many messages received from #{source} - (possible bot loop)" if sender_is_repetitive?(source, message)
 
+    WifiUser::UseCase::SmsResponse.new(logger:).execute(
+      contact: source,
+      sms_content: message,
+    )
+    ""
+  rescue UserSignupError => e
+    logger.error(e.message)
     ""
   end
 
