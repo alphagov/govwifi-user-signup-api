@@ -12,7 +12,7 @@ class WifiUser::UseCase::EmailSponseesExtractor
     contacts = extract_contact_details_from lines_in_email
     remove_sponsor_from contacts
   rescue Mail::Field::ParseError => e
-    raise "unable to parse email address in #{@sns_message.parsed_message}: #{e}"
+    raise UserSignupError, "unable to parse email address in #{@sns_message.parsed_message}: #{e}"
   end
 
 private
@@ -44,7 +44,7 @@ private
   end
 
   def lines_from_html(html_part)
-    Nokogiri::HTML(html_part.decoded).xpath("//text()[not(ancestor::style)]").map do |node|
+    Nokogiri::HTML(html_part.decoded).xpath("//text()[not(ancestor::style) and not(ancestor::img)]").map do |node|
       node.xpath("normalize-space()")
     end
   end

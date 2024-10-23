@@ -1,19 +1,27 @@
 require "timecop"
 
 describe Followups::FollowupSender do
+  include_context "fake notify"
+
+  let(:templates) do
+    [
+      instance_double(Notifications::Client::Template, name: "followup_email", id: "followup_email_id"),
+      instance_double(Notifications::Client::Template, name: "followup_sms", id: "followup_sms_id"),
+    ]
+  end
+
   let(:user_details) { DB[:userdetails] }
-  let(:notify_client) { instance_double(Notifications::Client) }
+  let(:notify_client) { Services.notify_client }
   let(:year) { 2024 }
   let(:month) { 5 }
   let(:day) { 10 }
-  let(:one_day_ago) { Date.new(year, month, day - 1) }
-  let(:two_days_ago) { Date.new(year, month, day - 2) }
+  let(:one_day_ago) { Time.local(year, month, day - 1, 13, 0, 0) }
+  let(:two_days_ago) { Time.local(year, month, day - 2, 13, 0, 0) }
+  let(:notify_client) { Services.notify_client }
 
   before :each do
     user_details.delete
-    Timecop.freeze(Time.local(year, month, day, 9, 0, 0))
-    allow(Services).to receive(:notify_client).and_return(notify_client)
-    allow(notify_client).to receive_messages(send_email: true, send_sms: true)
+    Timecop.freeze(Time.local(year, month, day, 18, 0, 0))
   end
 
   after do
@@ -38,10 +46,10 @@ describe Followups::FollowupSender do
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: one_day_ago)
       FactoryBot.create(:user_details, :sms, :not_logged_in, created_at: two_days_ago)
     end
-    it "sends two emails and two sms messages" do
+    it "sends two emails and no sms messages" do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_email).twice
-      expect(notify_client).to have_received(:send_sms).twice
+      expect(notify_client).to_not have_received(:send_sms)
     end
   end
   context "given an inactive user" do
@@ -53,8 +61,8 @@ describe Followups::FollowupSender do
       Followups::FollowupSender.send_messages
       expect(notify_client).to have_received(:send_email).with(
         email_address: contact,
-        template_id: "email_followup_template_id",
-        email_reply_to_id: "do_not_reply_email_template_id",
+        template_id: "followup_email_id",
+        email_reply_to_id: "support_reply_email_template_id",
       )
     end
     it "does not send the emails twice" do
@@ -79,19 +87,6 @@ describe Followups::FollowupSender do
       Followups::FollowupSender.send_messages
       expect(notify_client).to_not have_received(:send_email)
       expect(notify_client).to_not have_received(:send_sms)
-    end
-  end
-  context "Given an inactive user who signed up using SMS" do
-    let(:contact) { "+447700000000" }
-    before do
-      FactoryBot.create(:user_details, :sms, :not_logged_in, contact:, created_at: two_days_ago)
-    end
-    it "sends an SMS using the correct parameters" do
-      Followups::FollowupSender.send_messages
-      expect(notify_client).to have_received(:send_sms).with(
-        phone_number: contact,
-        template_id: "sms_followup_template_id",
-      )
     end
   end
 end

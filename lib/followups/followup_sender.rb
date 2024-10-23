@@ -2,17 +2,17 @@
 
 module Followups
   class FollowupSender
-    DAYS_BEFORE_SENDING = 2
+    NUMBER_OF_DAYS_BEFORE_SENDING = 2
+    HOUR = 3600
+    DAY = 24 * HOUR
     def self.send_messages
       users = WifiUser::User
         .where(last_login: nil)
-        .where { created_at <= (Date.today - DAYS_BEFORE_SENDING) }
+        .where { created_at <= (Time.now - NUMBER_OF_DAYS_BEFORE_SENDING * DAY) }
         .where(followup_sent_at: nil)
         .where { contact =~ sponsor }
       users.each do |user|
-        if user.mobile?
-          WifiUser::SMSSender.send_followup_sms(user.contact)
-        else
+        unless user.mobile?
           WifiUser::EmailSender.send_followup_email(user.contact)
         end
         user.update(followup_sent_at: Time.now)

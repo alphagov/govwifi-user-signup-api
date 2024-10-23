@@ -52,6 +52,11 @@ describe WifiUser::UseCase::EmailSponseesExtractor do
     expect(sponsees).to eq(["dan@example.com"])
   end
 
+  it "Ignores <img> tags and extracts visible text" do
+    write_email_to_s3(html_part: "<body><img src='image.jpg' alt='image'/><p>image@example.com</p></body>", bucket_name:, object_key:)
+    expect(sponsees).to eq(["image@example.com"])
+  end
+
   it "Returns empty array from an email with invalid HTML" do
     write_email_to_s3(html_part: "<body><asd", bucket_name:, object_key:)
     expect(sponsees).to eq([])

@@ -5,9 +5,9 @@ task :delete_inactive_users do
   require "./lib/loader"
   user_details_gateway = Gdpr::Gateway::Userdetails.new
 
-  Gdpr::UseCase::DeleteInactiveUsers.new(user_details_gateway:).execute
-  Gdpr::UseCase::ObfuscateSponsors.new(user_details_gateway:).execute
-  Gdpr::UseCase::NotifyInactiveUsers.new(user_details_gateway:).execute
+  user_details_gateway.delete_inactive_users
+  user_details_gateway.notify_inactive_users
+  user_details_gateway.obfuscate_sponsors
 
   logger.info("Daily Inactive User Cleanup Ran")
 end

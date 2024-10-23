@@ -7,7 +7,10 @@ require "notifications/client"
 require "./lib/loader"
 
 class App < Sinatra::Base
-  use Raven::Rack if defined? Raven
+  if ENV.key?("SENTRY_DSN")
+    use Sentry::Rack::CaptureExceptions
+  end
+
   register Sinatra::SensibleLogging
 
   sensible_logging(
@@ -28,11 +31,15 @@ class App < Sinatra::Base
   end
 
   get "/healthcheck" do
+    Notifications::NotifyTemplates.verify_templates
     "Healthy"
+  rescue StandardError => e
+    logger.error(e.message)
+    halt 500, e.message
   end
 
   post "/user-signup/email-notification" do
-    raise "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
+    raise UserSignupError, "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
 
     sns_message = WifiUser::SnsMessage.new(body: request.body.read)
 
@@ -44,10 +51,12 @@ class App < Sinatra::Base
     else
       WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
     end
-  rescue StandardError => e
+  rescue UserSignupError => e
     logger.warn(e.message)
-  ensure
     halt 200, ""
+  rescue StandardError => e
+    logger.error(e.message)
+    raise
   end
 
   post "/user-signup/sms-notification/notify" do
@@ -59,26 +68,18 @@ class App < Sinatra::Base
     message = payload["message"]
     logger.info("Processing SMS on /user-signup/sms-notification/notify from #{source} to #{destination} with message #{message}")
 
-    if numbers_are_equal?(source, destination)
-      logger.warn("SMS loop detected: #{destination}")
-      return ""
-    end
+    raise UserSignupError, "Source number is unavailable" if source.nil?
+    raise UserSignupError, "Destination number is unavailable" if destination.nil?
+    raise UserSignupError, "SMS loop detected: #{destination}" if numbers_are_equal?(source, destination)
+    raise UserSignupError, "Too many messages received from #{source} - (possible bot loop)" if sender_is_repetitive?(source, message)
 
-    if sender_is_repetitive?(source, message)
-      logger.warn("Too many messages received from #{source} - (possible bot loop)")
-      return ""
-    end
-
-    template_finder = WifiUser::UseCase::SmsTemplateFinder.new(environment: ENV.fetch("RACK_ENV"))
-
-    WifiUser::UseCase::SmsResponse.new(
-      user_model: WifiUser::User,
-      template_finder:,
-      logger:,
-    ).execute(
+    WifiUser::UseCase::SmsResponse.new(logger:).execute(
       contact: source,
       sms_content: message,
     )
+    ""
+  rescue UserSignupError => e
+    logger.error(e.message)
     ""
   end
 

@@ -8,10 +8,10 @@ class WifiUser::UseCase::SponsorJourneyHandler
   def execute
     sponsor_address = @sns_message.from_address
     raw_sponsor_address = @sns_message.raw_from_address
-    raise "Unsuccessful sponsor signup attempt: #{sponsor_address}" if invalid_email?(sponsor_address)
+    raise UserSignupError, "Unsuccessful sponsor signup attempt: #{sponsor_address}" if invalid_email?(sponsor_address)
 
     sponsee_addresses = WifiUser::UseCase::EmailSponseesExtractor.new(sns_message: @sns_message).execute
-    raise "Unable to find sponsees: #{sponsor_address}" if sponsee_addresses.empty?
+    raise UserSignupError, "Unable to find sponsees: #{sponsor_address}" if sponsee_addresses.empty?
 
     sponsee_users = sponsee_addresses.map do |sponsee_address|
       WifiUser::User.find_or_create(contact: sponsee_address) { |user| user[:sponsor] = sponsor_address }
