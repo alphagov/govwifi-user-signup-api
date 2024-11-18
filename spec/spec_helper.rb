@@ -3,6 +3,7 @@ require "rack/test"
 require "rspec"
 require "simplecov"
 require "sequel"
+require "timecop"
 require "webmock/rspec"
 require "shared"
 
