@@ -11,7 +11,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     aws-eventstream (1.3.0)
-    aws-partitions (1.1010.0)
+    aws-partitions (1.1009.0)
     aws-sdk-core (3.213.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -33,20 +33,20 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
-    date (3.3.4)
+    date (3.4.0)
     diff-lcs (1.5.1)
-    docile (1.4.0)
+    docile (1.4.1)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
-    ffi (1.15.4)
-    formatador (0.2.5)
-    guard (2.16.2)
+    ffi (1.17.0)
+    formatador (1.1.0)
+    guard (2.19.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
       lumberjack (>= 1.0.12, < 2.0)
       nenv (~> 0.1)
       notiffany (~> 0.0)
-      pry (>= 0.9.12)
+      pry (>= 0.13.0)
       shellany (~> 0.0)
       thor (>= 0.18.1)
     guard-compat (1.2.1)
@@ -54,7 +54,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    hashdiff (1.1.1)
+    hashdiff (1.1.2)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     jmespath (1.6.2)
@@ -62,32 +62,34 @@ GEM
     jwt (2.8.2)
       base64
     language_server-protocol (3.17.0.3)
-    listen (3.7.0)
+    listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    lumberjack (1.2.8)
+    logger (1.6.1)
+    lumberjack (1.2.10)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
       net-smtp
-    method_source (1.0.0)
+    method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.8)
     minitest (5.25.1)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     mysql2 (0.5.6)
     nenv (0.3.0)
-    net-imap (0.4.7)
+    net-imap (0.5.1)
       date
       net-protocol
     net-pop (0.1.2)
+      net-protocol
     net-protocol (0.2.2)
       timeout
     net-smtp (0.5.0)
       net-protocol
-    nio4r (2.7.3)
+    nio4r (2.7.4)
     nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -100,7 +102,7 @@ GEM
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
-    pry (0.13.1)
+    pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (6.0.1)
@@ -112,10 +114,12 @@ GEM
       rack
     rack-test (2.1.0)
       rack (>= 1.3)
+    rackup (2.2.1)
+      rack (>= 3)
     rainbow (3.1.1)
     rake (13.2.1)
-    rb-fsevent (0.11.0)
-    rb-inotify (0.10.1)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
       ffi (~> 1.0)
     regexp_parser (2.9.2)
     require_all (3.0.0)
@@ -124,12 +128,12 @@ GEM
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.0)
+    rspec-core (3.13.2)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.0)
+    rspec-expectations (3.13.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.0)
+    rspec-mocks (3.13.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
@@ -178,7 +182,7 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
+    simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
     sinatra (3.0.2)
       mustermann (~> 3.0)
@@ -188,7 +192,7 @@ GEM
     thor (1.0.1)
     tilt (2.0.11)
     timecop (0.9.10)
-    timeout (0.4.1)
+    timeout (0.4.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
@@ -212,6 +216,7 @@ DEPENDENCIES
   notifications-ruby-client (~> 6.2.0)
   puma
   rack-test
+  rackup
   rake (~> 13.2)
   require_all
   rspec
@@ -225,7 +230,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.3.5
+   ruby 3.3.6
 
 BUNDLED WITH
    2.2.32
