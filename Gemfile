@@ -8,11 +8,12 @@ gem "net-smtp"
 gem "nokogiri", "~> 1.16"
 gem "notifications-ruby-client", "~> 6.2.0"
 gem "puma"
+gem "rackup"
 gem "rake", "~> 13.2"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.8"
 gem "sentry-ruby"
-gem "sequel", "~> 5.86"
+gem "sequel", "~> 5.85"
 gem "sinatra"
 
 group :test do
