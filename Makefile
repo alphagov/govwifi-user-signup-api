@@ -36,9 +36,4 @@ stop:
 	$(DOCKER_COMPOSE) kill
 	$(DOCKER_COMPOSE) rm -f
 
-update: stop
-	bundle lock --update
-	$(MAKE) build
-	$(MAKE) test
-
 .PHONY: test serve stop lint
