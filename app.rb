@@ -39,7 +39,6 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/email-notification" do
-    request.body.rewind
     raise UserSignupError, "Unexpected request: \n #{request.body.read}" if request_invalid?(request)
 
     sns_message = WifiUser::SnsMessage.new(body: request.body.read)
@@ -61,7 +60,6 @@ class App < Sinatra::Base
   end
 
   post "/user-signup/sms-notification/notify" do
-    request.body.rewind
     halt(401, "") unless is_govnotify_token_valid?
 
     payload = JSON.parse(request.body.read)
