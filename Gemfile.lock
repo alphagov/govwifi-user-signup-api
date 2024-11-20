@@ -172,7 +172,7 @@ GEM
     sentry-ruby (5.21.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    sequel (5.85.0)
+    sequel (5.86.0)
       bigdecimal
     shellany (0.0.1)
     simplecov (0.22.0)
@@ -219,7 +219,7 @@ DEPENDENCIES
   rubocop-govuk
   sensible_logging (~> 0.4.8)
   sentry-ruby
-  sequel (~> 5.85)
+  sequel (~> 5.86)
   simplecov
   sinatra
   timecop
