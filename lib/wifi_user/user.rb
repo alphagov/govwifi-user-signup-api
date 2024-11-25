@@ -14,7 +14,7 @@ class WifiUser::User < Sequel::Model(:userdetails)
   end
 
   def mobile?
-    contact.start_with? "+"
+    contact&.start_with? "+"
   end
 
 private

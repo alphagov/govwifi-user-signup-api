@@ -1,5 +1,3 @@
-require "timecop"
-
 describe Followups::FollowupSender do
   include_context "fake notify"
 

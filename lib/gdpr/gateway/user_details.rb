@@ -1,110 +1,82 @@
 require "logger"
 
 class Gdpr::Gateway::Userdetails
-  SESSION_BATCH_SIZE = 500
-  DAYS_IN_YEAR = 365
-  DAYS_IN_11_MONTHS = 335 # Approximation of 11 months
+  SESSION_BATCH_SIZE = 50
+  TIME_TO_DELETE = "1 YEAR".freeze
+  TIME_TO_NOTIFY = "11 MONTH".freeze
+  HEALTH_USER = "HEALTH".freeze
 
   def initialize
     @logger = Logger.new($stdout)
   end
 
   def delete_inactive_users
-    @logger.info("Finding users that have been inactive for 12 months")
-    inactive_users = find_inactive_users(DAYS_IN_YEAR)
-
-    @logger.info("Found #{inactive_users.size} users that have been inactive for 12 months")
-
-    @logger.info("Notifying users they have been removed from GovWifi")
-
-    inactive_users.each do |user|
-      username = user[:username]
-      contact = user[:contact]
-
-      begin
-        if user.mobile?
-          WifiUser::SMSSender.send_user_account_removed(username, contact)
-        else
-          WifiUser::EmailSender.send_user_account_removed(username, contact)
-        end
-      rescue Notifications::Client::BadRequestError => e
-        handle_email_error(e, username, contact)
-      rescue StandardError => e
-        @logger.warn(e.message)
-      end
-    end
-
     @logger.info("Starting daily old user deletion")
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+
+    sql = Sequel.lit("((last_login < DATE_SUB(?, INTERVAL #{TIME_TO_DELETE})) OR
+                       (last_login IS NULL AND created_at < DATE_SUB(?, INTERVAL #{TIME_TO_DELETE}))) AND
+                       username != ?", now, now, HEALTH_USER)
 
     total = 0
-    loop do
-      deleted_rows = DB[:userdetails].with_sql_delete("
-        DELETE FROM userdetails WHERE (last_login < DATE_SUB(NOW(), INTERVAL #{DAYS_IN_YEAR} DAY)
-        OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL #{DAYS_IN_YEAR} DAY)))
-        AND username != 'HEALTH'
-        LIMIT #{SESSION_BATCH_SIZE}")
-      total += deleted_rows
-
-      break if deleted_rows.zero?
+    while (inactive_users = WifiUser::User.where(sql).limit(SESSION_BATCH_SIZE)).count.positive?
+      send_delete_emails(inactive_users)
+      total += inactive_users.delete
     end
-
     @logger.info("Finished daily old user deletion, #{total} rows affected")
   end
 
   def obfuscate_sponsors
+    @logger.info("Starting sponsor obfuscation")
     DB.run("
       UPDATE userdetails ud1
       LEFT JOIN userdetails as ud2 ON ud1.sponsor = ud2.contact
       SET ud1.sponsor = REPLACE(ud1.sponsor, SUBSTRING_INDEX(ud1.sponsor, '@', '1'), 'user')
       WHERE ud2.username IS NULL
     ")
+    @logger.info("Sponsor obfuscation complete")
   end
 
   def notify_inactive_users
     @logger.info("Starting notification process for users inactive for 11 months")
-    inactive_users = find_inactive_users_for_exact_number_of_days(DAYS_IN_11_MONTHS)
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
 
-    @logger.info("Found #{inactive_users.size} inactive users")
+    sql = Sequel.lit("((DATE(last_login) = DATE(DATE_SUB(?, INTERVAL #{TIME_TO_NOTIFY}))) OR
+                       (last_login IS NULL AND DATE(created_at) = DATE(DATE_SUB(?, INTERVAL #{TIME_TO_NOTIFY})))) AND
+                       username != ? AND contact LIKE '%@%'", now, now, HEALTH_USER)
 
-    inactive_users.each do |user|
-      contact = user[:contact]
-      username = user[:username]
+    inactive_users = WifiUser::User.where(sql)
+    inactive_users.each { |user| send_notify_email(user) }
 
-      if user.mobile?
-        WifiUser::SMSSender.send_credentials_expiring_notification(username, contact)
-      elsif user.valid_email?(contact)
-        begin
-          WifiUser::EmailSender.send_credentials_expiring_notification(username, contact)
-          @logger.info("Email sent to #{username} at #{contact}")
-        rescue Notifications::Client::BadRequestError => e
-          handle_email_error(e, username, contact)
-        rescue StandardError => e
-          @logger.warn(e.message)
-        end
-      else
-        @logger.warn("Invalid contact for user #{username}")
-      end
-    end
-
-    @logger.info("Finished notification process for users inactive for for 11 months")
+    @logger.info("Notified #{inactive_users.count} users")
   end
 
 private
+
+  def send_delete_emails(inactive_users)
+    inactive_users.reject(&:mobile?).each do |user|
+      WifiUser::EmailSender.send_user_account_removed(user.username, user.contact)
+    rescue Notifications::Client::BadRequestError => e
+      handle_email_error(e, username, contact)
+    rescue StandardError => e
+      @logger.warn(e.message)
+    end
+  end
+
+  def send_notify_email(user)
+    WifiUser::EmailSender.send_credentials_expiring_notification(user.username, user.contact)
+    @logger.info("Email sent to #{user.username} at #{user.contact}")
+  rescue Notifications::Client::BadRequestError => e
+    handle_email_error(e, username, contact)
+  rescue StandardError => e
+    @logger.warn(e.message)
+  end
 
   def find_inactive_users(days)
     WifiUser::User.where(
       Sequel.lit("
       (last_login < DATE_SUB(NOW(), INTERVAL ? DAY)
       OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL ? DAY)))
-      AND username != 'HEALTH'", days, days),
-    ).all
-  end
-
-  def find_inactive_users_for_exact_number_of_days(days)
-    WifiUser::User.where(
-      Sequel.lit("
-      (DATE(last_login) = DATE_SUB(CURDATE(), INTERVAL ? DAY)
-      OR (last_login IS NULL AND DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL ? DAY)))
       AND username != 'HEALTH'", days, days),
     ).all
   end
