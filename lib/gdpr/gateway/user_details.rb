@@ -57,9 +57,9 @@ private
     inactive_users.reject(&:mobile?).each do |user|
       WifiUser::EmailSender.send_user_account_removed(user.username, user.contact)
     rescue Notifications::Client::BadRequestError => e
-      handle_email_error(e, username, contact)
+      handle_email_error(e, user.username, user.contact)
     rescue StandardError => e
-      @logger.warn(e.message)
+      @logger.error(e.message)
     end
   end
 
@@ -67,9 +67,9 @@ private
     WifiUser::EmailSender.send_credentials_expiring_notification(user.username, user.contact)
     @logger.info("Email sent to #{user.username} at #{user.contact}")
   rescue Notifications::Client::BadRequestError => e
-    handle_email_error(e, username, contact)
+    handle_email_error(e, user.username, user.contact)
   rescue StandardError => e
-    @logger.warn(e.message)
+    @logger.error(e.message)
   end
 
   def find_inactive_users(days)

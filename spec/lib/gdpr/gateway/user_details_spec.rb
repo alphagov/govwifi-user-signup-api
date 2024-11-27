@@ -94,14 +94,37 @@ describe Gdpr::Gateway::Userdetails do
         end
       end
 
-      context "Sending emails throws an exception" do
+      describe "Handling Notify Errors" do
+        let(:error) { StandardError.new }
         before :each do
-          allow(Services.notify_client).to receive(:send_email).and_raise(UserSignupError)
+          allow(Services.notify_client).to receive(:send_email).and_raise(error)
           FactoryBot.create(:user_details, last_login: Date.today - 367)
         end
-        it "still deletes the user" do
-          expect { subject.delete_inactive_users }.to change { user_details.count }.by(-1)
-          expect(Services.notify_client).to have_received(:send_email)
+        describe "The error is a standard error" do
+          it "still deletes the user" do
+            expect { subject.delete_inactive_users }.to change { user_details.count }.by(-1)
+            expect(Services.notify_client).to have_received(:send_email)
+          end
+        end
+        describe "The error is an email validation error" do
+          let(:error) do
+            response = OpenStruct.new(code: 500, body: "something ValidationError something")
+            Notifications::Client::BadRequestError.new(response)
+          end
+          it "logs the error as a warning" do
+            expect_any_instance_of(Logger).to receive(:warn).with(/Failed to send email to/)
+            subject.delete_inactive_users
+          end
+        end
+        describe "The error is a more serious error thrown by notify" do
+          let(:error) do
+            response = OpenStruct.new(code: 500, body: "something else")
+            Notifications::Client::BadRequestError.new(response)
+          end
+          it "logs the error as a error" do
+            expect_any_instance_of(Logger).to receive(:error).with(/Unexpected error sending/)
+            subject.delete_inactive_users
+          end
         end
       end
     end
@@ -215,9 +238,10 @@ describe Gdpr::Gateway::Userdetails do
   end
 
   context "Notifying inactive users" do
+    let(:eleven_months_ago) do
+      DateTime.new(year, month, day, 13, 0, 0) << 11
+    end
     it "notifies inactive users" do
-      eleven_months_ago = DateTime.new(year, month, day, 13, 0, 0) << 11
-
       email_user = FactoryBot.create(:user_details, last_login: eleven_months_ago)
       FactoryBot.create(:user_details, :sms, last_login: eleven_months_ago)
 
@@ -249,6 +273,38 @@ describe Gdpr::Gateway::Userdetails do
 
       expect(notify_client).not_to have_received(:send_email)
       expect(notify_client).not_to have_received(:send_sms)
+    end
+
+    describe "Handling Notify Errors" do
+      let(:error) { StandardError.new }
+      before :each do
+        allow(Services.notify_client).to receive(:send_email).and_raise(error)
+        FactoryBot.create(:user_details, last_login: eleven_months_ago)
+      end
+      it "Unexpected Standard errors are logged with error level" do
+        expect_any_instance_of(Logger).to receive(:error)
+        subject.notify_inactive_users
+      end
+      describe "The error is an email validation error" do
+        let(:error) do
+          response = OpenStruct.new(code: 500, body: "something ValidationError something")
+          Notifications::Client::BadRequestError.new(response)
+        end
+        it "logs the error as a warning" do
+          expect_any_instance_of(Logger).to receive(:warn).with(/Failed to send email to/)
+          subject.notify_inactive_users
+        end
+      end
+      describe "The error is a more serious error thrown by notify" do
+        let(:error) do
+          response = OpenStruct.new(code: 500, body: "something else")
+          Notifications::Client::BadRequestError.new(response)
+        end
+        it "logs the error as a error" do
+          expect_any_instance_of(Logger).to receive(:error).with(/Unexpected error sending/)
+          subject.notify_inactive_users
+        end
+      end
     end
   end
 end
