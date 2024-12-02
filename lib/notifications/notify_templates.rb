@@ -9,7 +9,6 @@ module Notifications
                    active_users_signup_survey_email
                    followup_email
                    credentials_expiring_notification_email
-                   user_account_removed_email
                    credentials_sms
                    recap_sms
                    help_menu_sms
@@ -21,9 +20,7 @@ module Notifications
                    device_help_blackberry_sms
                    device_help_chromebook_sms
                    active_users_signup_survey_sms
-                   followup_sms
-                   user_account_removed_sms
-                   credentials_expiring_notification_sms].freeze
+                   followup_sms].freeze
 
     def self.template_hash
       @template_hash ||= begin
