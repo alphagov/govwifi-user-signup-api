@@ -20,7 +20,6 @@ class Gdpr::Gateway::Userdetails
 
     total = 0
     while (inactive_users = WifiUser::User.where(sql).limit(SESSION_BATCH_SIZE)).count.positive?
-      send_delete_emails(inactive_users)
       total += inactive_users.delete
     end
     @logger.info("Finished daily old user deletion, #{total} rows affected")
@@ -53,16 +52,6 @@ class Gdpr::Gateway::Userdetails
 
 private
 
-  def send_delete_emails(inactive_users)
-    inactive_users.reject(&:mobile?).each do |user|
-      WifiUser::EmailSender.send_user_account_removed(user.username, user.contact)
-    rescue Notifications::Client::BadRequestError => e
-      handle_email_error(e, user.username, user.contact)
-    rescue StandardError => e
-      @logger.error(e.message)
-    end
-  end
-
   def send_notify_email(user)
     WifiUser::EmailSender.send_credentials_expiring_notification(user.username, user.contact)
     @logger.info("Email sent to #{user.username} at #{user.contact}")
@@ -70,15 +59,6 @@ private
     handle_email_error(e, user.username, user.contact)
   rescue StandardError => e
     @logger.error(e.message)
-  end
-
-  def find_inactive_users(days)
-    WifiUser::User.where(
-      Sequel.lit("
-      (last_login < DATE_SUB(NOW(), INTERVAL ? DAY)
-      OR (last_login IS NULL AND created_at < DATE_SUB(NOW(), INTERVAL ? DAY)))
-      AND username != 'HEALTH'", days, days),
-    ).all
   end
 
   def handle_email_error(error, username, contact)

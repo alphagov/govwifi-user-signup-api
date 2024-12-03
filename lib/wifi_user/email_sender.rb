@@ -79,17 +79,6 @@ class WifiUser::EmailSender
     )
   end
 
-  def self.send_user_account_removed(_username, contact)
-    Services.notify_client.send_email(
-      email_address: contact,
-      template_id: Notifications::NotifyTemplates.template(:user_account_removed_email),
-      personalisation: {
-        inactivity_period: "12 months",
-      },
-      email_reply_to_id: do_not_reply_email_address_id,
-    )
-  end
-
   def self.send_active_users_signup_survey(user)
     Services.notify_client.send_email(
       email_address: user.contact,

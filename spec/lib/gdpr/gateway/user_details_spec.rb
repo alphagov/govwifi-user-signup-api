@@ -8,9 +8,6 @@ describe Gdpr::Gateway::Userdetails do
   let(:templates) do
     [
       instance_double(Notifications::Client::Template, name: "credentials_expiring_notification_email", id: "credentials_expiring_notification_email_id"),
-      instance_double(Notifications::Client::Template, name: "credentials_expiring_notification_sms", id: "credentials_expiring_notification_sms_id"),
-      instance_double(Notifications::Client::Template, name: "user_account_removed_sms", id: "user_account_removed_sms_id"),
-      instance_double(Notifications::Client::Template, name: "user_account_removed_email", id: "user_account_removed_email_id"),
       instance_double(Notifications::Client::Template, name: "active_users_signup_survey_sms", id: "active_users_signup_survey_sms_id"),
       instance_double(Notifications::Client::Template, name: "active_users_signup_survey_email", id: "active_users_signup_survey_email_id"),
     ]
@@ -49,10 +46,6 @@ describe Gdpr::Gateway::Userdetails do
         it "deletes all users" do
           expect { subject.delete_inactive_users }.to change { user_details.count }.from(150).to(0)
         end
-        it "notifies all users" do
-          subject.delete_inactive_users
-          expect(notify_client).to have_received(:send_email).exactly(150).times
-        end
       end
 
       context "Given inactive users" do
@@ -68,19 +61,6 @@ describe Gdpr::Gateway::Userdetails do
         it "deletes only user records that are at least a year old" do
           expect(user_details.select_map(:contact)).to match_array(%w[do_not_delete_1@gov.uk do_not_delete_2@gov.uk])
         end
-
-        it "notifies the deleted user with an email" do
-          expect(notify_client).to have_received(:send_email).with(
-            email_address: "delete@gov.uk",
-            template_id: "user_account_removed_email_id",
-            personalisation: { inactivity_period: "12 months" },
-            email_reply_to_id: "do_not_reply_email_template_id",
-          ).once
-        end
-
-        it "does not notify the deleted user with an sms" do
-          expect(notify_client).to_not have_received(:send_sms)
-        end
       end
 
       context "Given a HEALTH user" do
@@ -91,40 +71,6 @@ describe Gdpr::Gateway::Userdetails do
         it "does not delete the HEALTH user" do
           subject.delete_inactive_users
           expect(user_details.select_map(:username)).to include("HEALTH")
-        end
-      end
-
-      describe "Handling Notify Errors" do
-        let(:error) { StandardError.new }
-        before :each do
-          allow(Services.notify_client).to receive(:send_email).and_raise(error)
-          FactoryBot.create(:user_details, last_login: Date.today - 367)
-        end
-        describe "The error is a standard error" do
-          it "still deletes the user" do
-            expect { subject.delete_inactive_users }.to change { user_details.count }.by(-1)
-            expect(Services.notify_client).to have_received(:send_email)
-          end
-        end
-        describe "The error is an email validation error" do
-          let(:error) do
-            response = OpenStruct.new(code: 500, body: "something ValidationError something")
-            Notifications::Client::BadRequestError.new(response)
-          end
-          it "logs the error as a warning" do
-            expect_any_instance_of(Logger).to receive(:warn).with(/Failed to send email to/)
-            subject.delete_inactive_users
-          end
-        end
-        describe "The error is a more serious error thrown by notify" do
-          let(:error) do
-            response = OpenStruct.new(code: 500, body: "something else")
-            Notifications::Client::BadRequestError.new(response)
-          end
-          it "logs the error as a error" do
-            expect_any_instance_of(Logger).to receive(:error).with(/Unexpected error sending/)
-            subject.delete_inactive_users
-          end
         end
       end
     end
@@ -152,15 +98,6 @@ describe Gdpr::Gateway::Userdetails do
 
         it "deletes only user records that are at least a year old" do
           expect(user_details.select_map(:contact)).to match_array(%w[do_not_delete_1@gov.uk do_not_delete_2@gov.uk])
-        end
-
-        it "notifies the deleted user with an email" do
-          expect(notify_client).to have_received(:send_email).with(
-            email_address: "delete@gov.uk",
-            template_id: "user_account_removed_email_id",
-            personalisation: { inactivity_period: "12 months" },
-            email_reply_to_id: "do_not_reply_email_template_id",
-          ).once
         end
 
         it "does not notify the deleted user with an sms" do
